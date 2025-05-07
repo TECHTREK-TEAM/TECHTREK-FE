@@ -1,0 +1,32 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 코드 체크아웃
+        uses: actions/checkout@v4
+
+      - name: Node.js 설치
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: 의존성 설치 (pnpm 사용 시 수정)
+        run: npm install
+
+      - name: Lint 체크
+        run: npm run lint
+
+      - name: TypeScript 타입 검사
+        run: npx tsc --noEmit
+
+      - name: Build 테스트
+        run: npm run build
