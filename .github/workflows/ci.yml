@@ -19,11 +19,14 @@ jobs:
         with:
           node-version: 20
 
-      - name: 의존성 설치 (pnpm 사용 시 수정)
+      - name: 의존성 설치
         run: npm install
 
       - name: Lint 체크
         run: npm run lint
+
+      - name: Prettier 체크
+        run: npx prettier --check .
 
       - name: TypeScript 타입 검사
         run: npx tsc --noEmit
