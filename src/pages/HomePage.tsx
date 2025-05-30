@@ -1,6 +1,6 @@
 import Topbar from '../components/Topbar';
 import ProgressBar from '../components/ProgressBar';
-import { ChatBubble } from '../components/Chatbubble';
+import ChatBubble from '../components/ChatBubble';
 
 function HomePage() {
   return (

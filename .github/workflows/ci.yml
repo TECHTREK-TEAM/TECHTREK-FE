@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [main]
+    branches: [main, develop]
   pull_request:
-    branches: [main]
+    branches: [main, develop]
 
 jobs:
   build:
@@ -32,4 +32,4 @@ jobs:
         run: npm run build
 
       - name: Prettier 자동 수정
-        run: npx prettier --write . # 코드 스타일 자동 수정
+        run: npx prettier --write .
