@@ -1,6 +1,7 @@
 import Topbar from '../components/Topbar';
 import mainBanner from '../assets/images/mainBanner.jpg';
 import downIcon from '../assets/icons/downIcon.svg';
+
 function HomePage() {
   return (
     <div className="min-h-[2000px] flex flex-col">
