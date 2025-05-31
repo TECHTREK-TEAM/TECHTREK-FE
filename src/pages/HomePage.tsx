@@ -8,8 +8,8 @@ function HomePage() {
       {/* 배너 영역 div */}
       <div className="w-full h-[670px] lg:pl-[180px] pt-[155px] 2xl:pl-[300px]">
         {/* 배너 영역 안 스타일 */}
-        <div className="w-[494px] h-[210px] flex flex-col justify-between">
-          <div className="w-full h-[120px] flex flex-col gap-4 overflow-y-auto">
+        <div className="w-[494px] h-fit gap-10 flex flex-col justify-between">
+          <div className="w-full h-fit flex flex-col gap-4 overflow-y-auto">
             <p className="text-left text-white font-semibold text-[40px]">
               유형화된 면접 시뮬레이션
             </p>
