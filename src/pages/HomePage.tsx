@@ -1,4 +1,4 @@
-import Topbar from '../components/Topbar';
+import Topbar from '../components/Topbar.tsx';
 import mainBanner from '../assets/images/mainBanner.jpg';
 import downIcon from '../assets/icons/downIcon.svg';
 
