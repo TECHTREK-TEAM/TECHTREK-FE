@@ -18,10 +18,10 @@ function HomePage() {
               실전처럼 대비하세요!
             </p>
           </div>
-            면접 보러가기
           <button className="w-[149px] h-[50px] border border-white text-white font-medium text-contentsize1 flex justify-center items-center gap-3">
-          </button>
+            면접 보러가기
             <img src={downIcon} alt="아래화살표 아이콘" className="w-5 h-5" />
+          </button>
         </div>
       </div>
 
