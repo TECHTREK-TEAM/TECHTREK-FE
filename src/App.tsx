@@ -3,6 +3,8 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Home from './pages/HomePage.tsx';
 import Analysis from './pages/AnalysisPage.tsx';
 import Interview from './pages/InterviewPage.tsx';
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
 
 function App() {
   return (

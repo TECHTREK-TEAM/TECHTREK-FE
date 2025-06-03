@@ -43,7 +43,7 @@ const Topbar: React.FC = () => {
     <header
       className={`sticky top-0 z-50 w-full min-h-[80px] ${bgClass} transition-colors duration-300 flex items-center justify-between px-8`}
     >
-      <div className="flex items-center justify-between w-1/3 min-w-[450px] gap-13">
+      <div className="flex items-center justify-between w-1/3 min-w-[450px]">
         <div className="text-logosize font-semibold text-white">TECHTREK</div>
 
         <nav className="flex items-center gap-12">

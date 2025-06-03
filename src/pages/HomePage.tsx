@@ -1,12 +1,14 @@
 import Topbar from '../components/Topbar.tsx';
 import mainBanner from '../assets/images/mainBanner.jpg';
 import downIcon from '../assets/icons/downIcon.svg';
+import CurveSlideSlick from '../components/Homes/CurveSlideSlick.tsx';
+
 function HomePage() {
   return (
-    <div className="min-h-[2000px] flex flex-col">
+    <div className="min-h-[2000px] w-full flex flex-col">
       <Topbar />
       {/* 배너 영역 div */}
-      <div className="w-full h-[670px] lg:pl-[180px] pt-[155px] 2xl:pl-[300px]">
+      <div className="w-full h-[590px] lg:pl-[180px] pt-[155px] 2xl:pl-[300px]">
         {/* 배너 영역 안 스타일 */}
         <div className="w-[494px] h-fit gap-10 flex flex-col justify-between">
           <div className="w-full h-fit flex flex-col gap-4 overflow-y-auto">
@@ -32,6 +34,19 @@ function HomePage() {
           backgroundImage: `url(${mainBanner})`,
         }}
       />
+
+      <div className="flex flex-col w-full h-fit items-center mt-[120px]">
+        {/* 섹션 타이틀 div */}
+        <div className="flex flex-col gap-4 w-fit h-fit">
+          <p className="text-subtitlesize font-semibold text-primary">
+            기업별 TECHTREK
+          </p>
+          <p className="text-contentsize1 font-medium text-customgray">
+            관심 있는 회사를 골라 연습해보세요
+          </p>
+        </div>
+        <CurveSlideSlick />
+      </div>
     </div>
   );
 }
