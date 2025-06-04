@@ -5,7 +5,7 @@ import CurveSlideSlick from '../components/Homes/CurveSlideSlick.tsx';
 
 function HomePage() {
   return (
-    <div className="min-h-[2000px] w-full flex flex-col">
+    <div className="min-h-[2000px] pt-[80px] w-full flex flex-col">
       <Topbar />
       {/* 배너 영역 div */}
       <div className="w-full h-[590px] lg:pl-[180px] pt-[155px] 2xl:pl-[300px]">
