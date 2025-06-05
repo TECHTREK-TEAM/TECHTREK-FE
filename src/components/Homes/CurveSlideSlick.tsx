@@ -12,9 +12,11 @@ const CurveSlideSlick = () => {
 
   const settings = {
     infinite: true,
-    slidesToScroll: 1,
+    slideToScroll: 1,
+    slidesToShow: 1,
     arrows: true,
-    variableWidth: true, // 중요!
+    variableWidth: true,
+    centerMode: true,
     nextArrow: <CustomArrow direction="right" />,
     prevArrow: <CustomArrow direction="left" />,
   };

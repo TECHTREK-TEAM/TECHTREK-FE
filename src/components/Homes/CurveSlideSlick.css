@@ -1,5 +1,6 @@
 .curve-slide-wrapper {
   position: relative;
+  width: 100%;
   max-width: 1920px;
   margin: 0 auto;
   padding: 0 0px;
@@ -8,7 +9,7 @@
 
 .slick-track {
   display: flex !important;
-  gap: 12px;
+  gap: 0;
   will-change: transform;
 }
 
@@ -22,7 +23,7 @@
   justify-content: center;
   font-size: 1.25rem;
   color: #555;
-  margin: 0;
+  margin-right: 12px;
 }
 
 .arrow-button {
@@ -31,7 +32,7 @@
   transform: translateY(-50%);
   background: rgba(0, 0, 0, 0.4);
   padding: 14px 6px;
-  z-index: 1;
+  z-index: 10;
   border: none;
 }
 
@@ -41,6 +42,22 @@
 
 .right-arrow {
   right: 300px;
+}
+
+@media (min-width: 1024px) and (max-width: 1660px) {
+  .left-arrow {
+    left: 60px;
+  }
+  .right-arrow {
+    right: 60px;
+  }
+}
+
+/* slick-slide 기본 margin 제거 */
+.slick-slide {
+  margin: 0 !important;
+  padding: 0 !important;
+  width: auto !important;
 }
 
 /* slick-slide 내부 div에 마진 제거 (기본값 덮어쓰기) */
