@@ -23,7 +23,13 @@ const CurveSlideSlick = () => {
 
   return (
     <div className="curve-slide-wrapper">
+      {/* 위쪽 타원 */}
+      <div className="curve-overlay top" />
+
       <Slider {...settings}>{items}</Slider>
+
+      {/* 아래쪽 타원 */}
+      <div className="curve-overlay bottom" />
     </div>
   );
 };

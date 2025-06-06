@@ -4,7 +4,7 @@
   max-width: 1920px;
   margin: 0 auto;
   padding: 0 0px;
-  overflow-x: hidden;
+  overflow: hidden;
 }
 
 .slick-track {
@@ -24,6 +24,24 @@
   font-size: 1.25rem;
   color: #555;
   margin-right: 12px;
+}
+
+.curve-overlay {
+  position: absolute;
+  width: 100%;
+  height: 200px;
+  background: white;
+  border-radius: 50%;
+  z-index: 5;
+  pointer-events: none;
+}
+
+.curve-overlay.top {
+  top: -100px; /* 높이 절반만큼 위로 올려서 반만 보이게 */
+}
+
+.curve-overlay.bottom {
+  bottom: -100px; /* 높이 절반만큼 아래로 내려서 반만 보이게 */
 }
 
 .arrow-button {
@@ -50,6 +68,15 @@
   }
   .right-arrow {
     right: 60px;
+  }
+
+  .slide-item {
+    width: 270px !important;
+    height: 400px;
+  }
+
+  .curve-overlay {
+    height: 200px;
   }
 }
 
