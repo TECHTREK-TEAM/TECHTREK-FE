@@ -5,7 +5,7 @@ import CurveSlideSlick from '../components/Homes/CurveSlideSlick.tsx';
 
 function HomePage() {
   return (
-    <div className="min-h-[2000px] pt-[80px] w-full flex flex-col">
+    <div className="h-full pt-[80px] w-full flex flex-col">
       <Topbar />
       {/* 배너 영역 div */}
       <div className="w-full h-[590px] lg:pl-[180px] pt-[155px] 2xl:pl-[300px]">
@@ -45,7 +45,21 @@ function HomePage() {
             관심 있는 회사를 골라 연습해보세요
           </p>
         </div>
+
+        {/* 커브 슬라이드 */}
         <CurveSlideSlick />
+
+        {/* 섹션 타이틀 div */}
+        <div className="flex flex-col gap-4 w-fit h-fit mt-7">
+          <p className="text-subtitlesize font-semibold text-primary">
+            모의 면접 시뮬레이션
+          </p>
+          <p className="text-contentsize1 font-medium text-customgray">
+            질문에 실시간으로 답변하고, 다양한 직군과 난이도의 질문을 경험하세요
+          </p>
+        </div>
+
+        <div className="bg-slate-500 w-full h-[380px] gap-3 flex justify-between mx-[300px] mt-[55px]"></div>
       </div>
     </div>
   );

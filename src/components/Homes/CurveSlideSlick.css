@@ -16,14 +16,16 @@
 .slide-item {
   width: 352px !important;
   height: 500px;
-  background-color: #f3f3f3;
-  box-sizing: border-box;
-  display: flex !important;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.25rem;
-  color: #555;
   margin-right: 12px;
+  overflow: hidden;
+  border-radius: 16px;
+}
+
+.slide-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
 .curve-overlay {
@@ -64,15 +66,15 @@
 
 @media (min-width: 1024px) and (max-width: 1660px) {
   .left-arrow {
-    left: 60px;
+    left: 150px;
   }
   .right-arrow {
-    right: 60px;
+    right: 150px;
   }
 
   .slide-item {
     width: 270px !important;
-    height: 400px;
+    height: 450px;
   }
 
   .curve-overlay {
