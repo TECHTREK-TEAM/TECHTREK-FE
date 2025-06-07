@@ -4,6 +4,7 @@ import mainBanner from '../assets/images/mainBanner.jpg';
 import introImage1 from '../assets/images/introImage1.jpg';
 import introImage2 from '../assets/images/introImage2.jpg';
 import introImage3 from '../assets/images/introImage3.jpg';
+import introImage4 from '../assets/images/introImage4.png';
 import downIcon from '../assets/icons/downIcon.svg';
 
 function HomePage() {
@@ -63,7 +64,7 @@ function HomePage() {
           </p>
         </div>
 
-        <div className="w-full max-w-[1320px] h-fit gap-3 flex justify-between px-[100px] mt-[55px] 2xl:px-[300px]">
+        <div className="w-full h-fit gap-3 flex justify-between px-[100px] mt-[55px] 2xl:px-[300px]">
           {/* 플랫폼 소개 섹션 */}
           <div className="w-[432px] h-full flex flex-col gap-5">
             <img src={introImage1} alt="소개 이미지1" className="" />
@@ -79,7 +80,7 @@ function HomePage() {
             </div>
           </div>
           <div className="w-[432px] h-full flex flex-col gap-5">
-            <img src={introImage2} alt="소개 이미지1" className="" />
+            <img src={introImage2} alt="소개 이미지2" className="" />
             <div className="flex flex-col gap-3 w-fit h-fit">
               <p className="text-contentsize2 text-left font-semibold text-primary">
                 키워드 분석
@@ -91,7 +92,7 @@ function HomePage() {
             </div>
           </div>
           <div className="w-[432px] h-full flex flex-col gap-5">
-            <img src={introImage3} alt="소개 이미지1" className="" />
+            <img src={introImage3} alt="소개 이미지3" className="" />
             <div className="flex flex-col gap-3 w-fit h-fit">
               <p className="text-contentsize2 text-left font-semibold text-primary">
                 답변 구조 분석
@@ -102,6 +103,40 @@ function HomePage() {
               </p>
             </div>
           </div>
+        </div>
+        {/* 섹션 타이틀 div */}
+        <div className="flex flex-col gap-4 w-fit h-fit mt-[120px]">
+          <p className="text-subtitlesize font-semibold text-primary">
+            TECHTREK의 도움을 받아 면접의
+            <br /> 주인공이 되세요
+          </p>
+          <p className="text-contentsize1 font-medium text-customgray">
+            면접 질문에 답하고, 키워드 분석과 기업 경향 피드백을 통해 나만의
+            답변 전략을 만들어보세요.
+          </p>
+        </div>
+        <div className="w-full h-fit flex flex-col px-[150px] mt-[55px] 2xl: px-[300px] gap-20">
+          <img src={introImage4} alt="소개 이미지4" className="" />
+          <div className="w-full h-[372px] flex justify-between gap-20">
+            <div className="w-1/2 h-full bg-slate-300"></div>
+            <div className="max-w-[587px] w-[44%] h-full bg-slate-500"></div>
+          </div>
+        </div>
+
+        <div className="w-fit h-fit gap-[50px] flex flex-col items-center">
+          {/* 섹션 타이틀 div */}
+          <div className="flex flex-col gap-4 w-fit h-fit mt-[120px]">
+            <p className="text-subtitlesize font-semibold text-primary">
+              TECHTREK의 개선할 점을 알려주세요
+            </p>
+            <p className="text-contentsize1 font-medium text-customgray">
+              TECHTREK을 사용하며 느낀 장점이나 개선되었으면 하는 점을 자유롭게
+              공유해주세요.
+            </p>
+          </div>
+          <button className="w-[146px] h-[40px] bg-blue-500 text-white font-medium text-contentsize1 rounded-[10px]">
+            피드백 하러가기 →
+          </button>
         </div>
       </div>
     </div>
