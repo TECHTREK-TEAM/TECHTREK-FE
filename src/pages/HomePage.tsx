@@ -20,7 +20,8 @@ function HomePage() {
             </p>
             <p className="text-left text-white font-medium text-contentsize1">
               네이버, 카카오, 토스 등 국내 유명 기업의 CS 면접을 미리 경험하고,
-              실전처럼 대비하세요!
+              실전처럼
+              <br /> 대비하세요!
             </p>
           </div>
           <button className="w-[149px] h-[50px] border border-white text-white font-medium text-contentsize1 flex justify-center items-center gap-3">
@@ -71,7 +72,7 @@ function HomePage() {
                 기업 경향성 반영
               </p>
               <p className="text-[14px] text-left font-medium text-customgray">
-                단순히 정답을 맞추는 데 그치지 않고, 기업마다 중요하게 여기는
+                단순히 정답을 맞추는데 그치지 않고, 기업마다 중요하게 여기는
                 사고방식이나 커뮤니케이션 스타일을 반영하여 면접 결과를
                 제공합니다.
               </p>

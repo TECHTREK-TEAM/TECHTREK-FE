@@ -6,6 +6,10 @@
 @layer base {
   html,
   body {
-    @apply overflow-x-hidden; /* ✅ 세로 스크롤은 건드리지 말고 */
+    @apply overflow-x-hidden;
+    @apply leading-custom tracking-custom;
+  }
+  p, span, li, h1, h2, h3, h4, h5, h6 {
+    @apply leading-custom tracking-custom;
   }
 }

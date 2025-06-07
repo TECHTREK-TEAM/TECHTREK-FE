@@ -18,6 +18,12 @@ export default {
         subtitlesize: '32px',
         logosize: '24px',
       },
+      lineHeight: {
+        custom: '1.4', // 140%
+      },
+      letterSpacing: {
+        custom: '-0.025em', // -2.5%
+      },
     },
   },
   plugins: [],
