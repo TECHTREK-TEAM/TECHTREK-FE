@@ -1,7 +1,10 @@
 import Topbar from '../components/Topbar.tsx';
-import mainBanner from '../assets/images/mainBanner.jpg';
-import downIcon from '../assets/icons/downIcon.svg';
 import CurveSlideSlick from '../components/Homes/CurveSlideSlick.tsx';
+import mainBanner from '../assets/images/mainBanner.jpg';
+import introImage1 from '../assets/images/introImage1.jpg';
+import introImage2 from '../assets/images/introImage2.jpg';
+import introImage3 from '../assets/images/introImage3.jpg';
+import downIcon from '../assets/icons/downIcon.svg';
 
 function HomePage() {
   return (
@@ -59,7 +62,46 @@ function HomePage() {
           </p>
         </div>
 
-        <div className="bg-slate-500 w-full h-[380px] gap-3 flex justify-between mx-[300px] mt-[55px]"></div>
+        <div className="w-full max-w-[1320px] h-fit gap-3 flex justify-between px-[100px] mt-[55px] 2xl:px-[300px]">
+          {/* 플랫폼 소개 섹션 */}
+          <div className="w-[432px] h-full flex flex-col gap-5">
+            <img src={introImage1} alt="소개 이미지1" className="" />
+            <div className="flex flex-col gap-3 w-fit h-fit">
+              <p className="text-contentsize2 text-left font-semibold text-primary">
+                기업 경향성 반영
+              </p>
+              <p className="text-[14px] text-left font-medium text-customgray">
+                단순히 정답을 맞추는 데 그치지 않고, 기업마다 중요하게 여기는
+                사고방식이나 커뮤니케이션 스타일을 반영하여 면접 결과를
+                제공합니다.
+              </p>
+            </div>
+          </div>
+          <div className="w-[432px] h-full flex flex-col gap-5">
+            <img src={introImage2} alt="소개 이미지1" className="" />
+            <div className="flex flex-col gap-3 w-fit h-fit">
+              <p className="text-contentsize2 text-left font-semibold text-primary">
+                키워드 분석
+              </p>
+              <p className="text-[14px] text-left font-medium text-customgray">
+                면접 답변에서 반드시 언급해야 할 핵심 키워드를 분석해 제공하여,
+                답변의 완성도를 높일 수 있도록 도와줍니다.
+              </p>
+            </div>
+          </div>
+          <div className="w-[432px] h-full flex flex-col gap-5">
+            <img src={introImage3} alt="소개 이미지1" className="" />
+            <div className="flex flex-col gap-3 w-fit h-fit">
+              <p className="text-contentsize2 text-left font-semibold text-primary">
+                답변 구조 분석
+              </p>
+              <p className="text-[14px] text-left font-medium text-customgray">
+                답변이 단순히 맞는지를 넘어, 얼마나 논리적으로 시작부터 결론까지
+                자연스럽게 전개되었는지 분석하여 피드백합니다.
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

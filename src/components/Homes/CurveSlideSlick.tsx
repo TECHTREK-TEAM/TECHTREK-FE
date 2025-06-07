@@ -1,33 +1,78 @@
 import Slider from 'react-slick';
 import LeftArrowIcon from '../../assets/icons/leftIcon.svg';
 import RightArrowIcon from '../../assets/icons/rightIcon.svg';
-import Slide1 from '../../assets/images/enterpriseCardNaver.jpg';
-import Slide2 from '../../assets/images/enterpriseCardKakao.jpg';
-import Slide3 from '../../assets/images/enterpriseCardPeopleofBaedal.jpg';
-import Slide4 from '../../assets/images/enterpriseCardNexon.jpg';
-import Slide5 from '../../assets/images/enterpriseCardSamsung.jpg';
-import Slide6 from '../../assets/images/enterpriseCardCoupang.jpg';
-import Slide7 from '../../assets/images/enterpriseCardToss.jpg';
-import Slide8 from '../../assets/images/enterpriseCardDanggeunMarket.jpg';
+import Slide1 from '../../assets/images/naverLogo.png';
+import Slide2 from '../../assets/images/kakaoLogo.png';
+import Slide3 from '../../assets/images/peopleofBaedalLogo.png';
+import Slide4 from '../../assets/images/nexonLogo.png';
+import Slide5 from '../../assets/images/samsungLogo.png';
+import Slide6 from '../../assets/images/coupangLogo.png';
+import Slide7 from '../../assets/images/tossLogo.png';
+import Slide8 from '../../assets/images/danggeunMarketLogo.png';
 import './CurveSlideSlick.css';
 
 const CurveSlideSlick = () => {
   const images = [
-    Slide1,
-    Slide2,
-    Slide3,
-    Slide4,
-    Slide5,
-    Slide6,
-    Slide7,
-    Slide8,
+    {
+      src: Slide1,
+      bgColor: 'bg-[#1EC960]', // Naver
+      imageWidth: 'w-[100%]',
+      imageHeight: 'h-[100%]',
+    },
+    {
+      src: Slide2,
+      bgColor: 'bg-[#FFDC00]', // Kakao
+      imageWidth: 'w-[80%]',
+      imageHeight: 'h-[80%]',
+    },
+    {
+      src: Slide3,
+      bgColor: 'bg-[#00C4BD]', // People of Baedal
+      imageWidth: 'w-[80%]',
+      imageHeight: 'h-[80%]',
+    },
+    {
+      src: Slide4,
+      bgColor: 'bg-[#F6F6F6]', // Nexon
+      imageWidth: 'w-[100%]',
+      imageHeight: 'h-[100%]',
+    },
+    {
+      src: Slide5,
+      bgColor: 'bg-[#0E4194]', // Samsung
+      imageWidth: 'w-[80%]',
+      imageHeight: 'h-[80%]',
+    },
+    {
+      src: Slide6,
+      bgColor: 'bg-[#F6F6F6]', // Coupang
+      imageWidth: 'w-[80%]',
+      imageHeight: 'h-[80%]',
+    },
+    {
+      src: Slide7,
+      bgColor: 'bg-[#0050FF]', // Toss
+      imageWidth: 'w-[100%]',
+      imageHeight: 'h-[100%]',
+    },
+    {
+      src: Slide8,
+      bgColor: 'bg-[#FB6614]', // Danggeun Market
+      imageWidth: 'w-[80%]',
+      imageHeight: 'h-[80%]',
+    },
   ];
 
-  const items = images.map((src, idx) => (
-    <div key={idx} className="slide-item">
-      <img src={src} alt={`슬라이드 ${idx + 1}`} className="slide-image" />
+  const items = images.map((item, idx) => (
+    <div key={idx} className={`slide-item ${item.bgColor}`}>
+      <img
+        src={item.src}
+        alt={`슬라이드 ${idx + 1}`}
+        className={`slide-image ${item.imageWidth} ${item.imageHeight}`}
+      />
     </div>
   ));
+
   const settings = {
     infinite: true,
     slideToScroll: 1,
