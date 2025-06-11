@@ -1,3 +1,5 @@
+/* 기존 스타일은 유지하면서 필요한 부분만 추가/수정 */
+
 .curve-slide-wrapper {
   position: relative;
   width: 100%;
@@ -19,9 +21,10 @@
   margin-right: 12px;
   overflow: hidden;
   border-radius: 16px;
-  display: flex !important;             /* flex 레이아웃 설정 */
-  align-items: center;        /* 수직 가운데 정렬 */
-  justify-content: center;    /* 수평 가운데 정렬 */
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  position: relative;
 }
 
 .slide-image {
@@ -35,16 +38,16 @@
   height: 200px;
   background: white;
   border-radius: 50%;
-  z-index: 5;
-  pointer-events: none;
+  z-index: 20; /* 높임 */
+  pointer-events: auto; /* hover 막기 위해 이벤트 받도록 설정 */
 }
 
 .curve-overlay.top {
-  top: -100px; /* 높이 절반만큼 위로 올려서 반만 보이게 */
+  top: -100px;
 }
 
 .curve-overlay.bottom {
-  bottom: -100px; /* 높이 절반만큼 아래로 내려서 반만 보이게 */
+  bottom: -100px;
 }
 
 .arrow-button {
@@ -83,14 +86,22 @@
   }
 }
 
-/* slick-slide 기본 margin 제거 */
 .slick-slide {
   margin: 0 !important;
   padding: 0 !important;
   width: auto !important;
 }
 
-/* slick-slide 내부 div에 마진 제거 (기본값 덮어쓰기) */
 .slick-slide > div {
   margin-right: 0 !important;
+}
+
+/* hover 가능 슬라이드만 오버레이 보여줌 */
+.slide-item:not(.hoverable) .hover-overlay {
+  display: none !important;
+}
+
+/* 오버레이 트랜지션 */
+.hover-overlay {
+  transition: opacity 0.3s ease;
 }

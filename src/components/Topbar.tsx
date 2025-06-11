@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useLocation, NavLink } from 'react-router-dom';
+import LoginModal from '../components/Homes/LoginModal';
 
 const menuItems = [
   { label: '홈', path: '/' },
@@ -10,6 +11,15 @@ const menuItems = [
 const Topbar = () => {
   const location = useLocation();
   const isHome = location.pathname === '/';
+  const [isLoginOpen, setIsLoginOpen] = useState(false);
+
+  function openLogin() {
+    setIsLoginOpen(true);
+  }
+
+  function closeLogin() {
+    setIsLoginOpen(false);
+  }
 
   const [isScrolledPast, setIsScrolledPast] = useState(false);
 
@@ -54,9 +64,14 @@ const Topbar = () => {
           ))}
         </nav>
       </div>
-      <button className="text-contentsize1 font-medium text-white px-4 py-2">
+      <button
+        onClick={openLogin}
+        className="text-contentsize1 font-medium text-white px-4 py-2"
+      >
         로그인
       </button>
+      {/* 로그인 모달 */}
+      <LoginModal isOpen={isLoginOpen} onClose={closeLogin} />
     </header>
   );
 };
