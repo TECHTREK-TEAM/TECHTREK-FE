@@ -14,7 +14,7 @@ import bookIcon from '../assets/icons/bookIcon.svg';
 import smileIcon from '../assets/icons/smileIcon.svg';
 import { useRef } from 'react';
 
-function HomePage() {
+const HomePage = () => {
   const curveSlideRef = useRef<HTMLDivElement>(null);
 
   const handleScrollToSlide = () => {
@@ -147,37 +147,37 @@ function HomePage() {
               className="w-[55%]"
             />
             <div className="max-w-[587px] w-fit h-full flex flex-col justify-start gap-12">
-              <div className="flex h-[40px] gap-5 items-center text-left text-contentsize1 text-primary w-fit 2xl:gap-9">
+              <div className="flex h-[40px] gap-5 items-center text-left text-contentsize1 text-primary w-fit 2xl:gap-9 2xl:h-[55px]">
                 <img
                   src={questionIcon}
                   alt="질문 아이콘"
-                  className="w-[40px] h-[40px]"
+                  className="w-[40px] h-[40px] 2xl:w-[55px] 2xl:h-[55px]"
                 />
                 질문에 실시간으로 답변하고, 다양한 직군과 난이도의 질문을
                 경험하세요
               </div>
-              <div className="flex h-[40px] gap-5 items-center text-left text-contentsize1 text-primary w-fit 2xl:gap-9">
+              <div className="flex h-[40px] gap-5 items-center text-left text-contentsize1 text-primary w-fit 2xl:gap-9 2xl:h-[55px]">
                 <img
                   src={trainingIcon}
                   alt="트레이닝 아이콘"
-                  className="w-[40px] h-[40px]"
+                  className="w-[40px] h-[40px] 2xl:w-[55px] 2xl:h-[55px]"
                 />
                 혼자하는 연습을 넘어 전략적인 면접 트레이닝을 시작해보세요
               </div>
-              <div className="flex h-[40px] gap-5 items-center text-left text-contentsize1 text-primary w-fit 2xl:gap-9">
+              <div className="flex h-[40px] gap-5 items-center text-left text-contentsize1 text-primary w-fit 2xl:gap-9 2xl:h-[55px]">
                 <img
                   src={bookIcon}
                   alt="책 아이콘"
-                  className="w-[40px] h-[40px]"
+                  className="w-[40px] h-[40px] 2xl:w-[55px] 2xl:h-[55px]"
                 />
                 답변 즉시 키워드부터 기업 경향 분석까지, 완성도 있는 준비를
                 지원합니다
               </div>
-              <div className="flex h-[40px] gap-5 items-center text-left text-contentsize1 text-primary w-fit 2xl:gap-9">
+              <div className="flex h-[40px] gap-5 items-center text-left text-contentsize1 text-primary w-fit 2xl:gap-9 2xl:h-[55px]">
                 <img
                   src={smileIcon}
                   alt="스마일 아이콘"
-                  className="w-[40px] h-[40px]"
+                  className="w-[40px] h-[40px] 2xl:w-[55px] 2xl:h-[55px]"
                 />
                 면접의 감을 키우는 가장 빠른 방법, 테크트랙에서 시작하세요
               </div>
@@ -206,6 +206,6 @@ function HomePage() {
       </div>
     </div>
   );
-}
+};
 
 export default HomePage;
