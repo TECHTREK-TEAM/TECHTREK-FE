@@ -4,7 +4,7 @@ import LoginModal from '../components/Homes/LoginModal';
 
 const menuItems = [
   { label: '홈', path: '/' },
-  { label: '내 정보', path: '/interview' },
+  { label: '내 정보', path: '/mypage' },
   { label: '면접 분석', path: '/analysis' },
 ];
 
