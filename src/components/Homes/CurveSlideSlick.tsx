@@ -83,7 +83,7 @@ const CurveSlideSlick = () => {
         alt={`슬라이드 ${idx + 1}`}
         className={`slide-image ${item.imageWidth} ${item.imageHeight}`}
       />
-      <div className="hover-overlay absolute inset-0 bg-black bg-opacity-60 hidden group-hover:flex items-center justify-center gap-4 z-10">
+      <div className="hover-overlay absolute inset-0 bg-black bg-opacity-60 hidden group-hover:flex items-center justify-center gap-2 z-10 2xl:gap-4">
         <button className="w-[100px] h-10 rounded-[10px] border border-white text-white">
           채용 공고
         </button>
