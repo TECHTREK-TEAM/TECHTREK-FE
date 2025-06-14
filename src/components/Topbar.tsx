@@ -1,16 +1,25 @@
-// src/components/Topbar.tsx
 import { useEffect, useState } from 'react';
 import { useLocation, NavLink } from 'react-router-dom';
+import LoginModal from '../components/Homes/LoginModal';
 
 const menuItems = [
   { label: '홈', path: '/' },
-  { label: '내 정보', path: '/interview' },
+  { label: '내 정보', path: '/mypage' },
   { label: '면접 분석', path: '/analysis' },
 ];
 
-const Topbar: React.FC = () => {
+const Topbar = () => {
   const location = useLocation();
   const isHome = location.pathname === '/';
+  const [isLoginOpen, setIsLoginOpen] = useState(false);
+
+  function openLogin() {
+    setIsLoginOpen(true);
+  }
+
+  function closeLogin() {
+    setIsLoginOpen(false);
+  }
 
   const [isScrolledPast, setIsScrolledPast] = useState(false);
 
@@ -29,21 +38,14 @@ const Topbar: React.FC = () => {
     };
   }, [isHome]);
 
-  let bgClass;
-
-  if (!isHome) {
-    bgClass = 'bg-primary';
-  } else if (isScrolledPast) {
-    bgClass = 'bg-primary';
-  } else {
-    bgClass = 'bg-transparent';
-  }
+  const bgClass = !isHome || isScrolledPast ? 'bg-primary' : 'bg-transparent';
 
   return (
     <header
-      className={`sticky top-0 z-50 w-full min-h-[80px] ${bgClass} transition-colors duration-300 flex items-center justify-between px-8`}
+      className={`fixed top-0 left-0 right-0 z-50 min-h-[80px] ${bgClass} transition-colors duration-300 flex items-center justify-between px-8`}
+      style={{ width: '100%' }}
     >
-      <div className="flex items-center justify-between w-1/3 min-w-[450px] gap-13">
+      <div className="flex items-center justify-between w-1/3 min-w-[450px]">
         <div className="text-logosize font-semibold text-white">TECHTREK</div>
 
         <nav className="flex items-center gap-12">
@@ -62,9 +64,14 @@ const Topbar: React.FC = () => {
           ))}
         </nav>
       </div>
-      <button className="text-contentsize1 font-medium text-white px-4 py-2">
+      <button
+        onClick={openLogin}
+        className="text-contentsize1 font-medium text-white px-4 py-2"
+      >
         로그인
       </button>
+      {/* 로그인 모달 */}
+      <LoginModal isOpen={isLoginOpen} onClose={closeLogin} />
     </header>
   );
 };
