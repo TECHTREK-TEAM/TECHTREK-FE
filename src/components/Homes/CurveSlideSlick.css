@@ -1,0 +1,107 @@
+/* 기존 스타일은 유지하면서 필요한 부분만 추가/수정 */
+
+.curve-slide-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 1920px;
+  margin: 0 auto;
+  padding: 0 0px;
+  overflow: hidden;
+}
+
+.slick-track {
+  display: flex !important;
+  gap: 0;
+  will-change: transform;
+}
+
+.slide-item {
+  width: 352px !important;
+  height: 500px;
+  margin-right: 12px;
+  overflow: hidden;
+  border-radius: 16px;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.slide-image {
+  object-fit: contain;
+  display: block;
+}
+
+.curve-overlay {
+  position: absolute;
+  width: 100%;
+  height: 200px;
+  background: white;
+  border-radius: 50%;
+  z-index: 20; /* 타원부분 이벤트 방지용 */
+  pointer-events: auto; /* 타원부분 이벤트 방지용 */
+}
+
+.curve-overlay.top {
+  top: -100px;
+}
+
+.curve-overlay.bottom {
+  bottom: -100px;
+}
+
+.arrow-button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0, 0, 0, 0.4);
+  padding: 14px 6px;
+  z-index: 10;
+  border: none;
+}
+
+.left-arrow {
+  left: 300px;
+}
+
+.right-arrow {
+  right: 300px;
+}
+
+@media (min-width: 1024px) and (max-width: 1660px) {
+  .left-arrow {
+    left: 150px;
+  }
+  .right-arrow {
+    right: 150px;
+  }
+
+  .slide-item {
+    width: 270px !important;
+    height: 450px;
+  }
+
+  .curve-overlay {
+    height: 200px;
+  }
+}
+
+.slick-slide {
+  margin: 0 !important;
+  padding: 0 !important;
+  width: auto !important;
+}
+
+.slick-slide > div {
+  margin-right: 0 !important;
+}
+
+/* hover 가능 슬라이드만 오버레이 보여줌 */
+.slide-item:not(.hoverable) .hover-overlay {
+  display: none !important;
+}
+
+/* 오버레이 트랜지션 */
+.hover-overlay {
+  transition: opacity 0.3s ease;
+}

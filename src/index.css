@@ -3,13 +3,13 @@
 @tailwind components;
 @tailwind utilities;
 
-/* 완전한 reset */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-#root {
-  @apply p-0 m-0 box-border;
+@layer base {
+  html,
+  body {
+    @apply overflow-x-hidden;
+    @apply leading-custom tracking-custom;
+  }
+  p, span, li, h1, h2, h3, h4, h5, h6 {
+    @apply leading-custom tracking-custom;
+  }
 }

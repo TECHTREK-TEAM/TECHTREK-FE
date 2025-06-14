@@ -3,6 +3,9 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Home from './pages/HomePage.tsx';
 import Analysis from './pages/AnalysisPage.tsx';
 import Interview from './pages/InterviewPage.tsx';
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
+import MyPage from './pages/MyPage.tsx';
 
 function App() {
   return (
@@ -11,6 +14,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/analysis" element={<Analysis />} />
         <Route path="/interview" element={<Interview />} />
+        <Route path="/mypage" element={<MyPage />} />
       </Routes>
     </BrowserRouter>
   );
