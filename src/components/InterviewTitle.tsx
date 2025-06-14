@@ -1,5 +1,7 @@
+import type { ReactNode } from 'react';
+
 interface InterviewTitleProps {
-  children: string;
+  children: ReactNode;
 }
 
 const InterviewTitle = ({ children }: InterviewTitleProps) => {

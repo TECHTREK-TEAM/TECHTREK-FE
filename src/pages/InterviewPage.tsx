@@ -4,6 +4,7 @@ import InterviewTitle from '../components/InterviewTitle';
 
 const InterviewPage = () => {
   const remainingQuestions = 9; // 남은 질문 수를 변수로 관리
+  const enterprise = '네이버'; // 기업명
 
   return (
     <div className="min-h-screen w-full flex flex-col bg-[#F1F4F6] pt-[80px]">
@@ -18,7 +19,7 @@ const InterviewPage = () => {
         </button>
       </div>
       <div className=" h-[450px] mx-[270px] px-[50px] rounded-[10px] 2xl:mb-[150px] 2xl:mx-[300px] bg-white">
-        <InterviewTitle>네이버 기술면접</InterviewTitle>
+        <InterviewTitle>{enterprise} 기술면접</InterviewTitle>
       </div>
     </div>
   );
