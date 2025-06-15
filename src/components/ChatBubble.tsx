@@ -20,7 +20,7 @@ const ChatBubble: React.FC<ChatBubbleProps> = ({
   const highlightStyle = highlight ? 'border border-red-600' : '';
 
   return (
-    <div className={`rounded-xl max-w-[80%] ${baseStyle} ${highlightStyle}`}>
+    <div className={`rounded-xl max-w-[100%] ${baseStyle} ${highlightStyle}`}>
       {type === 'question' ? (
         <div className="flex items-center gap-2">
           <img

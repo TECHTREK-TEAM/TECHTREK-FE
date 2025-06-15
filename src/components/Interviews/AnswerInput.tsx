@@ -1,4 +1,3 @@
-import React from 'react';
 import upArrowIcon from '../../assets/icons/upArrowIcon.svg';
 
 interface AnswerInputProps {
@@ -7,18 +6,14 @@ interface AnswerInputProps {
   placeholder?: string;
 }
 
-const AnswerInput: React.FC<AnswerInputProps> = ({
-  value,
-  onChange,
-  placeholder,
-}) => {
+function AnswerInput({ value, onChange, placeholder }: AnswerInputProps) {
   return (
     <div className="relative w-full h-[150px] border border-gray-300 rounded-lg px-4 py-2 bg-white">
       <textarea
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder || '답변을 입력하세요'}
-        className="w-full h-full resize-none outline-none text-contentsize1 pr-[140px] leading-[1.5] text-left"
+        className="w-full h-full resize-none outline-none text-contentsize1 leading-[1.5] text-left pb-10"
       />
 
       {/* 버튼 그룹 */}
@@ -36,6 +31,6 @@ const AnswerInput: React.FC<AnswerInputProps> = ({
       </div>
     </div>
   );
-};
+}
 
 export default AnswerInput;
