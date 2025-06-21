@@ -63,13 +63,13 @@ const MyPage = () => {
     <div className="min-h-screen max-h-[1080px] w-full flex flex-col bg-[#F1F4F6] pt-[80px]">
       <Topbar />
 
-      <div className="w-full h-full px-[172px] pt-[60px] pb-[60px] flex flex-col gap-10">
+      <div className="w-full h-full px-[80px] 2xl:px-[172px] pt-[60px] pb-[60px] flex flex-col gap-10">
         <p className="font-semibold text-[40px] text-primary text-left">
           내 정보
         </p>
-        <div className="w-full max-h-[686px] h-full flex gap-10">
+        <div className="w-full max-h-[686px] h-full flex gap-5 2xl:gap-10">
           {/* 왼쪽 박스 영역 */}
-          <div className="w-full h-full flex flex-col justify-start gap-5">
+          <div className="w-full max-w-[280px] 2xl:max-w-[328px] h-full flex flex-col justify-start gap-5">
             {/* 프로필 영역 */}
             <div className="bg-white w-full max-w-[328px] max-h-[276px] h-fit flex flex-col rounded-xl">
               <div className="w-full h-fit pl-10 pr-5 py-7 flex justify-between border-b border-[#e9e9e9]">
@@ -180,7 +180,7 @@ const MyPage = () => {
           {/* 왼쪽 박스 영역 */}
 
           {/* 오른쪽 박스 영역 */}
-          <div className="w-fit h-full flex flex-col justify-start gap-5">
+          <div className="w-full max-w-[1209px] h-full flex flex-col justify-start gap-5">
             {/* 그래프 영역 */}
             <div className="bg-white w-full max-w-[1209px] max-h-[276px] h-fit flex flex-col rounded-xl px-10 py-[35px]">
               <div className="w-full h-fit flex flex-col gap-16">
@@ -200,7 +200,7 @@ const MyPage = () => {
             {/* 그래프 영역 */}
 
             {/* 면접 세션 바로가기 영역 */}
-            <div className="max-w-[1209px] w-fit h-[379px] flex gap-3">
+            <div className="max-w-[1209px] w-full h-[379px] flex gap-3">
               {interviewCardsData.map((card, idx) => (
                 <InterviewCard
                   key={idx}

@@ -33,7 +33,7 @@ const ResumeUploader = () => {
   };
 
   return (
-    <div className="bg-white w-full max-w-[395px] h-full flex flex-col gap-5 p-6 rounded-xl">
+    <div className="w-full h-full flex-1 max-w-[33.333%] flex flex-col gap-5 p-6 rounded-xl bg-white">
       <input
         type="file"
         ref={inputRef}
@@ -44,7 +44,7 @@ const ResumeUploader = () => {
 
       {/* 업로드 영역 */}
       <div
-        className="w-full h-[155px] flex justify-center items-center border border-dashed border-[#A6A6A6] rounded-xl cursor-pointer"
+        className="w-full h-[155px] p-4 flex justify-center items-center border border-dashed border-[#A6A6A6] rounded-xl cursor-pointer"
         onClick={handleUploadClick}
       >
         {!fileName ? (

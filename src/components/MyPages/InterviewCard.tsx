@@ -17,7 +17,7 @@ const InterviewCard = ({
   name,
 }: InterviewCardProps) => {
   return (
-    <div className="bg-white w-full max-w-[395px] h-full flex flex-col gap-5 p-6 rounded-xl">
+    <div className="w-full h-full flex-1 max-w-[33.333%] flex flex-col gap-5 p-6 rounded-xl bg-white">
       <div className="w-full h-[155px] bg-gray-300 rounded-xl" />
       <div className="w-full h-fit flex flex-col gap-5">
         <div className="w-full h-fit flex flex-col gap-4">
