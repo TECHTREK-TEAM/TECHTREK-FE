@@ -1,13 +1,13 @@
 import Topbar from '../components/Topbar';
 import InterviewCard from '../components/MyPages/InterviewCard';
 import ProgressBar from '../components/ProgressBar';
+import ResumeUploader from '../components/MyPages/ResumeUploader';
 import editIcon from '../assets/icons/editIcon.svg';
 import groupIcon from '../assets/icons/groupIcon.svg';
 import seniorityIcon from '../assets/icons/seniorityIcon.svg';
 import interestedEnterpriseIcon from '../assets/icons/interestedEnterpriseIcon.svg';
 import interviewTotalIcon from '../assets/icons/InterviewTotalIcon.svg';
 import interviewPassIcon from '../assets/icons/interviewPassIcon.svg';
-import resumeUploadIcon from '../assets/icons/resumeUploadIcon.svg';
 
 const MyPage = () => {
   const name = 'hiya';
@@ -211,19 +211,9 @@ const MyPage = () => {
                   name={name}
                 />
               ))}
-              <div className="bg-white w-[395px] h-full flex flex-col gap-5 p-6 rounded-xl">
-                <div className="w-full h-[162px] flex justify-center items-center border border-dashed border-[#A6A6A6] rounded-xl">
-                  <button className="w-fit h-fit flex flex-col gap-[10px]">
-                    <img
-                      src={resumeUploadIcon}
-                      className="w=[30px] h-[30px] select-none"
-                    />
-                    <p className="font-medium text-customgray text-[12px]">
-                      이력서를 첨부해주세요
-                    </p>
-                  </button>
-                </div>
-              </div>
+
+              {/* 파일 첨부 컴포넌트 */}
+              <ResumeUploader />
             </div>
             {/* 면접 세션 바로가기 영역 */}
           </div>
