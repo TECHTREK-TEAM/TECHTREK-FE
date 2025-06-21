@@ -33,7 +33,7 @@ const ResumeUploader = () => {
   };
 
   return (
-    <div className="bg-white w-[395px] h-full flex flex-col gap-5 p-6 rounded-xl">
+    <div className="bg-white w-full max-w-[395px] h-full flex flex-col gap-5 p-6 rounded-xl">
       <input
         type="file"
         ref={inputRef}

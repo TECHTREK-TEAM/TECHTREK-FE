@@ -69,9 +69,9 @@ const MyPage = () => {
         </p>
         <div className="w-full max-h-[686px] h-full flex gap-10">
           {/* 왼쪽 박스 영역 */}
-          <div className="w-fit h-full flex flex-col justify-start gap-5">
+          <div className="w-full h-full flex flex-col justify-start gap-5">
             {/* 프로필 영역 */}
-            <div className="bg-white w-[328px] max-h-[276px] h-fit flex flex-col rounded-xl">
+            <div className="bg-white w-full max-w-[328px] max-h-[276px] h-fit flex flex-col rounded-xl">
               <div className="w-full h-fit pl-10 pr-5 py-7 flex justify-between border-b border-[#e9e9e9]">
                 <p className="font-medium text-contentsize2">{name}</p>
                 <button className="w-fit h-fit">
@@ -101,7 +101,7 @@ const MyPage = () => {
             {/* 프로필 영역 */}
 
             {/* 관심기업 영역 */}
-            <div className="bg-white w-[328px] max-h-[200px] h-fit flex flex-col rounded-xl">
+            <div className="bg-white w-full max-w-[328px] max-h-[200px] h-fit flex flex-col rounded-xl">
               <div className="px-5 py-3 w-full h-fit flex items-center gap-[9px] border-b border-[#e9e9e9]">
                 <img
                   src={interestedEnterpriseIcon}
@@ -135,7 +135,7 @@ const MyPage = () => {
             {/* 관심기업 영역 */}
 
             {/* 사용자 합격률 영역 */}
-            <div className="bg-white w-[328px] max-h-[150px] h-fit flex flex-col rounded-xl">
+            <div className="bg-white w-full max-w-[328px] max-h-[150px] h-fit flex flex-col rounded-xl">
               <div className="px-5 py-3 w-full h-fit flex justify-between items-center border-b border-[#e9e9e9]">
                 <div className="flex gap-[9px] items-center">
                   <img
@@ -182,7 +182,7 @@ const MyPage = () => {
           {/* 오른쪽 박스 영역 */}
           <div className="w-fit h-full flex flex-col justify-start gap-5">
             {/* 그래프 영역 */}
-            <div className="bg-white w-[1209px] max-h-[276px] h-fit flex flex-col rounded-xl px-10 py-[35px]">
+            <div className="bg-white w-full max-w-[1209px] max-h-[276px] h-fit flex flex-col rounded-xl px-10 py-[35px]">
               <div className="w-full h-fit flex flex-col gap-16">
                 <p className="w-full font-semibold text-logosize text-left select-none">
                   답변 일치율
