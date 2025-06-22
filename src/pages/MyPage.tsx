@@ -61,7 +61,7 @@ const MyPage = () => {
     <div className="min-h-screen max-h-[1080px] w-full flex flex-col bg-[#F1F4F6] pt-[80px]">
       <Topbar />
 
-      <div className="w-full h-full px-[80px] 2xl:px-[172px] pt-[60px] pb-[60px] flex flex-col gap-10">
+      <div className="w-full h-full max-w-[1920px] mx-auto px-[80px] 2xl:px-[172px] pt-[60px] pb-[60px] flex flex-col gap-10">
         <p className="font-semibold text-[40px] text-primary text-left">
           내 정보
         </p>
