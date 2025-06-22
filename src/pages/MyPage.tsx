@@ -2,12 +2,10 @@ import Topbar from '../components/Topbar';
 import InterviewCard from '../components/MyPages/InterviewCard';
 import ProgressBar from '../components/ProgressBar';
 import ResumeUploader from '../components/MyPages/ResumeUploader';
-import editIcon from '../assets/icons/editIcon.svg';
-import groupIcon from '../assets/icons/groupIcon.svg';
-import seniorityIcon from '../assets/icons/seniorityIcon.svg';
 import interestedEnterpriseIcon from '../assets/icons/interestedEnterpriseIcon.svg';
 import interviewTotalIcon from '../assets/icons/InterviewTotalIcon.svg';
 import interviewPassIcon from '../assets/icons/interviewPassIcon.svg';
+import ProfileCard from '../components/MyPages/ProfileCard';
 
 const MyPage = () => {
   const name = 'hiya';
@@ -71,33 +69,7 @@ const MyPage = () => {
           {/* 왼쪽 박스 영역 */}
           <div className="w-full max-w-[280px] 2xl:max-w-[328px] h-full flex flex-col justify-start gap-5">
             {/* 프로필 영역 */}
-            <div className="bg-white w-full max-w-[328px] max-h-[276px] h-fit flex flex-col rounded-xl">
-              <div className="w-full h-fit pl-10 pr-5 py-7 flex justify-between border-b border-[#e9e9e9]">
-                <p className="font-medium text-contentsize2">{name}</p>
-                <button className="w-fit h-fit">
-                  <img
-                    src={editIcon}
-                    className="select-none w-[25px] h-[25px]"
-                  />
-                </button>
-              </div>
-              <div className="w-full h-fit px-8">
-                <div className="px-3 py-3 flex gap-[15px] items-center border-b border-[#e9e9e9]">
-                  <img src={groupIcon} className="w-6 h-6 select-none" />
-                  <p className="font-regular text-[15px]">{group}</p>
-                </div>
-                <div className="px-3 py-3 flex gap-[15px] items-center border-b border-[#e9e9e9]">
-                  <img
-                    src={seniorityIcon}
-                    className="w-[22px] h-[23px] select-none"
-                  />
-                  <p className="font-regular text-[15px]">{seniority} 년차</p>
-                </div>
-                <div className="px-[30px] py-[30px] w-full h-fit">
-                  <div className="w-[35px] h-[35px]" />
-                </div>
-              </div>
-            </div>
+            <ProfileCard name={name} group={group} seniority={seniority} />
             {/* 프로필 영역 */}
 
             {/* 관심기업 영역 */}
