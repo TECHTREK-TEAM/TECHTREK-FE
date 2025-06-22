@@ -3,6 +3,7 @@ import editIcon from '../../assets/icons/editIcon.svg';
 import groupIcon from '../../assets/icons/groupIcon.svg';
 import seniorityIcon from '../../assets/icons/seniorityIcon.svg';
 import closeIcon from '../../assets/icons/closeIcon.svg';
+import saveIcon from '../../assets/icons/saveIcon.svg';
 
 // 외부에서 전달받을 사용자 프로필 정보
 interface ProfileCardProps {
@@ -42,7 +43,11 @@ const ProfileCard = ({
   return (
     <div className="bg-white w-full max-w-[328px] max-h-[276px] h-full flex flex-col rounded-xl">
       {/* 상단 이름 및 수정 버튼 */}
-      <div className="w-full h-fit pl-10 pr-5 py-7 flex justify-between border-b border-[#e9e9e9]">
+      <div
+        className={`w-full h-fit pl-10 pr-5 flex justify-between items-center border-b border-[#e9e9e9] ${
+          isEditing ? 'py-5' : 'py-7'
+        }`}
+      >
         {/* 수정 중이면 인풋, 아니면 텍스트 */}
         {isEditing ? (
           <input
@@ -60,9 +65,9 @@ const ProfileCard = ({
           onClick={() => setIsEditing((prev) => !prev)}
         >
           <img
-            src={editIcon}
-            className="select-none w-[25px] h-[25px]"
-            alt="edit"
+            src={isEditing ? saveIcon : editIcon}
+            className="select-none w-6 h-6"
+            alt={isEditing ? 'save' : 'edit'} // 접근성 향상
           />
         </button>
       </div>
