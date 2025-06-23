@@ -3,7 +3,6 @@ import editIcon from '../../assets/icons/editIcon.svg';
 import groupIcon from '../../assets/icons/groupIcon.svg';
 import seniorityIcon from '../../assets/icons/seniorityIcon.svg';
 import closeIcon from '../../assets/icons/closeIcon.svg';
-import saveIcon from '../../assets/icons/saveIcon.svg';
 
 // 외부에서 전달받을 사용자 프로필 정보
 interface ProfileCardProps {
@@ -61,14 +60,18 @@ const ProfileCard = ({
 
         {/* 수정 모드 토글 버튼 */}
         <button
-          className="w-fit h-fit"
+          className="w-fit h-fit text-[15px] font-medium text-primary"
           onClick={() => setIsEditing((prev) => !prev)}
         >
-          <img
-            src={isEditing ? saveIcon : editIcon}
-            className="select-none w-6 h-6"
-            alt={isEditing ? 'save' : 'edit'} // 접근성 향상
-          />
+          {isEditing ? (
+            <span className="text-blue-500">save</span>
+          ) : (
+            <img
+              src={editIcon}
+              className="select-none w-6 h-6"
+              alt="edit" // 접근성 향상
+            />
+          )}
         </button>
       </div>
 
