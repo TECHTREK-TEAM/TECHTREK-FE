@@ -3,7 +3,7 @@ import InterviewCard from '../components/MyPages/InterviewCard';
 import ProgressBar from '../components/ProgressBar';
 import ResumeUploader from '../components/MyPages/ResumeUploader';
 import interestedEnterpriseIcon from '../assets/icons/interestedEnterpriseIcon.svg';
-import interviewTotalIcon from '../assets/icons/InterviewTotalIcon.svg';
+import interviewTotalIcon from '../assets/icons/interviewTotalIcon.svg';
 import interviewPassIcon from '../assets/icons/interviewPassIcon.svg';
 import ProfileCard from '../components/MyPages/ProfileCard';
 
