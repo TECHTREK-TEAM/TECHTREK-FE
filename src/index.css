@@ -1,3 +1,22 @@
+/* index.css */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  html,
+  body {
+    @apply leading-custom tracking-custom;
+  }
+  p,
+  span,
+  li,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply leading-custom tracking-custom;
+  }
+}
