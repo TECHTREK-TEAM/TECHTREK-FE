@@ -83,10 +83,10 @@ const HomePage = () => {
           </p>
         </div>
 
-        <div className="w-full h-fit gap-3 flex justify-between px-[100px] mt-[55px] 2xl:px-[300px]">
+        <div className="w-full max-w-[1920px] h-fit gap-3 flex justify-between px-[100px] mt-[55px] 2xl:px-[300px]">
           {/* 플랫폼 소개 섹션 */}
           <div className="w-[432px] h-full flex flex-col gap-5">
-            <img src={introImage1} alt="소개 이미지1" className="" />
+            <img src={introImage1} alt="소개 이미지1" className="select-none" />
             <div className="flex flex-col gap-3 w-fit h-fit">
               <p className="text-contentsize2 text-left font-semibold text-primary">
                 기업 경향성 반영
@@ -134,7 +134,7 @@ const HomePage = () => {
             답변 전략을 만들어보세요.
           </p>
         </div>
-        <div className="w-full h-fit gap-12 flex flex-col justify-between px-[100px] mt-[55px] 2xl:px-[300px] 2xl:gap-20">
+        <div className="w-full max-w-[1920px] h-fit gap-12 flex flex-col justify-between px-[100px] mt-[55px] 2xl:px-[300px] 2xl:gap-20">
           <img
             src={introImage4}
             alt="소개 이미지4"
