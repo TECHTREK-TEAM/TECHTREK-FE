@@ -20,8 +20,6 @@ FROM nginx:stable
 # 빌드 결과물을 nginx html 경로로 복사
 COPY --from=builder /app/dist /usr/share/nginx/html
 
-# 기본 nginx 설정 복사 (필요시 수정 가능)
-COPY ./nginx.conf /etc/nginx/nginx.conf
 
 EXPOSE 80
 
