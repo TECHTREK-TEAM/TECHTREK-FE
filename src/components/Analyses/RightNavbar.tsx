@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import closeIcon from '../../assets/icons/closeIcon.svg';
 
 interface QA {
   questionNumber: string;
@@ -11,14 +12,6 @@ interface Session {
   enterpriseName: string;
   createdAt: string;
 }
-
-const sessions: Session[] = [
-  {
-    sessionInfoId: '2',
-    enterpriseName: '네이버',
-    createdAt: '2025-05-19',
-  },
-];
 
 const mockInterviewMap: Record<string, QA[]> = {
   '2': [
@@ -46,21 +39,57 @@ const mockInterviewMap: Record<string, QA[]> = {
       question: '그 역량이 팀에 어떤 영향을 미쳤다고 생각하나요?',
     },
   ],
+  '3': [
+    {
+      questionNumber: '1',
+      question: '최근에 공부한 기술 중 가장 인상 깊었던 것은 무엇인가요?',
+    },
+    {
+      questionNumber: '2',
+      question: 'REST API와 GraphQL의 차이점을 설명해주세요.',
+    },
+    {
+      questionNumber: '2',
+      tailQuestionNumber: '1',
+      question: 'GraphQL을 실제 프로젝트에 적용해본 경험이 있나요?',
+    },
+  ],
 };
 
 const RightNavbar = () => {
+  const [sessions, setSessions] = useState<Session[]>([
+    {
+      sessionInfoId: '2',
+      enterpriseName: '네이버',
+      createdAt: '2025-05-19',
+    },
+    {
+      sessionInfoId: '3',
+      enterpriseName: '네이버',
+      createdAt: '2025-06-01',
+    },
+  ]);
+
   const [selectedTabId, setSelectedTabId] = useState<string | null>(null);
   const [expandedQuestion, setExpandedQuestion] = useState<string | null>(null);
 
   const handleSessionClick = (sessionId: string) => {
     setSelectedTabId((prev) => (prev === sessionId ? null : sessionId));
-    setExpandedQuestion(null); // 세션 전환 시 꼬리질문 닫기
+    setExpandedQuestion(null);
   };
 
   const handleQuestionClick = (questionNumber: string) => {
     setExpandedQuestion((prev) =>
       prev === questionNumber ? null : questionNumber
     );
+  };
+
+  const handleSessionDelete = (sessionId: string) => {
+    setSessions((prev) => prev.filter((s) => s.sessionInfoId !== sessionId));
+    if (selectedTabId === sessionId) {
+      setSelectedTabId(null);
+      setExpandedQuestion(null);
+    }
   };
 
   return (
@@ -78,7 +107,7 @@ const RightNavbar = () => {
               <li key={session.sessionInfoId} className="w-full mb-2">
                 <div
                   onClick={() => handleSessionClick(session.sessionInfoId)}
-                  className={`cursor-pointer w-full px-5 py-[18px] rounded-lg font-semibold transition-all
+                  className={`cursor-pointer w-full px-5 py-[18px] rounded-lg font-semibold transition-all flex justify-between items-center
                     ${
                       isSelected
                         ? 'bg-[#EBE9FB] shadow-[inset_1px_1px_2px_rgba(17,0,116,0.15),inset_-1px_-1px_1px_white]'
@@ -86,43 +115,85 @@ const RightNavbar = () => {
                     }
                   `}
                 >
-                  <div className="flex justify-start gap-3 items-center text-[#505050]">
+                  <div className="flex gap-3 items-center text-[#505050]">
                     <span>{session.enterpriseName}</span>
                     <span className="text-sm">{session.createdAt}</span>
                   </div>
+
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleSessionDelete(session.sessionInfoId);
+                    }}
+                    className="w-4 h-4"
+                  >
+                    <img
+                      src={closeIcon}
+                      alt="close"
+                      className="w-full h-full"
+                    />
+                  </button>
                 </div>
 
-                {/* 질문 리스트 */}
                 {isSelected && (
-                  <div className="px-2 mt-2">
-                    {baseQuestions.map((qa) => {
+                  <div className="pl-3 pt-3">
+                    {baseQuestions.map((qa, index) => {
                       const tailQuestions = interviewList.filter(
-                        (tq) => tq.tailQuestionNumber === qa.questionNumber
+                        (tq) =>
+                          tq.questionNumber === qa.questionNumber &&
+                          tq.tailQuestionNumber
                       );
+
                       const isExpanded = expandedQuestion === qa.questionNumber;
 
                       return (
-                        <div key={qa.questionNumber} className="mb-2">
-                          <p
+                        <div key={qa.questionNumber} className="mb-4">
+                          <div
                             onClick={() =>
                               handleQuestionClick(qa.questionNumber)
                             }
-                            className="cursor-pointer text-sm text-[#505050] px-2 py-1 hover:underline"
+                            className="flex items-start gap-3 cursor-pointer px-2 py-1"
                           >
-                            Q{qa.questionNumber}. {qa.question}
-                          </p>
+                            <div className="w-8 h-8 flex-none shrink-0 rounded-full bg-[#EBE9FB] flex items-center justify-center text-sm font-semibold text-brandcolor">
+                              {qa.questionNumber}
+                            </div>
+                            <div className="flex flex-col text-left">
+                              <span className="text-[14px] font-semibold text-[#505050]">
+                                질문 {qa.questionNumber.padStart(2, '0')}
+                              </span>
+                              <span className="text-sm font-medium text-customgray break-words">
+                                {qa.question}
+                              </span>
+                            </div>
+                          </div>
 
-                          {/* 꼬리질문 표시 */}
+                          {tailQuestions.length > 0 && isExpanded && (
+                            <div className="w-[1px] h-4 bg-[#C4C4C4] mx-6 my-2" />
+                          )}
+
                           {isExpanded &&
-                            tailQuestions.map((tq) => (
-                              <p
+                            tailQuestions.map((tq, idx) => (
+                              <div
                                 key={`${tq.questionNumber}-${tq.tailQuestionNumber}`}
-                                className="ml-4 text-sm text-[#505050] pl-2 border-l border-gray-300"
+                                className="ml-12 flex items-start gap-2 px-2 py-1"
                               >
-                                Q{tq.questionNumber}-{tq.tailQuestionNumber}.{' '}
-                                {tq.question}
-                              </p>
+                                <div className="text-[#505050] text-sm mt-[2px]">
+                                  -
+                                </div>
+                                <div className="flex flex-col text-left">
+                                  <span className="text-[14px] font-semibold text-customgray">
+                                    연계질문 {String(idx + 1).padStart(2, '0')}
+                                  </span>
+                                  <span className="text-sm font-medium text-customgray break-words">
+                                    {tq.question}
+                                  </span>
+                                </div>
+                              </div>
                             ))}
+
+                          {index < baseQuestions.length - 1 && (
+                            <div className="w-[1px] h-4 bg-[#C4C4C4] mx-6 my-2" />
+                          )}
                         </div>
                       );
                     })}
