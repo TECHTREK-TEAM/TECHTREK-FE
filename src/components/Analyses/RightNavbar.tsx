@@ -13,6 +13,11 @@ interface Session {
   createdAt: string;
 }
 
+interface RightNavbarProps {
+  selectedSessionId: string | null;
+  onSelectSession: (id: string | null) => void;
+}
+
 const mockInterviewMap: Record<string, QA[]> = {
   '2': [
     {
@@ -56,7 +61,10 @@ const mockInterviewMap: Record<string, QA[]> = {
   ],
 };
 
-const RightNavbar = () => {
+const RightNavbar = ({
+  selectedSessionId,
+  onSelectSession,
+}: RightNavbarProps) => {
   const [sessions, setSessions] = useState<Session[]>([
     {
       sessionInfoId: '2',
@@ -70,11 +78,10 @@ const RightNavbar = () => {
     },
   ]);
 
-  const [selectedTabId, setSelectedTabId] = useState<string | null>(null);
   const [expandedQuestion, setExpandedQuestion] = useState<string | null>(null);
 
   const handleSessionClick = (sessionId: string) => {
-    setSelectedTabId((prev) => (prev === sessionId ? null : sessionId));
+    onSelectSession(selectedSessionId === sessionId ? null : sessionId);
     setExpandedQuestion(null);
   };
 
@@ -86,8 +93,8 @@ const RightNavbar = () => {
 
   const handleSessionDelete = (sessionId: string) => {
     setSessions((prev) => prev.filter((s) => s.sessionInfoId !== sessionId));
-    if (selectedTabId === sessionId) {
-      setSelectedTabId(null);
+    if (selectedSessionId === sessionId) {
+      onSelectSession(null);
       setExpandedQuestion(null);
     }
   };
@@ -97,7 +104,7 @@ const RightNavbar = () => {
       <div className="h-full overflow-y-auto py-4 px-2">
         <ul className="flex flex-col items-center mx-3">
           {sessions.map((session) => {
-            const isSelected = selectedTabId === session.sessionInfoId;
+            const isSelected = selectedSessionId === session.sessionInfoId;
             const interviewList = mockInterviewMap[session.sessionInfoId] || [];
             const baseQuestions = interviewList.filter(
               (q) => !q.tailQuestionNumber

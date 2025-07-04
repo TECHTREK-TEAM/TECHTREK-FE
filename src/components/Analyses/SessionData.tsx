@@ -2,13 +2,43 @@ import enhanceIcon from '../../assets/icons/enhanceIcon.svg';
 import ProgressBar from '../ProgressBar';
 import InterviewRecord from './InterviewRecord';
 
-const SessionData = () => {
+interface Question {
+  questionNumber: string;
+  question: string;
+  tailQuestionNumber?: string;
+}
+
+interface SessionDataProps {
+  questions: Question[];
+}
+
+const SessionData = ({ questions }: SessionDataProps) => {
   const enhancedRate = 0.3; // 향상 점수 지수
   const enhancedDuration = 11; // 향상 시간 지수
 
+  // 질문별 임시 답변 생성 함수
+  const createDummyAnswer = (question: string) => {
+    return `임시 답변: "${question}"에 대해 자세히 설명하겠습니다.`;
+  };
+
+  // 꼬리질문 포함한 전체 질문 배열 생성
+  const interviewData = questions.map(
+    ({ questionNumber, question, tailQuestionNumber }) => ({
+      questionNumber: tailQuestionNumber
+        ? `${questionNumber}-${tailQuestionNumber}`
+        : questionNumber,
+      question,
+      answer: createDummyAnswer(question),
+    })
+  );
+
+  const dummyFeedbackComment = `
+면접 답변에서 수평적 샤딩과 수직적 샤딩에 대한 언급이 없었음을 지적합니다. 이 두 개념은 중요한 차이를 가지므로, 이 부분을 명확히 설명했으면 좋았을 것입니다. 그러나 전반적으로 개념적인 접근이 잘 맞아떨어졌고, 특히 해당 기업이 요구하는 기술적 관점에 대한 이해가 잘 나타났습니다. 좀 더 구체적인 기술적 설명이 추가된다면 더욱 완벽한 답변이 될 것입니다.
+`;
+
   return (
     <div className="flex-1 overflow-y-auto p-8 scrollbar-hide">
-      <div className="h-[2000px] bg-gray-200 ">
+      <div className="h-fit">
         {/* 분석 결과 지표 */}
         <p className="text-left ml-2 text-contentsize2 text-[#505050] font-semibold">
           분석 결과
@@ -120,12 +150,37 @@ const SessionData = () => {
             </div>
           </div>
         </div>
+
         {/* 면접 내용 */}
         <p className="text-left ml-2 mt-10 text-contentsize2 text-[#505050] font-semibold">
           면접 내용
         </p>
 
-        <InterviewRecord />
+        <InterviewRecord interviewData={interviewData} />
+
+        {/* 면접 피드백 */}
+        <p className="text-left ml-2 mt-10 text-contentsize2 text-[#505050] font-semibold">
+          면접 피드백
+        </p>
+
+        <div className="w-full h-fit bg-white rounded-2xl p-[37px] mt-5 flex flex-col justify-between gap-12">
+          <div className="flex flex-col gap-6">
+            <p className="text-contentsize1 text-customgray font-medium text-left">
+              핵심 키워드
+            </p>
+            <div className="flex gap-5 items-center">
+              <p className="text-subtitlesize text-brandcolor font-semibold">
+                수직적 / 수평적 샤딩
+              </p>
+              <div className="px-2 py-1 bg-[#EBEAFC] text-brandcolor rounded-full text-xs font-medium">
+                질문 2-2
+              </div>
+            </div>
+          </div>
+          <p className="font-regular text-contentsize1 text-primary text-left">
+            {dummyFeedbackComment}
+          </p>
+        </div>
       </div>
     </div>
   );
