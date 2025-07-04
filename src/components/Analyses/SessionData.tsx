@@ -1,5 +1,6 @@
 import enhanceIcon from '../../assets/icons/enhanceIcon.svg';
 import ProgressBar from '../ProgressBar';
+import InterviewRecord from './InterviewRecord';
 
 const SessionData = () => {
   const enhancedRate = 0.3; // 향상 점수 지수
@@ -118,12 +119,13 @@ const SessionData = () => {
               <ProgressBar percentage={69} showPercentageText={false} />
             </div>
           </div>
-
-          {/* 면접 내용 */}
-          <p className="text-left ml-2 mt-10 text-contentsize2 text-[#505050] font-semibold">
-            면접 내용
-          </p>
         </div>
+        {/* 면접 내용 */}
+        <p className="text-left ml-2 mt-10 text-contentsize2 text-[#505050] font-semibold">
+          면접 내용
+        </p>
+
+        <InterviewRecord />
       </div>
     </div>
   );

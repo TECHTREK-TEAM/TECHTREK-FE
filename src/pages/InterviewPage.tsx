@@ -5,27 +5,27 @@ import InterviewTitle from '../components/InterviewTitle';
 import ChatBubble from '../components/ChatBubble';
 import AnswerInput from '../components/Interviews/AnswerInput';
 
-// 상수 정의
-const ENTERPRISE_NAME = '네이버';
-const REMAINING_QUESTIONS = 9;
-
-const interviewData = [
-  {
-    questionNumber: 1,
-    question: 'HTTP와 HTTPS의 차이를 설명하세요.',
-    answer:
-      'HTTP는 데이터를 암호화하지 않고 평문으로 전송하는 프로토콜로, 중간에서 데이터가 가로채일 수 있습니다. 반면, HTTPS는 SSL/TLS를 사용해 데이터를 암호화하여 안전하게 전송합니다. HTTP는 80번 포트를 사용하고, HTTPS는 443번 포트를 사용합니다. 즉, HTTPS는 보안이 강화된 HTTP로, 민감한 정보를 안전하게 전달할 수 있습니다.',
-  },
-  {
-    questionNumber: 2,
-    question: 'HTTP와 HTTPS의 차이를 설명하세요.',
-    answer:
-      'HTTP는 데이터를 암호화하지 않고 평문으로 전송하는 프로토콜로, 중간에서 데이터가 가로채일 수 있습니다. 반면, HTTPS는 SSL/TLS를 사용해 데이터를 암호화하여 안전하게 전송합니다. HTTP는 80번 포트를 사용하고, HTTPS는 443번 포트를 사용합니다. 즉, HTTPS는 보안이 강화된 HTTP로, 민감한 정보를 안전하게 전달할 수 있습니다.',
-  },
-];
-
 const InterviewPage = () => {
   const [answer, setAnswer] = useState('');
+
+  // 상수 정의
+  const ENTERPRISE_NAME = '네이버';
+  const REMAINING_QUESTIONS = 9;
+
+  const interviewData = [
+    {
+      questionNumber: 1,
+      question: 'HTTP와 HTTPS의 차이를 설명하세요.',
+      answer:
+        'HTTP는 데이터를 암호화하지 않고 평문으로 전송하는 프로토콜로, 중간에서 데이터가 가로채일 수 있습니다. 반면, HTTPS는 SSL/TLS를 사용해 데이터를 암호화하여 안전하게 전송합니다. HTTP는 80번 포트를 사용하고, HTTPS는 443번 포트를 사용합니다. 즉, HTTPS는 보안이 강화된 HTTP로, 민감한 정보를 안전하게 전달할 수 있습니다.',
+    },
+    {
+      questionNumber: 2,
+      question: 'HTTP와 HTTPS의 차이를 설명하세요.',
+      answer:
+        'HTTP는 데이터를 암호화하지 않고 평문으로 전송하는 프로토콜로, 중간에서 데이터가 가로채일 수 있습니다. 반면, HTTPS는 SSL/TLS를 사용해 데이터를 암호화하여 안전하게 전송합니다. HTTP는 80번 포트를 사용하고, HTTPS는 443번 포트를 사용합니다. 즉, HTTPS는 보안이 강화된 HTTP로, 민감한 정보를 안전하게 전달할 수 있습니다.',
+    },
+  ];
 
   return (
     <div className="h-[900px] 2xl:h-[1080px] w-full flex flex-col bg-[#F1F4F6] pt-[80px]">

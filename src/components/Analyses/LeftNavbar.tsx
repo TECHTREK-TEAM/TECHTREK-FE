@@ -41,34 +41,32 @@ const LeftNavbar = () => {
   const [selectedTab, setSelectedTab] = useState<string>(tabItems[0].label);
 
   return (
-    <div className="w-64 h-full border-r border-[#E5E5EC]">
-      <div className="h-full overflow-y-auto py-4 px-2">
-        <ul className="flex flex-col items-center mx-3">
-          {tabItems.map(({ label, icon, selectedIcon }) => {
-            const isSelected = selectedTab === label;
-            return (
-              <li
-                key={label}
-                onClick={() => setSelectedTab(label)}
-                className={`cursor-pointer w-full px-3 py-[18px] text-contentsize1 rounded-lg text-left transition-all flex items-center gap-3
-                    ${
-                      isSelected
-                        ? 'bg-[#EBE9FB] text-brandcolor font-semibold shadow-[inset_1px_1px_2px_rgba(17,0,116,0.15),inset_-1px_-1px_1px_white]'
-                        : 'text-[#505050] font-medium'
-                    }
-                  `}
-              >
-                <img
-                  src={isSelected ? selectedIcon : icon}
-                  alt={`${label} Icon`}
-                  className="w-5 h-5"
-                />
-                {label}
-              </li>
-            );
-          })}
-        </ul>
-      </div>
+    <div className="w-64 h-screen border-r border-[#E5E5EC] py-4">
+      <ul className="flex flex-col items-center mx-5">
+        {tabItems.map(({ label, icon, selectedIcon }) => {
+          const isSelected = selectedTab === label;
+          return (
+            <li
+              key={label}
+              onClick={() => setSelectedTab(label)}
+              className={`cursor-pointer w-full px-3 py-[17px] text-contentsize1 rounded-lg text-left transition-all flex items-center gap-3
+                ${
+                  isSelected
+                    ? 'bg-[#EBE9FB] text-brandcolor font-semibold shadow-[inset_1px_1px_2px_rgba(17,0,116,0.15),inset_-1px_-1px_1px_white]'
+                    : 'text-[#505050] font-medium'
+                }
+              `}
+            >
+              <img
+                src={isSelected ? selectedIcon : icon}
+                alt={`${label} Icon`}
+                className="w-5 h-5"
+              />
+              {label}
+            </li>
+          );
+        })}
+      </ul>
     </div>
   );
 };
