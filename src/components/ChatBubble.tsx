@@ -1,10 +1,10 @@
-// components/ChatBubble.tsx
 import React from 'react';
+import questionBubbleIcon from '../assets/icons/questionBubbleIcon.svg';
 
 interface ChatBubbleProps {
-  type: 'question' | 'answer'; // 말풍선 유형
-  content: string; // 말풍선 텍스트 내용
-  highlight?: boolean; // 강조 표시 여부 (선택적)
+  type: 'question' | 'answer';
+  content: string;
+  highlight?: boolean;
 }
 
 const ChatBubble: React.FC<ChatBubbleProps> = ({
@@ -12,18 +12,26 @@ const ChatBubble: React.FC<ChatBubbleProps> = ({
   content,
   highlight = false,
 }) => {
-  // 말풍선의 배경 및 텍스트 색상 클래스 지정
   const baseStyle =
-    type === 'question' ? 'bg-white text-basic' : 'bg-brandcolor text-white';
+    type === 'question'
+      ? 'bg-white text-basic pb-6 font-medium text-contentsize2'
+      : 'bg-brandcolor text-white px-9 py-6 font-light text-contentsize1';
 
-  // 강조 테두리 스타일 조건부 추가
   const highlightStyle = highlight ? 'border border-red-600' : '';
 
   return (
-    <div
-      className={`rounded-xl px-4 py-2 max-w-[80%] text-contentsize1 ${baseStyle} ${highlightStyle}`}
-    >
-      <p className="text-contentsize1">{content}</p>
+    <div className={`rounded-xl max-w-[100%] ${baseStyle} ${highlightStyle}`}>
+      {type === 'question' ? (
+        <div className="flex items-center gap-2">
+          <img
+            src={questionBubbleIcon}
+            className="mt-[2px] w-[40px] h-[40px]"
+          />
+          <p className="text-left">{content}</p>
+        </div>
+      ) : (
+        <p className="text-left">{content}</p>
+      )}
     </div>
   );
 };
