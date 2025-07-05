@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import Topbar from '../components/Topbar';
 import LeftNavbar from '../components/Analyses/LeftNavbar';
 import RightNavbar from '../components/Analyses/RightNavbar';
@@ -6,40 +7,55 @@ import SessionData from '../components/Analyses/SessionData';
 import { mockSessions } from '../constants/mockSessions';
 
 const AnalysisPage = () => {
-  // 세션 리스트 상태 (삭제 가능하도록)
+  const { enterprise, sessionId } = useParams<{
+    enterprise: string;
+    sessionId: string;
+  }>();
+  const navigate = useNavigate();
+
   const [sessions, setSessions] = useState(mockSessions);
 
-  // 선택된 세션 ID 상태
+  // 선택된 세션 ID 상태 (URL 파라미터 기반)
   const [selectedSessionId, setSelectedSessionId] = useState<string | null>(
-    sessions.length > 0 ? sessions[0].sessionInfoId : null
+    sessionId || null
   );
 
-  const handleSelectSession = (sessionId: string | null) => {
-    if (sessionId === null) {
-      setSelectedSessionId(null);
+  // URL 파라미터와 상태 동기화
+  useEffect(() => {
+    setSelectedSessionId(sessionId || null);
+  }, [sessionId]);
+
+  const handleSelectSession = (newSessionId: string | null) => {
+    setSelectedSessionId(newSessionId);
+    if (newSessionId) {
+      // 선택된 세션 찾기
+      const session = sessions.find((s) => s.sessionInfoId === newSessionId);
+      if (session) {
+        // URL 변경
+        navigate(`/analysis/${session.enterpriseName}/${newSessionId}`);
+      }
     } else {
-      setSelectedSessionId(sessionId);
+      // 선택 해제 시 홈 또는 다른 페이지로 이동 가능
+      navigate(`/`);
     }
   };
 
-  // 세션 삭제 핸들러
-  const handleDeleteSession = (sessionId: string) => {
-    setSessions((prev) => prev.filter((s) => s.sessionInfoId !== sessionId));
-    if (selectedSessionId === sessionId) {
-      // 삭제한 세션이 선택된 상태면 선택 초기화 또는 첫 세션 선택
-      setSelectedSessionId((prev) => {
-        if (prev === sessionId) {
-          const remaining = sessions.filter(
-            (s) => s.sessionInfoId !== sessionId
-          );
-          return remaining.length > 0 ? remaining[0].sessionInfoId : null;
-        }
-        return prev;
-      });
+  const handleDeleteSession = (sessionIdToDelete: string) => {
+    setSessions((prev) =>
+      prev.filter((s) => s.sessionInfoId !== sessionIdToDelete)
+    );
+    if (selectedSessionId === sessionIdToDelete) {
+      const remaining = sessions.filter(
+        (s) => s.sessionInfoId !== sessionIdToDelete
+      );
+      if (remaining.length > 0) {
+        handleSelectSession(remaining[0].sessionInfoId);
+      } else {
+        handleSelectSession(null);
+      }
     }
   };
 
-  // 현재 선택된 세션 데이터
   const selectedSession =
     sessions.find((s) => s.sessionInfoId === selectedSessionId) ?? null;
 
@@ -48,18 +64,27 @@ const AnalysisPage = () => {
       <Topbar />
 
       <div className="flex flex-1 pt-[80px] overflow-hidden">
-        <LeftNavbar />
+        <LeftNavbar
+          selectedTab={enterprise || ''}
+          onSelectTab={(label) => {
+            // enterprise 탭 변경 시 첫 세션으로 이동
+            const targetSessions = sessions.filter(
+              (s) => s.enterpriseName === label
+            );
+            if (targetSessions.length > 0) {
+              handleSelectSession(targetSessions[0].sessionInfoId);
+            }
+          }}
+        />
 
-        {/* SessionData에 현재 선택된 세션 데이터 전달 */}
         <SessionData
           analysis={selectedSession?.analysis}
           interview={selectedSession?.interview || []}
           feedback={selectedSession?.feedback}
         />
 
-        {/* RightNavbar에 세션 리스트, 선택/삭제 함수, 선택된 ID 전달 */}
         <RightNavbar
-          sessions={sessions}
+          sessions={sessions.filter((s) => s.enterpriseName === enterprise)}
           selectedSessionId={selectedSessionId}
           onSelectSession={handleSelectSession}
           onDeleteSession={handleDeleteSession}

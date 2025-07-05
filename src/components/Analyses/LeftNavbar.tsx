@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import type { FC } from 'react';
 
 import tossTabIcon from '../../assets/icons/tossTabIcon.svg';
 import tossTabIconSelected from '../../assets/icons/tossTabIconSelected.svg';
@@ -30,16 +30,15 @@ const tabItems = [
   { label: '배달의 민족', icon: PoBTabIcon, selectedIcon: PoBTabIconSelected },
   { label: '넥슨', icon: nexonTabIcon, selectedIcon: nexonTabIconSelected },
   { label: '카카오', icon: kakaoTabIcon, selectedIcon: kakaoTabIconSelected },
-  {
-    label: '쿠팡',
-    icon: coupangTabIcon,
-    selectedIcon: coupangTabIconSelected,
-  },
+  { label: '쿠팡', icon: coupangTabIcon, selectedIcon: coupangTabIconSelected },
 ];
 
-const LeftNavbar = () => {
-  const [selectedTab, setSelectedTab] = useState<string>(tabItems[0].label);
+interface LeftNavbarProps {
+  selectedTab: string;
+  onSelectTab: (label: string) => void;
+}
 
+const LeftNavbar: FC<LeftNavbarProps> = ({ selectedTab, onSelectTab }) => {
   return (
     <div className="w-64 h-screen border-r border-[#E5E5EC] py-4">
       <ul className="flex flex-col items-center mx-5">
@@ -48,7 +47,7 @@ const LeftNavbar = () => {
           return (
             <li
               key={label}
-              onClick={() => setSelectedTab(label)}
+              onClick={() => onSelectTab(label)}
               className={`cursor-pointer w-full px-3 py-[17px] text-contentsize1 rounded-lg text-left transition-all flex items-center gap-3
                 ${
                   isSelected

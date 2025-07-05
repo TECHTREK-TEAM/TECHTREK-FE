@@ -21,21 +21,27 @@ interface RightNavbarProps {
   onDeleteSession: (id: string) => void;
 }
 
-const RightNavbar = ({
+const RightNavbar: React.FC<RightNavbarProps> = ({
   sessions,
   selectedSessionId,
   onSelectSession,
   onDeleteSession,
-}: RightNavbarProps) => {
+}) => {
   const [expandedQuestion, setExpandedQuestion] = React.useState<string | null>(
     null
   );
 
+  // 세션 클릭 시 선택 토글 및 질문 확장 초기화
   const handleSessionClick = (sessionId: string) => {
-    onSelectSession(selectedSessionId === sessionId ? null : sessionId);
+    if (selectedSessionId === sessionId) {
+      // 이미 선택된 세션이면 아무 동작도 하지 않음 (선택해제 금지)
+      return;
+    }
+    onSelectSession(sessionId);
     setExpandedQuestion(null);
   };
 
+  // 질문 클릭 시 연계질문 확장 토글
   const handleQuestionClick = (questionNumber: string) => {
     setExpandedQuestion((prev) =>
       prev === questionNumber ? null : questionNumber
@@ -48,8 +54,9 @@ const RightNavbar = ({
         <ul className="flex flex-col items-center mx-3">
           {sessions.map((session) => {
             const isSelected = selectedSessionId === session.sessionInfoId;
-            const interviewList = session.interview || [];
-            const baseQuestions = interviewList.filter(
+
+            // 기본 질문(연계질문 없는 질문) 필터링
+            const baseQuestions = session.interview.filter(
               (q) => !q.tailQuestionNumber
             );
 
@@ -58,11 +65,7 @@ const RightNavbar = ({
                 <div
                   onClick={() => handleSessionClick(session.sessionInfoId)}
                   className={`cursor-pointer w-full px-5 py-[18px] rounded-lg font-semibold transition-all flex justify-between items-center
-                    ${
-                      isSelected
-                        ? 'bg-[#EBE9FB] shadow-[inset_1px_1px_2px_rgba(17,0,116,0.15),inset_-1px_-1px_1px_white]'
-                        : ''
-                    }
+                    ${isSelected ? 'bg-[#EBE9FB] shadow-[inset_1px_1px_2px_rgba(17,0,116,0.15),inset_-1px_-1px_1px_white]' : ''}
                   `}
                 >
                   <div className="flex gap-3 items-center text-[#505050]">
@@ -76,6 +79,7 @@ const RightNavbar = ({
                       onDeleteSession(session.sessionInfoId);
                     }}
                     className="w-4 h-4"
+                    aria-label="Delete session"
                   >
                     <img
                       src={closeIcon}
@@ -88,7 +92,8 @@ const RightNavbar = ({
                 {isSelected && (
                   <div className="pl-3 pt-3">
                     {baseQuestions.map((qa, index) => {
-                      const tailQuestions = interviewList.filter(
+                      // 연계질문 필터링 (tailQuestionNumber 존재하는 것)
+                      const tailQuestions = session.interview.filter(
                         (tq) =>
                           tq.questionNumber === qa.questionNumber &&
                           tq.tailQuestionNumber
@@ -97,10 +102,7 @@ const RightNavbar = ({
                       const isExpanded = expandedQuestion === qa.questionNumber;
 
                       return (
-                        <div
-                          key={`${qa.questionNumber}-${index}`}
-                          className="mb-4"
-                        >
+                        <div key={qa.questionNumber} className="mb-4">
                           <div
                             onClick={() =>
                               handleQuestionClick(qa.questionNumber)
@@ -112,8 +114,7 @@ const RightNavbar = ({
                             </div>
                             <div className="flex flex-col text-left">
                               <span className="text-[14px] font-semibold text-[#505050]">
-                                질문{' '}
-                                {String(qa.questionNumber).padStart(2, '0')}
+                                질문 {qa.questionNumber.padStart(2, '0')}
                               </span>
                               <span className="text-sm font-medium text-customgray break-words">
                                 {qa.question}
