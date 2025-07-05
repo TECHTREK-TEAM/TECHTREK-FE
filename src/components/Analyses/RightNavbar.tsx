@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React from 'react';
 import closeIcon from '../../assets/icons/closeIcon.svg';
 
 interface QA {
@@ -11,74 +11,25 @@ interface Session {
   sessionInfoId: string;
   enterpriseName: string;
   createdAt: string;
+  interview: QA[];
 }
 
 interface RightNavbarProps {
+  sessions: Session[];
   selectedSessionId: string | null;
   onSelectSession: (id: string | null) => void;
+  onDeleteSession: (id: string) => void;
 }
 
-const mockInterviewMap: Record<string, QA[]> = {
-  '2': [
-    {
-      questionNumber: '1',
-      question: '자기소개 해주세요.',
-    },
-    {
-      questionNumber: '1',
-      tailQuestionNumber: '1',
-      question: '자기소개에서 언급한 강점을 프로젝트에서 어떻게 발휘했나요?',
-    },
-    {
-      questionNumber: '2',
-      question: '백엔드 개발에서 가장 중요하다고 생각하는 역량은 무엇인가요?',
-    },
-    {
-      questionNumber: '2',
-      tailQuestionNumber: '1',
-      question: '그 역량을 기를 수 있었던 경험은 무엇인가요?',
-    },
-    {
-      questionNumber: '2',
-      tailQuestionNumber: '2',
-      question: '그 역량이 팀에 어떤 영향을 미쳤다고 생각하나요?',
-    },
-  ],
-  '3': [
-    {
-      questionNumber: '1',
-      question: '최근에 공부한 기술 중 가장 인상 깊었던 것은 무엇인가요?',
-    },
-    {
-      questionNumber: '2',
-      question: 'REST API와 GraphQL의 차이점을 설명해주세요.',
-    },
-    {
-      questionNumber: '2',
-      tailQuestionNumber: '1',
-      question: 'GraphQL을 실제 프로젝트에 적용해본 경험이 있나요?',
-    },
-  ],
-};
-
 const RightNavbar = ({
+  sessions,
   selectedSessionId,
   onSelectSession,
+  onDeleteSession,
 }: RightNavbarProps) => {
-  const [sessions, setSessions] = useState<Session[]>([
-    {
-      sessionInfoId: '2',
-      enterpriseName: '네이버',
-      createdAt: '2025-05-19',
-    },
-    {
-      sessionInfoId: '3',
-      enterpriseName: '네이버',
-      createdAt: '2025-06-01',
-    },
-  ]);
-
-  const [expandedQuestion, setExpandedQuestion] = useState<string | null>(null);
+  const [expandedQuestion, setExpandedQuestion] = React.useState<string | null>(
+    null
+  );
 
   const handleSessionClick = (sessionId: string) => {
     onSelectSession(selectedSessionId === sessionId ? null : sessionId);
@@ -91,21 +42,13 @@ const RightNavbar = ({
     );
   };
 
-  const handleSessionDelete = (sessionId: string) => {
-    setSessions((prev) => prev.filter((s) => s.sessionInfoId !== sessionId));
-    if (selectedSessionId === sessionId) {
-      onSelectSession(null);
-      setExpandedQuestion(null);
-    }
-  };
-
   return (
     <div className="w-[360px] h-full border-l border-[#E5E5EC]">
       <div className="h-full overflow-y-auto py-4 px-2">
         <ul className="flex flex-col items-center mx-3">
           {sessions.map((session) => {
             const isSelected = selectedSessionId === session.sessionInfoId;
-            const interviewList = mockInterviewMap[session.sessionInfoId] || [];
+            const interviewList = session.interview || [];
             const baseQuestions = interviewList.filter(
               (q) => !q.tailQuestionNumber
             );
@@ -130,7 +73,7 @@ const RightNavbar = ({
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
-                      handleSessionDelete(session.sessionInfoId);
+                      onDeleteSession(session.sessionInfoId);
                     }}
                     className="w-4 h-4"
                   >
@@ -154,7 +97,10 @@ const RightNavbar = ({
                       const isExpanded = expandedQuestion === qa.questionNumber;
 
                       return (
-                        <div key={qa.questionNumber} className="mb-4">
+                        <div
+                          key={`${qa.questionNumber}-${index}`}
+                          className="mb-4"
+                        >
                           <div
                             onClick={() =>
                               handleQuestionClick(qa.questionNumber)
@@ -166,7 +112,8 @@ const RightNavbar = ({
                             </div>
                             <div className="flex flex-col text-left">
                               <span className="text-[14px] font-semibold text-[#505050]">
-                                질문 {qa.questionNumber.padStart(2, '0')}
+                                질문{' '}
+                                {String(qa.questionNumber).padStart(2, '0')}
                               </span>
                               <span className="text-sm font-medium text-customgray break-words">
                                 {qa.question}

@@ -2,39 +2,62 @@ import enhanceIcon from '../../assets/icons/enhanceIcon.svg';
 import ProgressBar from '../ProgressBar';
 import InterviewRecord from './InterviewRecord';
 
-interface Question {
-  questionNumber: string;
+interface Analysis {
+  status: boolean;
+  followScore: number;
+  followAveragePercent: number;
+  resultScore: number;
+  duration: number;
+  durationAveragePercent: number;
+  TopScore: number;
+}
+
+interface InterviewQA {
   question: string;
+  answer: string;
+  questionNumber: string;
   tailQuestionNumber?: string;
 }
 
-interface SessionDataProps {
-  questions: Question[];
+interface Feedback {
+  keyword: string;
+  questionNumber: string;
+  result: string;
 }
 
-const SessionData = ({ questions }: SessionDataProps) => {
-  const enhancedRate = 0.3; // 향상 점수 지수
-  const enhancedDuration = 11; // 향상 시간 지수
+interface SessionDataProps {
+  analysis?: Analysis | null;
+  interview: InterviewQA[];
+  feedback?: Feedback | null;
+}
 
-  // 질문별 임시 답변 생성 함수
-  const createDummyAnswer = (question: string) => {
-    return `임시 답변: "${question}"에 대해 자세히 설명하겠습니다.`;
+const SessionData = ({ analysis, interview, feedback }: SessionDataProps) => {
+  // 기본값 할당
+  const safeAnalysis: Analysis = analysis ?? {
+    status: false,
+    followScore: 0,
+    followAveragePercent: 0,
+    resultScore: 0,
+    duration: 0,
+    durationAveragePercent: 0,
+    TopScore: 0,
   };
 
-  // 꼬리질문 포함한 전체 질문 배열 생성
-  const interviewData = questions.map(
-    ({ questionNumber, question, tailQuestionNumber }) => ({
+  const safeFeedback: Feedback = feedback ?? {
+    keyword: '',
+    questionNumber: '',
+    result: '',
+  };
+
+  const interviewData = interview.map(
+    ({ question, answer, questionNumber, tailQuestionNumber }) => ({
       questionNumber: tailQuestionNumber
         ? `${questionNumber}-${tailQuestionNumber}`
         : questionNumber,
       question,
-      answer: createDummyAnswer(question),
+      answer,
     })
   );
-
-  const dummyFeedbackComment = `
-면접 답변에서 수평적 샤딩과 수직적 샤딩에 대한 언급이 없었음을 지적합니다. 이 두 개념은 중요한 차이를 가지므로, 이 부분을 명확히 설명했으면 좋았을 것입니다. 그러나 전반적으로 개념적인 접근이 잘 맞아떨어졌고, 특히 해당 기업이 요구하는 기술적 관점에 대한 이해가 잘 나타났습니다. 좀 더 구체적인 기술적 설명이 추가된다면 더욱 완벽한 답변이 될 것입니다.
-`;
 
   return (
     <div className="flex-1 overflow-y-auto p-8 scrollbar-hide">
@@ -50,8 +73,11 @@ const SessionData = ({ questions }: SessionDataProps) => {
               <p className="font-medium text-contentsize1 text-customgray text-left">
                 합격예측 결과
               </p>
-              <p className="font-semibold text-[28px] text-brandcolor text-left">
-                합격
+              <p
+                className="font-semibold text-[28px] text-left"
+                style={{ color: safeAnalysis.status ? '#5f43ff' : '#FE8700' }}
+              >
+                {safeAnalysis.status ? '합격' : '불합격'}
               </p>
             </div>
 
@@ -62,11 +88,13 @@ const SessionData = ({ questions }: SessionDataProps) => {
               </p>
               <div className="flex flex-col gap-[2px]">
                 <p className="font-semibold text-[28px] text-primary text-left">
-                  79점
+                  {safeAnalysis.followScore}점
                 </p>
-                <p className="flex items-center gap-[6px] font-medium text-contentsize1 text-customgray">
+                <p className="flex items-center gap-[6px] font-medium text-sm text-customgray">
                   <img src={enhanceIcon} className="select-none" />
-                  <span className="text-[#0c8800]">{enhancedRate}%</span>{' '}
+                  <span className="text-[#0c8800]">
+                    {Math.round(safeAnalysis.followAveragePercent * 100)}%
+                  </span>{' '}
                   평균보다 높음
                 </p>
               </div>
@@ -78,20 +106,19 @@ const SessionData = ({ questions }: SessionDataProps) => {
                 답변 일치율
               </p>
               <div className="flex gap-6">
-                {/* 텍스트 영역 - 고정 넓이 */}
                 <div className="flex flex-col gap-[2px] min-w-fit">
                   <p className="font-semibold text-[28px] text-primary text-left">
-                    71%
+                    {Math.round(safeAnalysis.resultScore)}%
                   </p>
-                  <p className="flex items-center gap-[6px] font-medium text-contentsize1 text-customgray whitespace-nowrap">
-                    간신히 합격
+                  <p className="flex items-center gap-[6px] font-medium text-sm text-customgray whitespace-nowrap">
+                    {safeAnalysis.resultScore > 85
+                      ? '합격 유력'
+                      : '간신히 합격'}
                   </p>
                 </div>
-
-                {/* 그래프 - 답변 일치율 */}
                 <div className="flex-1">
                   <ProgressBar
-                    percentage={71}
+                    percentage={Math.round(safeAnalysis.resultScore)}
                     showShadowBar={false}
                     showPercentageText={false}
                   />
@@ -106,12 +133,12 @@ const SessionData = ({ questions }: SessionDataProps) => {
               </p>
               <div className="flex flex-col gap-[2px]">
                 <p className="font-semibold text-[28px] text-primary text-left">
-                  32분
+                  {safeAnalysis.duration}분
                 </p>
-                <p className="flex items-center gap-[6px] font-medium text-contentsize1 text-customgray">
+                <p className="flex items-center gap-[6px] font-medium text-sm text-customgray">
                   <img src={enhanceIcon} className="select-none" />
                   <span className="text-[#0c8800]">
-                    {enhancedDuration}%
+                    {safeAnalysis.durationAveragePercent}%
                   </span>{' '}
                   평균보다 빠름
                 </p>
@@ -119,24 +146,21 @@ const SessionData = ({ questions }: SessionDataProps) => {
             </div>
           </div>
 
-          {/* 해당 세션 상위 퍼센티지 */}
+          {/* 상위 퍼센트 */}
           <div className="w-full h-[237px] p-6 bg-white flex flex-col gap-6 rounded-2xl">
-            {/* 타이틀 */}
             <div className="flex flex-col gap-4">
               <p className="text-contentsize1 text-customgray font-medium text-left">
                 네이버 기업에서 나는 상위 몇 %?
               </p>
               <div className="flex gap-2 items-center">
                 <p className="text-[28px] text-primary font-semibold">
-                  상위 31%
+                  상위 {safeAnalysis.TopScore}%
                 </p>
                 <p className="text-sm font-medium text-customgray">
                   유일한 님의 면접 결과
                 </p>
               </div>
             </div>
-
-            {/* 그래프 바 - 상위 퍼센티지 */}
             <div className="flex flex-col gap-2">
               <div className="flex justify-between">
                 <p className="text-sm text-customgray font-medium">상위 100%</p>
@@ -146,7 +170,10 @@ const SessionData = ({ questions }: SessionDataProps) => {
                 <p className="text-sm text-customgray font-medium">상위 20%</p>
                 <p className="text-sm text-customgray font-medium">상위 0%</p>
               </div>
-              <ProgressBar percentage={69} showPercentageText={false} />
+              <ProgressBar
+                percentage={100 - safeAnalysis.TopScore}
+                showPercentageText={false}
+              />
             </div>
           </div>
         </div>
@@ -155,14 +182,12 @@ const SessionData = ({ questions }: SessionDataProps) => {
         <p className="text-left ml-2 mt-10 text-contentsize2 text-[#505050] font-semibold">
           면접 내용
         </p>
-
         <InterviewRecord interviewData={interviewData} />
 
-        {/* 면접 피드백 */}
+        {/* 피드백 */}
         <p className="text-left ml-2 mt-10 text-contentsize2 text-[#505050] font-semibold">
           면접 피드백
         </p>
-
         <div className="w-full h-fit bg-white rounded-2xl p-[37px] mt-5 flex flex-col justify-between gap-12">
           <div className="flex flex-col gap-6">
             <p className="text-contentsize1 text-customgray font-medium text-left">
@@ -170,15 +195,15 @@ const SessionData = ({ questions }: SessionDataProps) => {
             </p>
             <div className="flex gap-5 items-center">
               <p className="text-subtitlesize text-brandcolor font-semibold">
-                수직적 / 수평적 샤딩
+                {safeFeedback.keyword}
               </p>
               <div className="px-2 py-1 bg-[#EBEAFC] text-brandcolor rounded-full text-xs font-medium">
-                질문 2-2
+                질문 {safeFeedback.questionNumber}
               </div>
             </div>
           </div>
           <p className="font-regular text-contentsize1 text-primary text-left">
-            {dummyFeedbackComment}
+            {safeFeedback.result}
           </p>
         </div>
       </div>
