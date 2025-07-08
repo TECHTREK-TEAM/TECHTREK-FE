@@ -1,4 +1,5 @@
 import enhanceIcon from '../../assets/icons/enhanceIcon.svg';
+import decreaseIcon from '../../assets/icons/decreaseIcon.svg';
 import ProgressBar from '../ProgressBar';
 import InterviewRecord from './InterviewRecord';
 
@@ -91,11 +92,29 @@ const SessionData = ({ analysis, interview, feedback }: SessionDataProps) => {
                   {safeAnalysis.followScore}점
                 </p>
                 <p className="flex items-center gap-[6px] font-medium text-sm text-customgray">
-                  <img src={enhanceIcon} className="select-none" />
-                  <span className="text-[#0c8800]">
-                    {Math.round(safeAnalysis.followAveragePercent * 100)}%
+                  <img
+                    src={
+                      safeAnalysis.followAveragePercent >= 0
+                        ? enhanceIcon
+                        : decreaseIcon
+                    }
+                    className="select-none"
+                  />
+                  <span
+                    className={
+                      safeAnalysis.followAveragePercent >= 0
+                        ? 'text-[#0c8800]'
+                        : 'text-[#880000]'
+                    }
+                  >
+                    {Math.round(
+                      Math.abs(safeAnalysis.followAveragePercent) * 100
+                    )}
+                    %
                   </span>{' '}
-                  평균보다 높음
+                  {safeAnalysis.followAveragePercent >= 0
+                    ? '평균보다 높음'
+                    : '평균보다 낮음'}
                 </p>
               </div>
             </div>
@@ -111,9 +130,13 @@ const SessionData = ({ analysis, interview, feedback }: SessionDataProps) => {
                     {Math.round(safeAnalysis.resultScore)}%
                   </p>
                   <p className="flex items-center gap-[6px] font-medium text-sm text-customgray whitespace-nowrap">
-                    {safeAnalysis.resultScore > 85
-                      ? '합격 유력'
-                      : '간신히 합격'}
+                    {(() => {
+                      const score = safeAnalysis.resultScore;
+                      if (score >= 76) return '월등히 합격';
+                      if (score >= 70) return '간신히 합격';
+                      if (score >= 65) return '아쉽게 불합격';
+                      return '불합격';
+                    })()}
                   </p>
                 </div>
                 <div className="flex-1">
@@ -136,11 +159,26 @@ const SessionData = ({ analysis, interview, feedback }: SessionDataProps) => {
                   {safeAnalysis.duration}분
                 </p>
                 <p className="flex items-center gap-[6px] font-medium text-sm text-customgray">
-                  <img src={enhanceIcon} className="select-none" />
-                  <span className="text-[#0c8800]">
-                    {safeAnalysis.durationAveragePercent}%
+                  <img
+                    src={
+                      safeAnalysis.durationAveragePercent >= 0
+                        ? enhanceIcon
+                        : decreaseIcon
+                    }
+                    className="select-none"
+                  />
+                  <span
+                    className={
+                      safeAnalysis.durationAveragePercent >= 0
+                        ? 'text-[#0c8800]'
+                        : 'text-[#880000]'
+                    }
+                  >
+                    {Math.abs(safeAnalysis.durationAveragePercent)}%
                   </span>{' '}
-                  평균보다 빠름
+                  {safeAnalysis.durationAveragePercent >= 0
+                    ? '평균보다 빠름'
+                    : '평균보다 느림'}
                 </p>
               </div>
             </div>
