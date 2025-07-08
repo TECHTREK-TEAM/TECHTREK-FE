@@ -1,17 +1,20 @@
 import { useEffect, useState } from 'react';
-import { useLocation, NavLink } from 'react-router-dom';
+import { useLocation, NavLink, useNavigate } from 'react-router-dom';
 import LoginModal from '../components/Homes/LoginModal';
+import { mockSessions } from '../constants/mockSessions';
 
 const menuItems = [
   { label: '홈', path: '/' },
   { label: '내 정보', path: '/mypage' },
-  { label: '면접 분석', path: '/analysis' },
 ];
 
 const Topbar = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const isHome = location.pathname === '/';
+
   const [isLoginOpen, setIsLoginOpen] = useState(false);
+  const [isScrolledPast, setIsScrolledPast] = useState(false);
 
   function openLogin() {
     setIsLoginOpen(true);
@@ -21,22 +24,26 @@ const Topbar = () => {
     setIsLoginOpen(false);
   }
 
-  const [isScrolledPast, setIsScrolledPast] = useState(false);
-
   useEffect(() => {
     if (!isHome) return;
-
     const handleScroll = () => {
       setIsScrolledPast(window.scrollY >= 100);
     };
-
     window.addEventListener('scroll', handleScroll);
     handleScroll();
-
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
   }, [isHome]);
+
+  const handleAnalysisClick = () => {
+    if (mockSessions.length === 0) {
+      navigate('/analysis'); // 안내 페이지로 이동
+    } else {
+      const first = mockSessions[0];
+      navigate(`/analysis/${first.enterpriseName}/${first.sessionInfoId}`);
+    }
+  };
 
   const bgClass = !isHome || isScrolledPast ? 'bg-primary' : 'bg-transparent';
 
@@ -62,6 +69,12 @@ const Topbar = () => {
               {label}
             </NavLink>
           ))}
+          <button
+            onClick={handleAnalysisClick}
+            className="text-white font-medium text-contentsize1"
+          >
+            면접 분석
+          </button>
         </nav>
       </div>
       <button
@@ -70,7 +83,6 @@ const Topbar = () => {
       >
         로그인
       </button>
-      {/* 로그인 모달 */}
       <LoginModal isOpen={isLoginOpen} onClose={closeLogin} />
     </header>
   );

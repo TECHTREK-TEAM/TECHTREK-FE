@@ -4,6 +4,7 @@ import Home from './pages/HomePage.tsx';
 import Analysis from './pages/AnalysisPage.tsx';
 import Interview from './pages/InterviewPage.tsx';
 import MyPage from './pages/MyPage.tsx';
+import NoSessionPage from './pages/NoSessionPage.tsx';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
@@ -14,12 +15,9 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/interview" element={<Interview />} />
         <Route path="/mypage" element={<MyPage />} />
-
-        {/* 기업명과 세션 ID를 포함한 상세 분석 페이지 */}
+        <Route path="/analysis" element={<NoSessionPage />} />
         <Route path="/analysis/:enterprise/:sessionId" element={<Analysis />} />
-
-        {/* 기존 /analysis 경로는 리다이렉트 또는 안내 페이지 */}
-        <Route path="/analysis" element={<Navigate to="/" />} />
+        <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </BrowserRouter>
   );
