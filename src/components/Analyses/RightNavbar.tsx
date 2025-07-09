@@ -50,7 +50,10 @@ const RightNavbar: React.FC<RightNavbarProps> = ({
 
   return (
     <div className="w-[360px] h-full border-l border-[#E5E5EC]">
-      <div className="h-full overflow-y-auto py-4 px-2">
+      <p className="ml-8 mt-8 font-medium text-contentsize2 text-[#505050] text-left">
+        면접 세션
+      </p>
+      <div className="h-full overflow-y-auto py-5 px-2">
         <ul className="flex flex-col items-center mx-3">
           {sessions.map((session) => {
             const isSelected = selectedSessionId === session.sessionInfoId;

@@ -1,5 +1,5 @@
-import notificationIcon from '../assets/images/notificationIcon.png';
-import notificationIcon02 from '../assets/images/notificationIcon-02.png';
+import notificationIcon from '../../assets/images/notificationIcon.png';
+import notificationIcon02 from '../../assets/images/notificationIcon-02.png';
 
 // 배치 아이콘 생성
 const generateStaggeredIcons = (rows: number, cols: number) => {
@@ -45,11 +45,11 @@ const generateStaggeredIcons = (rows: number, cols: number) => {
   return icons;
 };
 
-const NoSessionPage = () => {
+const NoSessionFound = () => {
   const backgroundIcons = generateStaggeredIcons(6, 8);
 
   return (
-    <div className="relative w-full h-screen overflow-hidden">
+    <div className="relative flex-1 h-full overflow-hidden">
       <div className="absolute inset-0 z-0 pointer-events-none">
         {backgroundIcons}
       </div>
@@ -73,4 +73,4 @@ const NoSessionPage = () => {
   );
 };
 
-export default NoSessionPage;
+export default NoSessionFound;

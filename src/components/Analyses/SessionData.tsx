@@ -30,10 +30,15 @@ interface SessionDataProps {
   analysis?: Analysis | null;
   interview: InterviewQA[];
   feedback?: Feedback | null;
+  enterpriseName: string;
 }
 
-const SessionData = ({ analysis, interview, feedback }: SessionDataProps) => {
-  // 기본값 할당
+const SessionData = ({
+  analysis,
+  interview,
+  feedback,
+  enterpriseName,
+}: SessionDataProps) => {
   const safeAnalysis: Analysis = analysis ?? {
     status: false,
     followScore: 0,
@@ -63,13 +68,11 @@ const SessionData = ({ analysis, interview, feedback }: SessionDataProps) => {
   return (
     <div className="flex-1 overflow-y-auto p-8 scrollbar-hide">
       <div className="h-fit">
-        {/* 분석 결과 지표 */}
         <p className="text-left ml-2 text-contentsize2 text-[#505050] font-semibold">
           분석 결과
         </p>
         <div className="w-full h-fit flex flex-col gap-3 mt-7">
           <div className="w-full h-[157px] flex gap-3">
-            {/* 합격예측 결과 */}
             <div className="flex flex-col flex-1 bg-white rounded-2xl p-6 gap-12">
               <p className="font-medium text-contentsize1 text-customgray text-left">
                 합격예측 결과
@@ -82,7 +85,6 @@ const SessionData = ({ analysis, interview, feedback }: SessionDataProps) => {
               </p>
             </div>
 
-            {/* 연계질문 대응력 */}
             <div className="flex flex-col flex-1 bg-white rounded-2xl p-6 gap-6">
               <p className="font-medium text-contentsize1 text-customgray text-left">
                 연계질문 대응력
@@ -119,7 +121,6 @@ const SessionData = ({ analysis, interview, feedback }: SessionDataProps) => {
               </div>
             </div>
 
-            {/* 답변 일치율 */}
             <div className="flex flex-col flex-1 bg-white rounded-2xl p-6 gap-6">
               <p className="font-medium text-contentsize1 text-customgray text-left">
                 답변 일치율
@@ -149,7 +150,6 @@ const SessionData = ({ analysis, interview, feedback }: SessionDataProps) => {
               </div>
             </div>
 
-            {/* 면접 소요시간 */}
             <div className="flex flex-col flex-1 bg-white rounded-2xl p-6 gap-6">
               <p className="font-medium text-contentsize1 text-customgray text-left">
                 면접 소요시간
@@ -184,11 +184,10 @@ const SessionData = ({ analysis, interview, feedback }: SessionDataProps) => {
             </div>
           </div>
 
-          {/* 상위 퍼센트 */}
           <div className="w-full h-[237px] p-6 bg-white flex flex-col gap-6 rounded-2xl">
             <div className="flex flex-col gap-4">
               <p className="text-contentsize1 text-customgray font-medium text-left">
-                네이버 기업에서 나는 상위 몇 %?
+                {enterpriseName} 기업에서 나는 상위 몇 %?
               </p>
               <div className="flex gap-2 items-center">
                 <p className="text-[28px] text-primary font-semibold">
@@ -216,13 +215,14 @@ const SessionData = ({ analysis, interview, feedback }: SessionDataProps) => {
           </div>
         </div>
 
-        {/* 면접 내용 */}
         <p className="text-left ml-2 mt-10 text-contentsize2 text-[#505050] font-semibold">
           면접 내용
         </p>
-        <InterviewRecord interviewData={interviewData} />
+        <InterviewRecord
+          interviewData={interviewData}
+          enterpriseName={enterpriseName}
+        />
 
-        {/* 피드백 */}
         <p className="text-left ml-2 mt-10 text-contentsize2 text-[#505050] font-semibold">
           면접 피드백
         </p>
