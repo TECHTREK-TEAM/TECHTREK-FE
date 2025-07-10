@@ -43,25 +43,28 @@ const InterviewPage = () => {
       <div className="h-[550px] 2xl:h-[700px] mx-[270px] px-[50px] bg-white rounded-[10px] 2xl:mb-[150px] 2xl:mx-[300px] flex flex-col justify-between">
         <InterviewTitle>{ENTERPRISE_NAME} 기술면접</InterviewTitle>
 
-        <div className="flex-1 overflow-y-auto px-[20px] pt-[30px] space-y-6">
-          {interviewData.map(({ questionNumber, question, answer }) => (
+        <div className="flex-1 overflow-y-auto px-[20px] pt-[30px] space-y-10 scrollbar-hide">
+          {interviewData.map(({ questionNumber, question, answer }, index) => (
             <div key={questionNumber}>
               <ChatBubble
                 type="question"
                 content={`${questionNumber}. ${question}`}
               />
               <ChatBubble type="answer" content={answer} />
+
+              {/* 마지막 질문인 경우에만 버튼 렌더링 */}
+              {index === interviewData.length - 1 && (
+                <div className="flex justify-end gap-2 mt-4">
+                  <button className="text-contentsize1 h-8 px-4 bg-white border border-gray-300 text-brandcolor rounded-md font-medium">
+                    새로운 질문
+                  </button>
+                  <button className="text-contentsize1 h-8 px-4 bg-white border border-gray-300 text-brandcolor rounded-md font-medium">
+                    연계 질문
+                  </button>
+                </div>
+              )}
             </div>
           ))}
-
-          <div className="flex justify-end gap-2">
-            <button className="text-contentsize1 h-8 px-4 bg-white border border-gray-300 text-brandcolor rounded-md font-medium">
-              새로운 질문
-            </button>
-            <button className="text-contentsize1 h-8 px-4 bg-white border border-gray-300 text-brandcolor rounded-md font-medium">
-              연계 질문
-            </button>
-          </div>
         </div>
 
         <div className="mt-4 mb-9">
