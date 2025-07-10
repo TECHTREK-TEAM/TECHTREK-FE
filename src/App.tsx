@@ -5,8 +5,7 @@ import Analysis from './pages/AnalysisPage.tsx';
 import Interview from './pages/InterviewPage.tsx';
 import MyPage from './pages/MyPage.tsx';
 import NoSessionPage from './pages/NoSessionPage.tsx';
-import 'slick-carousel/slick/slick.css';
-import 'slick-carousel/slick/slick-theme.css';
+import InterviewResultPage from './pages/InterviewResultPage.tsx';
 
 function App() {
   return (
@@ -14,6 +13,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/interview" element={<Interview />} />
+        <Route path="/interview/result" element={<InterviewResultPage />} />
         <Route path="/mypage" element={<MyPage />} />
         <Route path="/analysis" element={<NoSessionPage />} />
         <Route path="/analysis/:enterprise/:sessionId" element={<Analysis />} />
