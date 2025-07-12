@@ -10,6 +10,11 @@ import interviewTotalIcon from '../assets/icons/interviewTotalIcon.svg';
 import interviewPassIcon from '../assets/icons/interviewPassIcon.svg';
 import ProfileCard from '../components/MyPages/ProfileCard';
 
+interface Company {
+  companyName: string;
+  companyPercent: number;
+}
+
 // API 함수
 const fetchUserInfo = async () => {
   const response = await axios.get('http://localhost:8081/api/users/info');
@@ -33,6 +38,11 @@ const fetchUserInterviews = async () => {
   return response.data.data;
 };
 
+const fetchUserCompanies = async (): Promise<Company[]> => {
+  const response = await axios.get('http://localhost:8081/api/users/companies');
+  return response.data.data.companies;
+};
+
 const MyPage = () => {
   const { data: userInfo, isLoading: userInfoLoading } = useQuery({
     queryKey: ['userInfo'],
@@ -54,11 +64,10 @@ const MyPage = () => {
     queryFn: fetchUserInterviews,
   });
 
-  const companies = [
-    { companyName: '네이버', companyPercent: 50 },
-    { companyName: '카카오', companyPercent: 30 },
-    { companyName: '토스', companyPercent: 20 },
-  ];
+  const { data: companies, isLoading: companiesLoading } = useQuery<Company[]>({
+    queryKey: ['userCompanies'],
+    queryFn: fetchUserCompanies,
+  });
 
   const interviewCardsData =
     interviews?.highestScore && interviews?.recentInterview
@@ -104,24 +113,32 @@ const MyPage = () => {
                 <p className="font-semibold text-[15px]">관심기업</p>
               </div>
               <div className="w-full h-fit px-8">
-                {companies.map((item, index) => (
-                  <div
-                    key={item.companyName}
-                    className={`px-3 py-3 flex justify-between items-center ${
-                      index !== companies.length - 1
-                        ? 'border-b border-[#e9e9e9]'
-                        : ''
-                    }`}
-                  >
-                    <div className="flex gap-[15px] items-center">
-                      <div className="w-6 h-6 bg-gray-300 rounded-md" />
-                      <p className="text-[15px]">{item.companyName}</p>
+                {companiesLoading ? (
+                  <p className="text-customgray text-[15px] py-4">로딩 중...</p>
+                ) : companies && companies.length > 0 ? (
+                  companies.map((item, index) => (
+                    <div
+                      key={item.companyName}
+                      className={`px-3 py-3 flex justify-between items-center ${
+                        index !== companies.length - 1
+                          ? 'border-b border-[#e9e9e9]'
+                          : ''
+                      }`}
+                    >
+                      <div className="flex gap-[15px] items-center">
+                        <div className="w-6 h-6 bg-gray-300 rounded-md" />
+                        <p className="text-[15px]">{item.companyName}</p>
+                      </div>
+                      <div className="px-2 py-1 bg-[#EFF0FF] text-[13px] text-[#7778EF] rounded-md">
+                        {item.companyPercent}%
+                      </div>
                     </div>
-                    <div className="px-2 py-1 bg-[#EFF0FF] text-[13px] text-[#7778EF] rounded-md">
-                      {item.companyPercent}%
-                    </div>
-                  </div>
-                ))}
+                  ))
+                ) : (
+                  <p className="text-customgray text-[15px] py-4">
+                    관심 기업이 없습니다
+                  </p>
+                )}
               </div>
             </div>
 
