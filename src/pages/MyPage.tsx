@@ -10,6 +10,7 @@ import interviewTotalIcon from '../assets/icons/interviewTotalIcon.svg';
 import interviewPassIcon from '../assets/icons/interviewPassIcon.svg';
 import ProfileCard from '../components/MyPages/ProfileCard';
 
+// API 함수
 const fetchUserInfo = async () => {
   const response = await axios.get('http://localhost:8081/api/users/info');
   return response.data.data;
@@ -22,6 +23,13 @@ const fetchUserScore = async () => {
 
 const fetchUserPassInfo = async () => {
   const response = await axios.get('http://localhost:8081/api/users/pass');
+  return response.data.data;
+};
+
+const fetchUserInterviews = async () => {
+  const response = await axios.get(
+    'http://localhost:8081/api/users/interviews'
+  );
   return response.data.data;
 };
 
@@ -41,44 +49,34 @@ const MyPage = () => {
     queryFn: fetchUserPassInfo,
   });
 
+  const { data: interviews, isLoading: interviewsLoading } = useQuery({
+    queryKey: ['userInterviews'],
+    queryFn: fetchUserInterviews,
+  });
+
   const companies = [
     { companyName: '네이버', companyPercent: 50 },
     { companyName: '카카오', companyPercent: 30 },
     { companyName: '토스', companyPercent: 20 },
   ];
 
-  const interviews = [
-    {
-      highestScore: {
-        enterpriseName: '네이버',
-        resultScore: 72.0,
-        analysisGroup: 'Frontend Developer',
-      },
-      recentInterview: {
-        enterpriseName: '카카오',
-        resultScore: 55.0,
-        analysisGroup: 'Backend Developer',
-      },
-      resume: {
-        status: true,
-      },
-    },
-  ];
-
-  const interviewCardsData = [
-    {
-      title: '내가 가장 높게 점수를 받았던 면접',
-      resultScore: interviews[0].highestScore.resultScore,
-      enterpriseName: interviews[0].highestScore.enterpriseName,
-      analysisGroup: interviews[0].highestScore.analysisGroup,
-    },
-    {
-      title: '내가 가장 최근에 본 면접',
-      resultScore: interviews[0].recentInterview.resultScore,
-      enterpriseName: interviews[0].recentInterview.enterpriseName,
-      analysisGroup: interviews[0].recentInterview.analysisGroup,
-    },
-  ];
+  const interviewCardsData =
+    interviews?.highestScore && interviews?.recentInterview
+      ? [
+          {
+            title: '내가 가장 높게 점수를 받았던 면접',
+            resultScore: interviews.highestScore.resultScore,
+            enterpriseName: interviews.highestScore.enterpriseName,
+            analysisGroup: interviews.highestScore.analysisGroup,
+          },
+          {
+            title: '내가 가장 최근에 본 면접',
+            resultScore: interviews.recentInterview.resultScore,
+            enterpriseName: interviews.recentInterview.enterpriseName,
+            analysisGroup: interviews.recentInterview.analysisGroup,
+          },
+        ]
+      : [];
 
   return (
     <div className="min-h-screen max-h-[1080px] w-full flex flex-col bg-[#F1F4F6] pt-[80px]">
@@ -88,6 +86,7 @@ const MyPage = () => {
           내 정보
         </p>
         <div className="w-full max-h-[686px] h-full flex gap-5 2xl:gap-10">
+          {/* 왼쪽 영역 */}
           <div className="w-full max-w-[280px] 2xl:max-w-[328px] h-full flex flex-col justify-start gap-5">
             {!userInfoLoading && userInfo && (
               <ProfileCard
@@ -98,7 +97,7 @@ const MyPage = () => {
               />
             )}
 
-            {/* 관심기업 영역 */}
+            {/* 관심기업 */}
             <div className="bg-white w-full max-w-[328px] max-h-[200px] h-fit flex flex-col rounded-xl">
               <div className="px-5 py-3 flex items-center gap-[9px] border-b border-[#e9e9e9]">
                 <img src={interestedEnterpriseIcon} className="w-6 h-6" />
@@ -126,7 +125,7 @@ const MyPage = () => {
               </div>
             </div>
 
-            {/* 사용자 합격률 영역 */}
+            {/* 합격률 */}
             <div className="bg-white w-full max-w-[328px] max-h-[150px] h-fit flex flex-col rounded-xl">
               <div className="px-5 py-3 flex justify-between items-center border-b border-[#e9e9e9]">
                 <div className="flex gap-[9px] items-center">
@@ -146,9 +145,7 @@ const MyPage = () => {
                     <p className="text-[15px]">전체 면접 수</p>
                   </div>
                   <div className="px-2 py-1 bg-[#EFF0FF] text-[13px] text-[#7778EF] rounded-md">
-                    {isPassLoading
-                      ? '...'
-                      : `${passInfo?.interviewTotal ?? 0}회`}
+                    {passInfo?.interviewTotal ?? 0}회
                   </div>
                 </div>
                 <div className="px-3 py-3 flex justify-between items-center">
@@ -157,9 +154,7 @@ const MyPage = () => {
                     <p className="text-[15px]">합격 면접 수</p>
                   </div>
                   <div className="px-2 py-1 bg-[#EFF0FF] text-[13px] text-[#7778EF] rounded-md">
-                    {isPassLoading
-                      ? '...'
-                      : `${passInfo?.interviewPass ?? 0}회`}
+                    {passInfo?.interviewPass ?? 0}회
                   </div>
                 </div>
               </div>
@@ -168,6 +163,7 @@ const MyPage = () => {
 
           {/* 오른쪽 영역 */}
           <div className="w-full max-w-[1209px] h-full flex flex-col justify-start gap-5">
+            {/* 일치율 */}
             <div className="bg-white w-full max-w-[1209px] max-h-[276px] h-fit flex flex-col rounded-xl px-10 py-[35px]">
               <div className="w-full flex flex-col gap-16">
                 <p className="text-logosize font-semibold text-left">
@@ -194,18 +190,46 @@ const MyPage = () => {
               </div>
             </div>
 
+            {/* 면접 카드 */}
             <div className="w-full h-[379px] flex gap-3">
-              {interviewCardsData.map((card, idx) => (
-                <InterviewCard
-                  key={idx}
-                  title={card.title}
-                  resultScore={card.resultScore}
-                  enterpriseName={card.enterpriseName}
-                  analysisGroup={card.analysisGroup}
-                  name={userInfo?.name ?? ''}
-                />
-              ))}
-              <ResumeUploader />
+              {interviewsLoading ? (
+                <p>로딩 중...</p>
+              ) : interviewCardsData.length > 0 ? (
+                <>
+                  {interviewCardsData.map((card, idx) => (
+                    <div key={idx} className="flex-1 max-w-[33.333%]">
+                      <InterviewCard
+                        title={card.title}
+                        resultScore={card.resultScore}
+                        enterpriseName={card.enterpriseName}
+                        analysisGroup={card.analysisGroup}
+                        name={userInfo?.name ?? ''}
+                      />
+                    </div>
+                  ))}
+
+                  <ResumeUploader />
+                </>
+              ) : (
+                <>
+                  <div className="flex-1 max-w-[33.333%]">
+                    <div className="w-full h-full bg-white  rounded-xl flex items-center justify-center">
+                      <p className="text-customgray text-[15px]">
+                        해당하는 세션이 없습니다
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex-1 max-w-[33.333%]">
+                    <div className="w-full h-full bg-white  rounded-xl flex items-center justify-center">
+                      <p className="text-customgray text-[15px]">
+                        해당하는 세션이 없습니다
+                      </p>
+                    </div>
+                  </div>
+
+                  <ResumeUploader />
+                </>
+              )}
             </div>
           </div>
         </div>
