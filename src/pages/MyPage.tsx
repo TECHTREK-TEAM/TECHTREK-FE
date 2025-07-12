@@ -20,6 +20,11 @@ const fetchUserScore = async () => {
   return response.data.data;
 };
 
+const fetchUserPassInfo = async () => {
+  const response = await axios.get('http://localhost:8081/api/users/pass');
+  return response.data.data;
+};
+
 const MyPage = () => {
   const { data: userInfo, isLoading: userInfoLoading } = useQuery({
     queryKey: ['userInfo'],
@@ -31,9 +36,10 @@ const MyPage = () => {
     queryFn: fetchUserScore,
   });
 
-  const InterviewTotal = 50;
-  const InterviewPass = 30;
-  const InterviewPercent = (InterviewPass / InterviewTotal) * 100;
+  const { data: passInfo, isLoading: isPassLoading } = useQuery({
+    queryKey: ['userPassInfo'],
+    queryFn: fetchUserPassInfo,
+  });
 
   const companies = [
     { companyName: '네이버', companyPercent: 50 },
@@ -128,7 +134,9 @@ const MyPage = () => {
                   <p className="font-semibold text-[15px]">나의 합격률</p>
                 </div>
                 <p className="font-semibold text-[15px]">
-                  {InterviewPercent.toFixed(1)}%
+                  {isPassLoading
+                    ? '로딩 중...'
+                    : `${passInfo?.interviewPercent ?? 0}%`}
                 </p>
               </div>
               <div className="w-full h-fit px-8">
@@ -138,7 +146,9 @@ const MyPage = () => {
                     <p className="text-[15px]">전체 면접 수</p>
                   </div>
                   <div className="px-2 py-1 bg-[#EFF0FF] text-[13px] text-[#7778EF] rounded-md">
-                    {InterviewTotal}회
+                    {isPassLoading
+                      ? '...'
+                      : `${passInfo?.interviewTotal ?? 0}회`}
                   </div>
                 </div>
                 <div className="px-3 py-3 flex justify-between items-center">
@@ -147,7 +157,9 @@ const MyPage = () => {
                     <p className="text-[15px]">합격 면접 수</p>
                   </div>
                   <div className="px-2 py-1 bg-[#EFF0FF] text-[13px] text-[#7778EF] rounded-md">
-                    {InterviewPass}회
+                    {isPassLoading
+                      ? '...'
+                      : `${passInfo?.interviewPass ?? 0}회`}
                   </div>
                 </div>
               </div>
