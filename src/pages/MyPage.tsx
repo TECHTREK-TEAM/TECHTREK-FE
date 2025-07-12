@@ -15,17 +15,25 @@ const fetchUserInfo = async () => {
   return response.data.data;
 };
 
+const fetchUserScore = async () => {
+  const response = await axios.get('http://localhost:8081/api/users/score');
+  return response.data.data;
+};
+
 const MyPage = () => {
-  const { data: userInfo, isLoading } = useQuery({
+  const { data: userInfo, isLoading: userInfoLoading } = useQuery({
     queryKey: ['userInfo'],
     queryFn: fetchUserInfo,
+  });
+
+  const { data: userScore, isLoading: scoreLoading } = useQuery({
+    queryKey: ['userScore'],
+    queryFn: fetchUserScore,
   });
 
   const InterviewTotal = 50;
   const InterviewPass = 30;
   const InterviewPercent = (InterviewPass / InterviewTotal) * 100;
-  const averageResultScore = 60.6;
-  const enhancedPercent = 11.0;
 
   const companies = [
     { companyName: '네이버', companyPercent: 50 },
@@ -75,7 +83,7 @@ const MyPage = () => {
         </p>
         <div className="w-full max-h-[686px] h-full flex gap-5 2xl:gap-10">
           <div className="w-full max-w-[280px] 2xl:max-w-[328px] h-full flex flex-col justify-start gap-5">
-            {!isLoading && userInfo && (
+            {!userInfoLoading && userInfo && (
               <ProfileCard
                 name={userInfo.name}
                 group={userInfo.userGroup}
@@ -119,7 +127,9 @@ const MyPage = () => {
                   <img src={interestedEnterpriseIcon} className="w-6 h-6" />
                   <p className="font-semibold text-[15px]">나의 합격률</p>
                 </div>
-                <p className="font-semibold text-[15px]">{InterviewPercent}%</p>
+                <p className="font-semibold text-[15px]">
+                  {InterviewPercent.toFixed(1)}%
+                </p>
               </div>
               <div className="w-full h-fit px-8">
                 <div className="px-3 py-3 flex justify-between items-center border-b border-[#e9e9e9]">
@@ -152,12 +162,22 @@ const MyPage = () => {
                   답변 일치율
                 </p>
                 <div className="flex flex-col gap-5">
-                  <ProgressBar percentage={averageResultScore} />
-                  <p className="text-contentsize2 text-customgray text-left">
-                    저번달 대비{' '}
-                    <span className="text-[#119200]">{enhancedPercent}%</span>{' '}
-                    증가
-                  </p>
+                  {scoreLoading ? (
+                    <p>로딩 중...</p>
+                  ) : (
+                    <>
+                      <ProgressBar
+                        percentage={userScore?.averageResultScore ?? 0}
+                      />
+                      <p className="text-contentsize2 text-customgray text-left">
+                        저번달 대비{' '}
+                        <span className="text-[#119200]">
+                          {userScore?.enhancedPercent ?? 0}%
+                        </span>{' '}
+                        증가
+                      </p>
+                    </>
+                  )}
                 </div>
               </div>
             </div>
