@@ -100,8 +100,8 @@ const MyPage = () => {
             {!userInfoLoading && userInfo && (
               <ProfileCard
                 name={userInfo.name}
-                group={userInfo.userGroup}
-                seniority={userInfo.seniority}
+                userGroup={userInfo.seniority}
+                seniority={userInfo.userGroup}
                 stacks={userInfo.stacks}
               />
             )}

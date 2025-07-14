@@ -1,11 +1,11 @@
 import { useState, useRef, useEffect } from 'react';
+import axios from 'axios';
+
 import editIcon from '../../assets/icons/editIcon.svg';
 import groupIcon from '../../assets/icons/groupIcon.svg';
 import seniorityIcon from '../../assets/icons/seniorityIcon.svg';
 import closeIcon from '../../assets/icons/closeIcon.svg';
-
 import reactIcon from '../../assets/stacks/reactIcon.svg';
-// 추후 아이콘 확장 시 여기에 import 추가
 
 interface Stack {
   stackName: string;
@@ -13,7 +13,7 @@ interface Stack {
 
 interface ProfileCardProps {
   name: string;
-  group: string;
+  userGroup: string;
   seniority: string;
   stacks?: Stack[];
 }
@@ -31,18 +31,18 @@ const stackList = ['React', 'Vue', 'Angular', 'Spring', 'Django', 'Node.js'];
 
 const stackIconMap: Record<string, string> = {
   react: reactIcon,
-  // vue: vueIcon, ...
+  // vue: vueIcon 등 추가 가능
 };
 
 const ProfileCard = ({
   name: initialName,
-  group: initialGroup,
+  userGroup: initialUserGroup,
   seniority: initialSeniority,
   stacks = [],
 }: ProfileCardProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const [name, setName] = useState(initialName);
-  const [group, setGroup] = useState(initialGroup);
+  const [userGroup, setUserGroup] = useState(initialUserGroup);
   const [seniority, setSeniority] = useState(initialSeniority);
   const [stackItems, setStackItems] = useState<string[]>(
     stacks.map((s) => s.stackName)
@@ -87,9 +87,22 @@ const ProfileCard = ({
     setStackItems(stackItems.filter((s) => s !== stack));
   };
 
+  const handleSave = async () => {
+    try {
+      await axios.patch('http://localhost:8081/api/users/info', {
+        name,
+        userGroup,
+        seniority,
+        stacks: stackItems.map((s) => ({ stackName: s })),
+      });
+      setIsEditing(false);
+    } catch (error) {
+      console.error('프로필 업데이트 실패:', error);
+    }
+  };
+
   return (
     <div className="bg-white w-full max-w-[328px] flex flex-col rounded-xl relative">
-      {/* 이름 */}
       <div className="w-full pl-10 pr-5 flex justify-between items-center border-b border-[#e9e9e9] py-5">
         {isEditing ? (
           <input
@@ -102,7 +115,7 @@ const ProfileCard = ({
         )}
         <button
           className="w-fit h-fit text-[15px] font-medium text-primary"
-          onClick={() => setIsEditing((prev) => !prev)}
+          onClick={isEditing ? handleSave : () => setIsEditing(true)}
         >
           {isEditing ? (
             <span className="text-blue-500">save</span>
@@ -113,7 +126,7 @@ const ProfileCard = ({
       </div>
 
       <div className="w-full px-8 pb-6">
-        {/* 직군 */}
+        {/* 직군 선택 */}
         <div className="px-3 py-3 flex gap-[15px] items-center border-b border-[#e9e9e9] relative">
           <img src={groupIcon} className="w-6 h-6 select-none" />
           {isEditing ? (
@@ -122,34 +135,34 @@ const ProfileCard = ({
                 className="text-[15px] text-left border border-gray-300 px-2 py-1 rounded-md w-full"
                 onClick={() => setShowGroupModal(true)}
               >
-                {group}
+                {userGroup}
               </button>
               {showGroupModal && (
                 <div
                   ref={modalRef}
                   className="absolute top-full mt-2 left-0 w-[140px] bg-white shadow-md border rounded-md z-10"
                 >
-                  {jobGroups.map((g) => (
+                  {jobGroups.map((group) => (
                     <div
-                      key={g}
+                      key={group}
                       onClick={() => {
-                        setGroup(g);
+                        setUserGroup(group);
                         setShowGroupModal(false);
                       }}
                       className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm"
                     >
-                      {g}
+                      {group}
                     </div>
                   ))}
                 </div>
               )}
             </>
           ) : (
-            <p className="text-[15px]">{group}</p>
+            <p className="text-[15px]">{userGroup}</p>
           )}
         </div>
 
-        {/* 연차 */}
+        {/* 연차 선택 */}
         <div className="px-3 py-3 flex gap-[15px] items-center border-b border-[#e9e9e9] relative">
           <img src={seniorityIcon} className="w-[22px] h-[23px] select-none" />
           {isEditing ? (
@@ -165,16 +178,16 @@ const ProfileCard = ({
                   ref={modalRef}
                   className="absolute top-full mt-2 left-0 w-[180px] bg-white shadow-md border rounded-md z-10"
                 >
-                  {seniorityLevels.map((s) => (
+                  {seniorityLevels.map((level) => (
                     <div
-                      key={s}
+                      key={level}
                       onClick={() => {
-                        setSeniority(s);
+                        setSeniority(level);
                         setShowSeniorityModal(false);
                       }}
                       className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm"
                     >
-                      {s}
+                      {level}
                     </div>
                   ))}
                 </div>
@@ -185,7 +198,7 @@ const ProfileCard = ({
           )}
         </div>
 
-        {/* 기술 스택 */}
+        {/* 스택 선택 */}
         <div className="pt-7 w-full flex justify-center gap-5 flex-wrap relative">
           <div className="flex gap-5 justify-center">
             {stackItems.map((stack) => {
