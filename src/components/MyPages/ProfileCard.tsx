@@ -55,6 +55,23 @@ const ProfileCard = ({
   const addButtonRef = useRef<HTMLButtonElement>(null);
   const modalRef = useRef<HTMLDivElement>(null);
 
+  // 최신 데이터가 바뀔 때 내부 상태도 업데이트되도록 useEffect 추가
+  useEffect(() => {
+    setName(initialName);
+  }, [initialName]);
+
+  useEffect(() => {
+    setUserGroup(initialUserGroup);
+  }, [initialUserGroup]);
+
+  useEffect(() => {
+    setSeniority(initialSeniority);
+  }, [initialSeniority]);
+
+  useEffect(() => {
+    setStackItems(stacks.map((s) => s.stackName));
+  }, [stacks]);
+
   const closeAllModals = () => {
     setShowGroupModal(false);
     setShowSeniorityModal(false);
@@ -98,6 +115,7 @@ const ProfileCard = ({
       setIsEditing(false);
     } catch (error) {
       console.error('프로필 업데이트 실패:', error);
+      alert('프로필 저장에 실패했습니다.');
     }
   };
 

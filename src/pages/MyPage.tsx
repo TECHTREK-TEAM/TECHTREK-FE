@@ -44,7 +44,11 @@ const fetchUserCompanies = async (): Promise<Company[]> => {
 };
 
 const MyPage = () => {
-  const { data: userInfo, isLoading: userInfoLoading } = useQuery({
+  const {
+    data: userInfo,
+    isLoading: userInfoLoading,
+    refetch: refetchUserInfo,
+  } = useQuery({
     queryKey: ['userInfo'],
     queryFn: fetchUserInfo,
   });
@@ -86,6 +90,12 @@ const MyPage = () => {
           },
         ]
       : [];
+
+  // 업로드 성공 콜백
+  const handleResumeUploadSuccess = (data: any) => {
+    // 사용자 정보 다시 불러오기
+    refetchUserInfo();
+  };
 
   return (
     <div className="min-h-screen max-h-[1080px] w-full flex flex-col bg-[#F1F4F6] pt-[80px]">
@@ -225,7 +235,7 @@ const MyPage = () => {
                     </div>
                   ))}
 
-                  <ResumeUploader />
+                  <ResumeUploader onUploadSuccess={handleResumeUploadSuccess} />
                 </>
               ) : (
                 <>
@@ -244,7 +254,7 @@ const MyPage = () => {
                     </div>
                   </div>
 
-                  <ResumeUploader />
+                  <ResumeUploader onUploadSuccess={handleResumeUploadSuccess} />
                 </>
               )}
             </div>
