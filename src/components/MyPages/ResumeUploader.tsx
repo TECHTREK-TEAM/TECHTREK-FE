@@ -1,35 +1,93 @@
 import { useRef, useState } from 'react';
+import axios from 'axios';
 import resumeUploadIcon from '../../assets/icons/resumeUploadIcon.svg';
 
-const ResumeUploader = () => {
-  const inputRef = useRef<HTMLInputElement | null>(null);
-  const [fileName, setFileName] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
+interface UploadResponseData {
+  group: string;
+  seniority: string;
+  resume: string;
+  stacks: { stackName: string }[];
+}
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+const ResumeUploader = ({
+  onUploadSuccess,
+}: {
+  onUploadSuccess?: (data: UploadResponseData | null) => void;
+}) => {
+  const inputRef = useRef<HTMLInputElement | null>(null);
+  const [uploadedResumeUrl, setUploadedResumeUrl] = useState<string | null>(
+    null
+  );
+  const [displayFileName, setDisplayFileName] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [isUploading, setIsUploading] = useState<boolean>(false);
+
+  const uploadResume = async (file: File): Promise<UploadResponseData> => {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      const response = await axios.post(
+        'http://localhost:8081/api/users/resume',
+        formData,
+        {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        }
+      );
+      return response.data.data;
+    } catch (error: any) {
+      console.error('이력서 업로드 실패:', error);
+      // axios error 메시지 좀 더 구체적으로 보여주기
+      if (error.response?.data?.message) {
+        throw new Error(error.response.data.message);
+      }
+      throw new Error('업로드 실패');
+    }
+  };
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
     if (file.type !== 'application/pdf') {
       setError('PDF 파일만 첨부 가능합니다.');
-      setFileName(null);
+      setDisplayFileName(null);
+      setUploadedResumeUrl(null);
+      onUploadSuccess?.(null);
       return;
     }
 
     setError(null);
-    setFileName(file.name);
+    setIsUploading(true);
+
+    try {
+      const data = await uploadResume(file);
+      setUploadedResumeUrl(data.resume ?? null);
+      setDisplayFileName(file.name);
+      onUploadSuccess?.(data);
+    } catch (err: any) {
+      setError(err.message || '업로드 중 오류가 발생했습니다.');
+      setDisplayFileName(null);
+      setUploadedResumeUrl(null);
+      onUploadSuccess?.(null);
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   const handleUploadClick = () => {
+    if (isUploading) return; // 업로드 중엔 클릭 무시
     inputRef.current?.click();
   };
 
   const handleRemoveFile = () => {
-    setFileName(null);
+    setDisplayFileName(null);
+    setUploadedResumeUrl(null);
     setError(null);
     if (inputRef.current) {
       inputRef.current.value = '';
     }
+    onUploadSuccess?.(null); // 부모에도 초기화 알려주기
   };
 
   return (
@@ -40,14 +98,19 @@ const ResumeUploader = () => {
         className="hidden"
         accept="application/pdf"
         onChange={handleFileChange}
+        disabled={isUploading}
       />
 
       {/* 업로드 영역 */}
       <div
-        className="w-full h-[155px] p-4 flex justify-center items-center border border-dashed border-[#A6A6A6] rounded-xl cursor-pointer"
+        className={`w-full h-[155px] p-4 flex justify-center items-center border border-dashed rounded-xl cursor-pointer ${
+          error ? 'border-red-500' : 'border-[#A6A6A6]'
+        }`}
         onClick={handleUploadClick}
       >
-        {!fileName ? (
+        {isUploading ? (
+          <p className="text-customgray text-[14px]">업로드 중...</p>
+        ) : !displayFileName ? (
           <div className="flex flex-col gap-[10px] items-center pointer-events-none">
             <img
               src={resumeUploadIcon}
@@ -62,7 +125,7 @@ const ResumeUploader = () => {
           <div className="flex flex-col items-center gap-2">
             {/* 파일명 */}
             <p className="text-[14px] font-medium text-primary break-all text-center">
-              {fileName}
+              {displayFileName}
             </p>
 
             {/* 삭제 버튼 */}
@@ -72,6 +135,7 @@ const ResumeUploader = () => {
                 e.stopPropagation(); // 업로드 클릭 막기
                 handleRemoveFile();
               }}
+              disabled={isUploading}
             >
               재업로드하기
             </button>
@@ -81,7 +145,7 @@ const ResumeUploader = () => {
 
       <div className="w-full h-fit flex flex-col gap-3">
         {/* 업로드됨 라벨 */}
-        {fileName && (
+        {displayFileName && !isUploading && (
           <p
             className="px-2 py-1 font-medium text-[12px] rounded-full w-fit h-fit text-[#007FBE]"
             style={{ backgroundColor: '#E6F0FB' }}
@@ -91,12 +155,14 @@ const ResumeUploader = () => {
         )}
 
         {/* 파일명 설명 텍스트 */}
-        {fileName && (
+        {displayFileName && !isUploading && (
           <div className="w-full flex flex-col gap-1 text-left">
             <p className="text-customgray font-medium text-contentsize1">
               업로드한 이력서
               <br />
-              <span className="text-primary break-words">{fileName}</span>
+              <span className="text-primary break-words">
+                {displayFileName}
+              </span>
             </p>
           </div>
         )}
