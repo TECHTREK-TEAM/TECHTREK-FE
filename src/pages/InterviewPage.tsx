@@ -25,6 +25,7 @@ const InterviewPage = () => {
 
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [previousId, setPreviousId] = useState<string | null>(null);
+  const [isTailQuestion, setIsTailQuestion] = useState<boolean>(false); // 꼬리의 꼬리인지 여부
 
   const [interviewData, setInterviewData] = useState<
     { questionNumber: string; question: string; answer?: string }[]
@@ -95,8 +96,54 @@ const InterviewPage = () => {
       ]);
 
       setPreviousId(data.fieldId);
+      setIsTailQuestion(false); // 새로운 질문은 꼬리질문 아님
     } catch {
       alert('새로운 질문 요청에 실패했습니다.');
+    }
+  };
+
+  // 연계질문(꼬리질문) 요청 API
+  const fetchTailQuestion = async () => {
+    if (!sessionId || !previousId) {
+      alert('세션 정보가 올바르지 않습니다.');
+      return;
+    }
+
+    try {
+      // 연계질문 요청 payload 구성
+      const requestBody: {
+        sessionId: string;
+        parentId: string;
+        previousId?: string;
+      } = {
+        sessionId,
+        parentId: previousId, // 이전 질문 ID를 부모로 지정
+      };
+
+      // 꼬리의 꼬리질문일 경우 previousId도 전달
+      if (isTailQuestion) {
+        requestBody.previousId = previousId;
+      }
+
+      const res = await axios.post(
+        'http://localhost:8081/api/interview/questions/tail',
+        requestBody
+      );
+      const data = res.data.data;
+
+      setInterviewData((prev) => [
+        ...prev,
+        {
+          // 질문 번호는 parentQuestionNumber-tailQuestionNumber로 구성
+          questionNumber: `${data.parentQuestionNumber}-${data.tailQuestionNumber}`,
+          question: data.question,
+        },
+      ]);
+
+      setPreviousId(data.fieldId); // 다음 꼬리질문 요청 위해 fieldId 저장
+      setIsTailQuestion(true); // 다음 요청부터 previousId 포함
+    } catch {
+      alert('연계 질문 요청에 실패했습니다.');
     }
   };
 
@@ -188,7 +235,10 @@ const InterviewPage = () => {
                   >
                     새로운 질문
                   </button>
-                  <button className="text-contentsize1 h-8 px-4 bg-white border border-gray-300 text-brandcolor rounded-md font-medium">
+                  <button
+                    className="text-contentsize1 h-8 px-4 bg-white border border-gray-300 text-brandcolor rounded-md font-medium"
+                    onClick={fetchTailQuestion}
+                  >
                     연계 질문
                   </button>
                 </div>
