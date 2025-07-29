@@ -4,9 +4,15 @@ interface AnswerInputProps {
   value: string;
   onChange: (value: string) => void;
   placeholder?: string;
+  onSubmit: () => void;
 }
 
-function AnswerInput({ value, onChange, placeholder }: AnswerInputProps) {
+function AnswerInput({
+  value,
+  onChange,
+  placeholder,
+  onSubmit,
+}: AnswerInputProps) {
   return (
     <div className="relative w-full h-[150px] border border-gray-300 rounded-lg px-4 py-2 bg-white">
       <textarea
@@ -18,10 +24,17 @@ function AnswerInput({ value, onChange, placeholder }: AnswerInputProps) {
 
       {/* 버튼 그룹 */}
       <div className="absolute bottom-2 right-2 flex gap-2">
-        <button className="text-contentsize1 h-8 px-3 bg-white border-[1px] text-brandcolor font-medium border-gray-300 rounded-md">
+        <button
+          className="text-contentsize1 h-8 px-3 bg-white border-[1px] text-brandcolor font-medium border-gray-300 rounded-md"
+
+          // 분석 기능이 필요할 경우 여기에 따로 콜백을 추가하면 됨
+        >
           분석하기
         </button>
-        <button className="text-contentsize1 h-8 px-3 bg-brandcolor text-white rounded-md">
+        <button
+          className="text-contentsize1 h-8 px-3 bg-brandcolor text-white rounded-md"
+          onClick={onSubmit} // 여기서 부모로 제출 알림
+        >
           <img
             src={upArrowIcon}
             alt="입력 아이콘"

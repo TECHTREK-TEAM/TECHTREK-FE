@@ -22,12 +22,10 @@ const ENTERPRISE_MAP: Record<string, string> = {
 const InterviewPage = () => {
   const [answer, setAnswer] = useState('');
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [previousId, setPreviousId] = useState<string | null>(null);
 
-  // 질문 리스트 상태
   const [interviewData, setInterviewData] = useState<
     { questionNumber: string; question: string; answer?: string }[]
   >([]);
@@ -39,7 +37,6 @@ const InterviewPage = () => {
   useEffect(() => {
     const startInterview = async () => {
       setIsLoading(true);
-      setError(null);
       try {
         const res = await axios.post(
           'http://localhost:8081/api/interview/start',
@@ -49,7 +46,6 @@ const InterviewPage = () => {
         );
         const data = res.data.data;
 
-        // 세션ID, 이전 질문ID(fieldId), 첫 질문 세팅
         setSessionId(data.sessionId);
         setPreviousId(data.fieldId);
 
@@ -60,7 +56,7 @@ const InterviewPage = () => {
           },
         ]);
       } catch {
-        setError('면접 시작에 실패했습니다.');
+        alert('면접 시작에 실패했습니다.');
       } finally {
         setIsLoading(false);
       }
@@ -69,14 +65,14 @@ const InterviewPage = () => {
     if (displayName !== '알 수 없음 기업') {
       startInterview();
     } else {
-      setError('기업명이 올바르지 않습니다.');
+      alert('기업명이 올바르지 않습니다.');
       setIsLoading(false);
     }
   }, [displayName]);
 
   const fetchNewQuestion = async () => {
     if (!sessionId || !previousId) {
-      setError('세션 정보가 올바르지 않습니다.');
+      alert('세션 정보가 올바르지 않습니다.');
       return;
     }
 
@@ -90,7 +86,6 @@ const InterviewPage = () => {
       );
       const data = res.data.data;
 
-      // 새 질문을 질문 리스트에 추가
       setInterviewData((prev) => [
         ...prev,
         {
@@ -99,10 +94,55 @@ const InterviewPage = () => {
         },
       ]);
 
-      // 이전 질문 ID 갱신
       setPreviousId(data.fieldId);
     } catch {
-      setError('새로운 질문 요청에 실패했습니다.');
+      alert('새로운 질문 요청에 실패했습니다.');
+    }
+  };
+
+  const handleSubmitAnswer = async () => {
+    if (!sessionId || !previousId) {
+      alert('세션 정보가 올바르지 않습니다.');
+      return;
+    }
+
+    if (answer.trim().length === 0) {
+      alert('답변을 입력해주세요.');
+      return;
+    }
+
+    if (answer.length > 300) {
+      alert('답변은 300자 이내로 작성해주세요.');
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      const res = await axios.post(
+        'http://localhost:8081/api/interview/answers',
+        {
+          sessionId,
+          fieldId: previousId,
+          type: 'new',
+          answer: answer.trim(),
+        }
+      );
+
+      if (res.data.success) {
+        setInterviewData((prev) =>
+          prev.map((item, idx) =>
+            idx === prev.length - 1 ? { ...item, answer: answer.trim() } : item
+          )
+        );
+        setAnswer('');
+      } else {
+        alert('답변 등록에 실패했습니다.');
+      }
+    } catch {
+      alert('답변 등록에 실패했습니다.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -114,15 +154,6 @@ const InterviewPage = () => {
     );
   }
 
-  if (error) {
-    return (
-      <div className="h-screen flex items-center justify-center text-xl text-red-600">
-        {error}
-      </div>
-    );
-  }
-
-  // TODO: 남은 질문 수 계산 로직 적용 필요 (현재 고정값)
   const REMAINING_QUESTIONS = 9;
 
   return (
@@ -140,14 +171,16 @@ const InterviewPage = () => {
       <div className="h-[550px] 2xl:h-[700px] mx-[270px] px-[50px] bg-white rounded-[10px] 2xl:mb-[150px] 2xl:mx-[300px] flex flex-col justify-between">
         <InterviewTitle>{displayName} 기술면접</InterviewTitle>
         <div className="flex-1 overflow-y-auto px-[20px] pt-[30px] space-y-10 scrollbar-hide">
-          {interviewData.map(({ questionNumber, question }, index) => (
+          {interviewData.map(({ questionNumber, question, answer }, index) => (
             <div key={questionNumber}>
               <ChatBubble
                 type="question"
                 content={`${questionNumber}. ${question}`}
               />
-              {/* 답변은 필요시 추가 가능 */}
-              {index === interviewData.length - 1 && (
+              {answer && <ChatBubble type="answer" content={answer} />}
+
+              {/* 마지막 질문이며 답변이 있을 때만 버튼 노출 */}
+              {index === interviewData.length - 1 && answer && (
                 <div className="flex justify-end gap-2 mt-4">
                   <button
                     className="text-contentsize1 h-8 px-4 bg-white border border-gray-300 text-brandcolor rounded-md font-medium"
@@ -165,7 +198,11 @@ const InterviewPage = () => {
         </div>
 
         <div className="mt-4 mb-9">
-          <AnswerInput value={answer} onChange={setAnswer} />
+          <AnswerInput
+            value={answer}
+            onChange={setAnswer}
+            onSubmit={handleSubmitAnswer}
+          />
         </div>
       </div>
     </div>
