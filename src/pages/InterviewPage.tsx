@@ -25,7 +25,8 @@ const InterviewPage = () => {
 
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [previousId, setPreviousId] = useState<string | null>(null);
-  const [isTailQuestion, setIsTailQuestion] = useState<boolean>(false); // 꼬리의 꼬리인지 여부
+  const [parentId, setParentId] = useState<string | null>(null); // 꼬리 질문의 부모 필드ID 저장
+  const [isTailQuestion, setIsTailQuestion] = useState<boolean>(false); // 꼬리 질문 모드 여부
 
   const [interviewData, setInterviewData] = useState<
     { questionNumber: string; question: string; answer?: string }[]
@@ -49,6 +50,10 @@ const InterviewPage = () => {
 
         setSessionId(data.sessionId);
         setPreviousId(data.fieldId);
+
+        // 꼬리 질문 시작 전이므로 parentId는 null 초기화
+        setParentId(null);
+        setIsTailQuestion(false);
 
         setInterviewData([
           {
@@ -96,13 +101,14 @@ const InterviewPage = () => {
       ]);
 
       setPreviousId(data.fieldId);
-      setIsTailQuestion(false); // 새로운 질문은 꼬리질문 아님
+      setParentId(null); // 새로운 질문이므로 꼬리 질문 초기화
+      setIsTailQuestion(false);
     } catch {
       alert('새로운 질문 요청에 실패했습니다.');
     }
   };
 
-  // 연계질문(꼬리질문) 요청 API
+  // 연계질문 요청 API
   const fetchTailQuestion = async () => {
     if (!sessionId || !previousId) {
       alert('세션 정보가 올바르지 않습니다.');
@@ -110,19 +116,20 @@ const InterviewPage = () => {
     }
 
     try {
-      // 연계질문 요청 payload 구성
+      // 최초 꼬리질문 요청 시 parentId가 null이면 previousId를 부모로 설정
+      // 이후 꼬리질문 요청 시 parentId는 고정 유지
       const requestBody: {
         sessionId: string;
         parentId: string;
         previousId?: string;
       } = {
         sessionId,
-        parentId: previousId, // 이전 질문 ID를 부모로 지정
+        parentId: parentId ?? previousId,
       };
 
-      // 꼬리의 꼬리질문일 경우 previousId도 전달
-      if (isTailQuestion) {
-        requestBody.previousId = previousId;
+      if (parentId) {
+        // 꼬리의 꼬리질문일 경우 previousId 포함
+        requestBody.previousId = previousId!;
       }
 
       const res = await axios.post(
@@ -134,14 +141,14 @@ const InterviewPage = () => {
       setInterviewData((prev) => [
         ...prev,
         {
-          // 질문 번호는 parentQuestionNumber-tailQuestionNumber로 구성
           questionNumber: `${data.parentQuestionNumber}-${data.tailQuestionNumber}`,
           question: data.question,
         },
       ]);
 
-      setPreviousId(data.fieldId); // 다음 꼬리질문 요청 위해 fieldId 저장
-      setIsTailQuestion(true); // 다음 요청부터 previousId 포함
+      setPreviousId(data.fieldId); // 꼬리질문 마지막 fieldId 갱신
+      setParentId(requestBody.parentId); // 부모 fieldId 고정
+      setIsTailQuestion(true);
     } catch {
       alert('연계 질문 요청에 실패했습니다.');
     }
@@ -171,7 +178,7 @@ const InterviewPage = () => {
         {
           sessionId,
           fieldId: previousId,
-          type: 'new',
+          type: isTailQuestion ? 'tail' : 'new',
           answer: answer.trim(),
         }
       );
