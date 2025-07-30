@@ -22,12 +22,10 @@ const ENTERPRISE_MAP: Record<string, string> = {
 const InterviewPage = () => {
   const [answer, setAnswer] = useState('');
   const [isLoading, setIsLoading] = useState(true);
-
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [previousId, setPreviousId] = useState<string | null>(null);
-  const [parentId, setParentId] = useState<string | null>(null); // 꼬리 질문의 부모 필드ID 저장
-  const [isTailQuestion, setIsTailQuestion] = useState<boolean>(false); // 꼬리 질문 모드 여부
-
+  const [parentId, setParentId] = useState<string | null>(null);
+  const [isTailQuestion, setIsTailQuestion] = useState(false);
   const [interviewData, setInterviewData] = useState<
     { questionNumber: string; question: string; answer?: string }[]
   >([]);
@@ -40,6 +38,8 @@ const InterviewPage = () => {
     const startInterview = async () => {
       setIsLoading(true);
       try {
+        // 면접 시작 API
+        // 기업명을 전달하여 면접 세션을 생성하고 첫 질문을 받아옴
         const res = await axios.post(
           'http://localhost:8081/api/interview/start',
           {
@@ -48,10 +48,9 @@ const InterviewPage = () => {
         );
         const data = res.data.data;
 
+        // 응답: sessionId, fieldId(첫 질문), question, questionNumber
         setSessionId(data.sessionId);
         setPreviousId(data.fieldId);
-
-        // 꼬리 질문 시작 전이므로 parentId는 null 초기화
         setParentId(null);
         setIsTailQuestion(false);
 
@@ -83,15 +82,21 @@ const InterviewPage = () => {
     }
 
     try {
+      // 새로운 질문 요청 API
+      // 직전 질문의 fieldId를 바탕으로 새로운 질문을 요청
+      const correctedPreviousId =
+        isTailQuestion && parentId ? parentId : previousId;
+
       const res = await axios.post(
         'http://localhost:8081/api/interview/questions/new',
         {
           sessionId,
-          previousId,
+          previousId: correctedPreviousId,
         }
       );
       const data = res.data.data;
 
+      // 응답: 새 질문 내용, fieldId, questionNumber
       setInterviewData((prev) => [
         ...prev,
         {
@@ -101,43 +106,40 @@ const InterviewPage = () => {
       ]);
 
       setPreviousId(data.fieldId);
-      setParentId(null); // 새로운 질문이므로 꼬리 질문 초기화
+      setParentId(null);
       setIsTailQuestion(false);
     } catch {
       alert('새로운 질문 요청에 실패했습니다.');
     }
   };
 
-  // 연계질문 요청 API
   const fetchTailQuestion = async () => {
     if (!sessionId || !previousId) {
       alert('세션 정보가 올바르지 않습니다.');
       return;
     }
 
+    // 꼬리 질문 요청 API
+    // parentId 기준으로 꼬리 질문을 요청 (이전 질문과의 연관성 유지)
+    const requestBody: {
+      sessionId: string;
+      parentId: string;
+      previousId?: string;
+    } = {
+      sessionId,
+      parentId: parentId ?? previousId,
+    };
+
+    if (parentId) requestBody.previousId = previousId!;
+
     try {
-      // 최초 꼬리질문 요청 시 parentId가 null이면 previousId를 부모로 설정
-      // 이후 꼬리질문 요청 시 parentId는 고정 유지
-      const requestBody: {
-        sessionId: string;
-        parentId: string;
-        previousId?: string;
-      } = {
-        sessionId,
-        parentId: parentId ?? previousId,
-      };
-
-      if (parentId) {
-        // 꼬리의 꼬리질문일 경우 previousId 포함
-        requestBody.previousId = previousId!;
-      }
-
       const res = await axios.post(
         'http://localhost:8081/api/interview/questions/tail',
         requestBody
       );
       const data = res.data.data;
 
+      // 응답: 꼬리 질문, fieldId, parentQuestionNumber, tailQuestionNumber
       setInterviewData((prev) => [
         ...prev,
         {
@@ -146,8 +148,8 @@ const InterviewPage = () => {
         },
       ]);
 
-      setPreviousId(data.fieldId); // 꼬리질문 마지막 fieldId 갱신
-      setParentId(requestBody.parentId); // 부모 fieldId 고정
+      setPreviousId(data.fieldId);
+      setParentId(requestBody.parentId);
       setIsTailQuestion(true);
     } catch {
       alert('연계 질문 요청에 실패했습니다.');
@@ -173,6 +175,8 @@ const InterviewPage = () => {
     setIsLoading(true);
 
     try {
+      // 답변 제출 API
+      // 현재 질문의 fieldId와 세션 정보를 바탕으로 답변을 제출
       const res = await axios.post(
         'http://localhost:8081/api/interview/answers',
         {
@@ -183,6 +187,7 @@ const InterviewPage = () => {
         }
       );
 
+      // 응답 성공 시, 마지막 질문에 답변 저장
       if (res.data.success) {
         setInterviewData((prev) =>
           prev.map((item, idx) =>
