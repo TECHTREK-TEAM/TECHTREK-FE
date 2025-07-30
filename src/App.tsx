@@ -12,11 +12,12 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/interview/:enterprise" element={<Interview />} />
         <Route
           path="/interview/:enterprise/result"
           element={<InterviewResultPage />}
         />
+        <Route path="/interview/:enterprise" element={<Interview />} />
+
         <Route path="/mypage" element={<MyPage />} />
         <Route path="/analysis" element={<NoSessionPage />} />
         <Route path="/analysis/:enterprise/:sessionId" element={<Analysis />} />

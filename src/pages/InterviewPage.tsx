@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 import Topbar from '../components/Topbar';
@@ -29,8 +29,10 @@ const InterviewPage = () => {
   const [interviewData, setInterviewData] = useState<
     { questionNumber: string; question: string; answer?: string }[]
   >([]);
+  const [startTime, setStartTime] = useState<number | null>(null); // 분석용 시작 시간
 
   const { enterprise } = useParams<{ enterprise?: string }>();
+  const navigate = useNavigate();
   const slug = enterprise?.toLowerCase() ?? '';
   const displayName = ENTERPRISE_MAP[slug] || '알 수 없음 기업';
 
@@ -53,6 +55,7 @@ const InterviewPage = () => {
         setPreviousId(data.fieldId);
         setParentId(null);
         setIsTailQuestion(false);
+        setStartTime(Date.now()); // 시작 시간 기록
 
         setInterviewData([
           {
@@ -205,6 +208,39 @@ const InterviewPage = () => {
     }
   };
 
+  // 분석 요청 핸들러 함수 추가
+  const handleAnalyze = async () => {
+    if (!sessionId || interviewData.length === 0 || !startTime) {
+      alert('분석을 위한 정보가 부족합니다.');
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      const duration = Math.floor((Date.now() - startTime) / 1000 / 60);
+
+      const res = await axios.post('http://localhost:8081/api/analyses', {
+        sessionId,
+        duration,
+      });
+
+      console.log('분석 응답 데이터:', res.data); // ✅ 여기 추가
+
+      if (res.data.success) {
+        navigate(`/interview/${slug}/result`, {
+          state: { result: res.data.data },
+        });
+      } else {
+        alert('분석에 실패했습니다.');
+      }
+    } catch {
+      alert('분석 요청에 실패했습니다.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="h-screen flex items-center justify-center text-xl">
@@ -264,6 +300,7 @@ const InterviewPage = () => {
             value={answer}
             onChange={setAnswer}
             onSubmit={handleSubmitAnswer}
+            onAnalyze={handleAnalyze} // 분석 버튼 핸들러 추가
           />
         </div>
       </div>

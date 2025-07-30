@@ -5,6 +5,7 @@ interface AnswerInputProps {
   onChange: (value: string) => void;
   placeholder?: string;
   onSubmit: () => void;
+  onAnalyze?: () => void; // 분석 버튼 클릭 시 실행할 콜백
 }
 
 function AnswerInput({
@@ -12,6 +13,7 @@ function AnswerInput({
   onChange,
   placeholder,
   onSubmit,
+  onAnalyze, // 분석 콜백 추가
 }: AnswerInputProps) {
   return (
     <div className="relative w-full h-[150px] border border-gray-300 rounded-lg px-4 py-2 bg-white">
@@ -26,8 +28,7 @@ function AnswerInput({
       <div className="absolute bottom-2 right-2 flex gap-2">
         <button
           className="text-contentsize1 h-8 px-3 bg-white border-[1px] text-brandcolor font-medium border-gray-300 rounded-md"
-
-          // 분석 기능이 필요할 경우 여기에 따로 콜백을 추가하면 됨
+          onClick={onAnalyze} // 분석 버튼 누르면 실행됨
         >
           분석하기
         </button>
