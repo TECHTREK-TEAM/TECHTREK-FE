@@ -215,11 +215,18 @@ const InterviewPage = () => {
       return;
     }
 
+    const elapsedMs = Date.now() - startTime;
+    const duration = Math.floor(elapsedMs / 1000 / 60); // 분 단위
+
+    // 최소 1분 이상 진행해야 분석 가능
+    if (elapsedMs < 60 * 1000) {
+      alert('분석을 위해서는 최소 1분 이상 면접을 진행해야 합니다.');
+      return;
+    }
+
     setIsLoading(true);
 
     try {
-      const duration = Math.floor((Date.now() - startTime) / 1000 / 60);
-
       const res = await axios.post('http://localhost:8081/api/analyses', {
         sessionId,
         duration,
