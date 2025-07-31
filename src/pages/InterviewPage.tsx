@@ -225,7 +225,7 @@ const InterviewPage = () => {
         duration,
       });
 
-      console.log('분석 응답 데이터:', res.data); // ✅ 여기 추가
+      console.log('분석 응답 데이터:', res.data);
 
       if (res.data.success) {
         navigate(`/interview/${slug}/result`, {
