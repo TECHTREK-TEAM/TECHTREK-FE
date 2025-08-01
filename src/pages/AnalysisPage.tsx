@@ -189,13 +189,14 @@ const AnalysisPage = () => {
   };
 
   // 세션 삭제 시 상태 업데이트 및 선택된 세션 변경
-  const handleDeleteSession = (sessionIdToDelete: string) => {
+  const handleDeleteSession = (sessionInfoIdToDelete: string) => {
     setSessions((prevSessions) => {
       const filtered = prevSessions.filter(
-        (s) => s.sessionInfoId !== sessionIdToDelete
+        (s) => s.sessionInfoId !== sessionInfoIdToDelete
       );
 
-      if (selectedSessionId === sessionIdToDelete) {
+      // 현재 선택된 세션이 삭제된 경우 선택 세션 변경 처리
+      if (selectedSessionId === sessionInfoIdToDelete) {
         if (filtered.length > 0) {
           handleSelectSession(filtered[0].sessionInfoId);
         } else {
@@ -255,7 +256,7 @@ const AnalysisPage = () => {
           sessions={sessions}
           selectedSessionId={selectedSessionId}
           onSelectSession={handleSelectSession}
-          onDeleteSession={handleDeleteSession}
+          onDeleteSession={handleDeleteSession} // 삭제 후 상태 갱신 콜백
         />
       </div>
     </div>
