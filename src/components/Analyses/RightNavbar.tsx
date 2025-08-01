@@ -73,7 +73,9 @@ const RightNavbar: React.FC<RightNavbarProps> = ({
                 >
                   <div className="flex gap-3 items-center text-[#505050]">
                     <span>{session.enterpriseName}</span>
-                    <span className="text-sm">{session.createdAt}</span>
+                    <span className="text-sm">
+                      {session.createdAt ? session.createdAt.split('T')[0] : ''}
+                    </span>
                   </div>
 
                   <button
@@ -83,6 +85,7 @@ const RightNavbar: React.FC<RightNavbarProps> = ({
                     }}
                     className="w-4 h-4"
                     aria-label="Delete session"
+                    type="button"
                   >
                     <img
                       src={closeIcon}
@@ -95,11 +98,11 @@ const RightNavbar: React.FC<RightNavbarProps> = ({
                 {isSelected && (
                   <div className="pl-3 pt-3">
                     {baseQuestions.map((qa, index) => {
-                      // 연계질문 필터링 (tailQuestionNumber 존재하는 것)
+                      // 연계질문 필터링 (tailQuestionNumber가 존재하는 질문들)
                       const tailQuestions = session.interview.filter(
                         (tq) =>
                           tq.questionNumber === qa.questionNumber &&
-                          tq.tailQuestionNumber
+                          !!tq.tailQuestionNumber
                       );
 
                       const isExpanded = expandedQuestion === qa.questionNumber;

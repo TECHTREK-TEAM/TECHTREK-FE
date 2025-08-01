@@ -27,7 +27,7 @@ const tabItems = [
     icon: samsungTabIcon,
     selectedIcon: samsungTabIconSelected,
   },
-  { label: '배달의 민족', icon: PoBTabIcon, selectedIcon: PoBTabIconSelected },
+  { label: '배달의민족', icon: PoBTabIcon, selectedIcon: PoBTabIconSelected },
   { label: '넥슨', icon: nexonTabIcon, selectedIcon: nexonTabIconSelected },
   { label: '카카오', icon: kakaoTabIcon, selectedIcon: kakaoTabIconSelected },
   { label: '쿠팡', icon: coupangTabIcon, selectedIcon: coupangTabIconSelected },
