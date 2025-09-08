@@ -24,6 +24,11 @@ interface Analysis {
   TopScore?: number;
 }
 
+interface Session {
+  sessionInfoId: string | number;
+  // 필요하다면 다른 속성들도 추가
+}
+
 interface InterviewQA {
   question: string;
   answer: string;
@@ -94,14 +99,14 @@ const AnalysisPage = () => {
 
         // sessionInfoId가 '0'이거나 없는 경우 제거
         const validSessions = sessionList.filter(
-          (s: any) =>
+          (s: Session) =>
             s.sessionInfoId && s.sessionInfoId !== '0' && s.sessionInfoId !== 0
         );
 
         if (validSessions.length > 0) {
           // 각 세션의 인터뷰 데이터를 병렬로 조회
           const detailedSessions = await Promise.all(
-            validSessions.map(async (s: any) => {
+            validSessions.map(async (s: Session) => {
               try {
                 const detailRes = await axios.get(
                   `http://localhost:8081/api/analyses/recent/${enterprise}?sessionId=${s.sessionInfoId}`
@@ -110,13 +115,13 @@ const AnalysisPage = () => {
                 return {
                   ...s,
                   interview: detailData?.interview ?? [],
-                  createdAt: s.createdAt ?? '',
+                  // createdAt: s.createdAt ?? '',
                 };
               } catch {
                 return {
                   ...s,
                   interview: [],
-                  createdAt: s.createdAt ?? '',
+                  // createdAt: s.createdAt ?? '',
                 };
               }
             })

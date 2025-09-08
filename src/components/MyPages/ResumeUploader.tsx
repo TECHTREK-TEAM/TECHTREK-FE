@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import axios from 'axios';
+import axios, {type AxiosError} from 'axios';
 import resumeUploadIcon from '../../assets/icons/resumeUploadIcon.svg';
 
 interface UploadResponseData {
@@ -15,7 +15,7 @@ const ResumeUploader = ({
   onUploadSuccess?: (data: UploadResponseData | null) => void;
 }) => {
   const inputRef = useRef<HTMLInputElement | null>(null);
-  const [uploadedResumeUrl, setUploadedResumeUrl] = useState<string | null>(
+  const [, setUploadedResumeUrl] = useState<string | null>(
     null
   );
   const [displayFileName, setDisplayFileName] = useState<string | null>(null);
@@ -28,22 +28,23 @@ const ResumeUploader = ({
 
     try {
       const response = await axios.post(
-        'http://localhost:8081/api/users/resume',
-        formData,
-        {
-          headers: { 'Content-Type': 'multipart/form-data' },
-        }
+          'http://localhost:8081/api/users/resume',
+          formData,
+          {
+            headers: {'Content-Type': 'multipart/form-data'},
+          }
       );
       return response.data.data;
-    } catch (error: any) {
-      console.error('이력서 업로드 실패:', error);
-      // axios error 메시지 좀 더 구체적으로 보여주기
-      if (error.response?.data?.message) {
-        throw new Error(error.response.data.message);
+    } catch (error) {
+      const err = error as AxiosError<{ message?: string }>;
+      console.error('이력서 업로드 실패:', err);
+
+      if (err.response?.data?.message) {
+        throw new Error(err.response.data.message);
       }
       throw new Error('업로드 실패');
     }
-  };
+  }
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -65,8 +66,9 @@ const ResumeUploader = ({
       setUploadedResumeUrl(data.resume ?? null);
       setDisplayFileName(file.name);
       onUploadSuccess?.(data);
-    } catch (err: any) {
-      setError(err.message || '업로드 중 오류가 발생했습니다.');
+    } catch (err: unknown) {
+      const error = err as { message?: string };
+      setError(error.message || '업로드 중 오류가 발생했습니다.');
       setDisplayFileName(null);
       setUploadedResumeUrl(null);
       onUploadSuccess?.(null);

@@ -92,7 +92,7 @@ const MyPage = () => {
       : [];
 
   // 업로드 성공 콜백
-  const handleResumeUploadSuccess = (data: any) => {
+  const handleResumeUploadSuccess = () => {
     // 사용자 정보 다시 불러오기
     refetchUserInfo();
   };
