@@ -101,7 +101,7 @@ const CurveSlideSlick = () => {
         <button className="w-[100px] h-10 rounded-[10px] border border-white text-white">
           채용 공고
         </button>
-        <button onClick={() => handleInterviewClick('naver')} className="w-[100px] h-10 rounded-[10px] bg-primary text-white">
+        <button onClick={() => handleInterviewClick(item.enterprise)} className="w-[100px] h-10 rounded-[10px] bg-primary text-white">
           면접 보기
         </button>
       </div>
