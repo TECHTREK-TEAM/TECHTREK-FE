@@ -60,7 +60,7 @@ const RightNavbar: React.FC<RightNavbarProps> = ({
 
     try {
       const res = await axios.delete(
-        `http://localhost:8081/api/analyses/${sessionInfoId}`
+        `http://localhost:8080/api/analyses/${sessionInfoId}`
       );
 
       if (res.data?.success) {

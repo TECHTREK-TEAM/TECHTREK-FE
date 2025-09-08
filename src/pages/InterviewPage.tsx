@@ -43,7 +43,7 @@ const InterviewPage = () => {
         // 면접 시작 API
         // 기업명을 전달하여 면접 세션을 생성하고 첫 질문을 받아옴
         const res = await axios.post(
-          'http://localhost:8081/api/interview/start',
+          'http://localhost:8080/api/interview/start',
           {
             enterpriseName: displayName,
           }
@@ -91,7 +91,7 @@ const InterviewPage = () => {
         isTailQuestion && parentId ? parentId : previousId;
 
       const res = await axios.post(
-        'http://localhost:8081/api/interview/questions/new',
+        'http://localhost:8080/api/interview/questions/new',
         {
           sessionId,
           previousId: correctedPreviousId,
@@ -137,7 +137,7 @@ const InterviewPage = () => {
 
     try {
       const res = await axios.post(
-        'http://localhost:8081/api/interview/questions/tail',
+        'http://localhost:8080/api/interview/questions/tail',
         requestBody
       );
       const data = res.data.data;
@@ -181,7 +181,7 @@ const InterviewPage = () => {
       // 답변 제출 API
       // 현재 질문의 fieldId와 세션 정보를 바탕으로 답변을 제출
       const res = await axios.post(
-        'http://localhost:8081/api/interview/answers',
+        'http://localhost:8080/api/interview/answers',
         {
           sessionId,
           fieldId: previousId,
@@ -227,7 +227,7 @@ const InterviewPage = () => {
     setIsLoading(true);
 
     try {
-      const res = await axios.post('http://localhost:8081/api/analyses', {
+      const res = await axios.post('http://localhost:8080/api/analyses', {
         sessionId,
         duration,
       });

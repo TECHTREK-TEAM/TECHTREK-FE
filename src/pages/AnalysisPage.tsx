@@ -92,7 +92,7 @@ const AnalysisPage = () => {
     const fetchAllSessions = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:8081/api/analyses/sessions/${enterprise}`
+          `http://localhost:8080/api/analyses/sessions/${enterprise}`
         );
 
         const sessionList = res.data?.data?.session ?? [];
@@ -109,7 +109,7 @@ const AnalysisPage = () => {
             validSessions.map(async (s: Session) => {
               try {
                 const detailRes = await axios.get(
-                  `http://localhost:8081/api/analyses/recent/${enterprise}?sessionId=${s.sessionInfoId}`
+                  `http://localhost:8080/api/analyses/recent/${enterprise}?sessionId=${s.sessionInfoId}`
                 );
                 const detailData = detailRes.data?.data;
                 return {
@@ -163,7 +163,7 @@ const AnalysisPage = () => {
     const fetchSessionData = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:8081/api/analyses/recent/${enterprise}?sessionId=${selectedSessionId}`
+          `http://localhost:8080/api/analyses/recent/${enterprise}?sessionId=${selectedSessionId}`
         );
 
         const data = res.data?.data;

@@ -28,7 +28,7 @@ const ResumeUploader = ({
 
     try {
       const response = await axios.post(
-          'http://localhost:8081/api/users/resume',
+          'http://localhost:8080/api/users/resume',
           formData,
           {
             headers: {'Content-Type': 'multipart/form-data'},

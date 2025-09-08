@@ -17,29 +17,29 @@ interface Company {
 
 // API 함수
 const fetchUserInfo = async () => {
-  const response = await axios.get('http://localhost:8081/api/users/info');
+  const response = await axios.get('http://localhost:8080/api/users/info');
   return response.data.data;
 };
 
 const fetchUserScore = async () => {
-  const response = await axios.get('http://localhost:8081/api/users/score');
+  const response = await axios.get('http://localhost:8080/api/users/score');
   return response.data.data;
 };
 
 const fetchUserPassInfo = async () => {
-  const response = await axios.get('http://localhost:8081/api/users/pass');
+  const response = await axios.get('http://localhost:8080/api/users/pass');
   return response.data.data;
 };
 
 const fetchUserInterviews = async () => {
   const response = await axios.get(
-    'http://localhost:8081/api/users/interviews'
+    'http://localhost:8080/api/users/interviews'
   );
   return response.data.data;
 };
 
 const fetchUserCompanies = async (): Promise<Company[]> => {
-  const response = await axios.get('http://localhost:8081/api/users/companies');
+  const response = await axios.get('http://localhost:8080/api/users/companies');
   return response.data.data.companies;
 };
 

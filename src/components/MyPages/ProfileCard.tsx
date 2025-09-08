@@ -106,7 +106,7 @@ const ProfileCard = ({
 
   const handleSave = async () => {
     try {
-      await axios.patch('http://localhost:8081/api/users/info', {
+      await axios.patch('http://localhost:8080/api/users/info', {
         name,
         userGroup,
         seniority,
