@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Slider from 'react-slick';
 import LeftArrowIcon from '../../assets/icons/leftIcon.svg';
 import RightArrowIcon from '../../assets/icons/rightIcon.svg';
@@ -13,7 +14,12 @@ import Slide8 from '../../assets/images/danggeunMarketLogo.png';
 import './CurveSlideSlick.css';
 
 const CurveSlideSlick = () => {
+  const navigate = useNavigate();
   const [currentSlide, setCurrentSlide] = useState(0);
+
+  const handleInterviewClick = (enterprise: string) => {
+    navigate(`/interview/${enterprise}`);
+  };
 
   const images = [
     {
@@ -21,48 +27,56 @@ const CurveSlideSlick = () => {
       bgColor: 'bg-[#1EC960]',
       imageWidth: 'w-[100%]',
       imageHeight: 'h-[100%]',
+      enterprise: 'naver'
     },
     {
       src: Slide2,
       bgColor: 'bg-[#FFDC00]',
       imageWidth: 'w-[80%]',
       imageHeight: 'h-[80%]',
+      enterprise: 'kakao'
     },
     {
       src: Slide3,
       bgColor: 'bg-[#00C4BD]',
       imageWidth: 'w-[80%]',
       imageHeight: 'h-[80%]',
+      enterprise: 'pob'
     },
     {
       src: Slide4,
       bgColor: 'bg-[#F6F6F6]',
       imageWidth: 'w-[100%]',
       imageHeight: 'h-[100%]',
+      enterprise: 'nexon'
     },
     {
       src: Slide5,
       bgColor: 'bg-[#0E4194]',
       imageWidth: 'w-[80%]',
       imageHeight: 'h-[80%]',
+      enterprise: 'samsung'
     },
     {
       src: Slide6,
       bgColor: 'bg-[#F6F6F6]',
       imageWidth: 'w-[80%]',
       imageHeight: 'h-[80%]',
+      enterprise: 'coupang'
     },
     {
       src: Slide7,
       bgColor: 'bg-[#0050FF]',
       imageWidth: 'w-[100%]',
       imageHeight: 'h-[100%]',
+      enterprise: 'toss'
     },
     {
       src: Slide8,
       bgColor: 'bg-[#FB6614]',
       imageWidth: 'w-[80%]',
       imageHeight: 'h-[80%]',
+      enterprise: 'dangguen'
     },
   ];
 
@@ -87,7 +101,7 @@ const CurveSlideSlick = () => {
         <button className="w-[100px] h-10 rounded-[10px] border border-white text-white">
           채용 공고
         </button>
-        <button className="w-[100px] h-10 rounded-[10px] bg-primary text-white">
+        <button onClick={() => handleInterviewClick('naver')} className="w-[100px] h-10 rounded-[10px] bg-primary text-white">
           면접 보기
         </button>
       </div>
