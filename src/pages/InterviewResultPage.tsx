@@ -1,15 +1,36 @@
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
+
 import Topbar from '../components/Topbar';
 import ProgressBar from '../components/ProgressBar';
 import leftArrowIcon from '../assets/icons/leftArrowIcon.svg';
 
+interface ResultData {
+  status: boolean; // 합격 여부
+  resultScore: number; // 답변 일치율 점수
+  followScore: number; // 연계 질문 대응력 점수
+  duration: number; // 면접 소요시간 (분)
+  keyword: string; // 놓친 키워드
+}
+
 const InterviewResultPage = () => {
-  const resultData = {
-    status: true,
-    resultScore: 78.7,
-    followScore: 79.0,
-    duration: 32,
-    keywords: '수직적 샤딩 / 수평적 샤딩',
-  };
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  // location.state에서 result 데이터 받아오기 (전달할 때 { result: ... } 로 넘겼음)
+  const resultData = (location.state as { result?: ResultData })?.result;
+
+  useEffect(() => {
+    if (!resultData) {
+      // 데이터 없으면 홈으로 리다이렉트
+      navigate('/', { replace: true });
+    }
+  }, [resultData, navigate]);
+
+  if (!resultData) {
+    // 로딩 또는 빈 화면 처리
+    return null;
+  }
 
   return (
     <div className="h-[900px] 2xl:h-[1080px] w-full flex flex-col bg-[#F1F4F6] pt-[80px]">
@@ -69,7 +90,7 @@ const InterviewResultPage = () => {
             놓친 키워드
           </p>
           <p className="text-[28px] text-primary font-bold text-left">
-            {resultData.keywords}
+            {resultData.keyword}
           </p>
         </div>
       </div>

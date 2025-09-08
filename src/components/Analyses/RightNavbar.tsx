@@ -1,4 +1,5 @@
 import React from 'react';
+import axios from 'axios';
 import closeIcon from '../../assets/icons/closeIcon.svg';
 
 interface QA {
@@ -48,6 +49,31 @@ const RightNavbar: React.FC<RightNavbarProps> = ({
     );
   };
 
+  // 삭제 확인 후 API 호출 및 삭제 처리
+  const handleDeleteClick = async (
+    e: React.MouseEvent<HTMLButtonElement>,
+    sessionInfoId: string
+  ) => {
+    e.stopPropagation();
+
+    if (!window.confirm('정말 이 세션을 삭제하시겠습니까?')) return;
+
+    try {
+      const res = await axios.delete(
+        `http://localhost:8081/api/analyses/${sessionInfoId}`
+      );
+
+      if (res.data?.success) {
+        onDeleteSession(sessionInfoId);
+      } else {
+        alert('세션 삭제에 실패했습니다.');
+      }
+    } catch (error) {
+      console.error('세션 삭제 실패:', error);
+      alert('세션 삭제 중 오류가 발생했습니다.');
+    }
+  };
+
   return (
     <div className="w-[360px] h-full border-l border-[#E5E5EC]">
       <p className="ml-8 mt-8 font-medium text-contentsize2 text-[#505050] text-left">
@@ -68,21 +94,25 @@ const RightNavbar: React.FC<RightNavbarProps> = ({
                 <div
                   onClick={() => handleSessionClick(session.sessionInfoId)}
                   className={`cursor-pointer w-full px-5 py-[18px] rounded-lg font-semibold transition-all flex justify-between items-center
-                    ${isSelected ? 'bg-[#EBE9FB] shadow-[inset_1px_1px_2px_rgba(17,0,116,0.15),inset_-1px_-1px_1px_white]' : ''}
+                    ${
+                      isSelected
+                        ? 'bg-[#EBE9FB] shadow-[inset_1px_1px_2px_rgba(17,0,116,0.15),inset_-1px_-1px_1px_white]'
+                        : ''
+                    }
                   `}
                 >
                   <div className="flex gap-3 items-center text-[#505050]">
                     <span>{session.enterpriseName}</span>
-                    <span className="text-sm">{session.createdAt}</span>
+                    <span className="text-sm">
+                      {session.createdAt ? session.createdAt.split('T')[0] : ''}
+                    </span>
                   </div>
 
                   <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onDeleteSession(session.sessionInfoId);
-                    }}
+                    onClick={(e) => handleDeleteClick(e, session.sessionInfoId)}
                     className="w-4 h-4"
                     aria-label="Delete session"
+                    type="button"
                   >
                     <img
                       src={closeIcon}
@@ -95,11 +125,11 @@ const RightNavbar: React.FC<RightNavbarProps> = ({
                 {isSelected && (
                   <div className="pl-3 pt-3">
                     {baseQuestions.map((qa, index) => {
-                      // 연계질문 필터링 (tailQuestionNumber 존재하는 것)
+                      // 연계질문 필터링 (tailQuestionNumber가 존재하는 질문들)
                       const tailQuestions = session.interview.filter(
                         (tq) =>
                           tq.questionNumber === qa.questionNumber &&
-                          tq.tailQuestionNumber
+                          !!tq.tailQuestionNumber
                       );
 
                       const isExpanded = expandedQuestion === qa.questionNumber;
