@@ -10,15 +10,17 @@ interface UploadResponseData {
 }
 
 const ResumeUploader = ({
-  onUploadSuccess,
-}: {
-  onUploadSuccess?: (data: UploadResponseData | null) => void;
+                          onUploadSuccess,
+                          resumeName
+                        }: {
+  onUploadSuccess?: (data: UploadResponseData | null) => void,
+  resumeName?: any
 }) => {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [, setUploadedResumeUrl] = useState<string | null>(
     null
   );
-  const [displayFileName, setDisplayFileName] = useState<string | null>(null);
+  const [displayFileName, setDisplayFileName] = useState<string | null>(resumeName ?? null);
   const [error, setError] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState<boolean>(false);
 

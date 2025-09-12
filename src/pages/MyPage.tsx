@@ -246,7 +246,9 @@ const MyPage = () => {
                     </div>
                   ))}
 
-                  <ResumeUploader onUploadSuccess={handleResumeUploadSuccess} />
+                  <ResumeUploader
+                      onUploadSuccess={handleResumeUploadSuccess}
+                      resumeName={interviews?.resume?.resumeName}/>
                 </>
               ) : (
                 <>
@@ -265,7 +267,10 @@ const MyPage = () => {
                     </div>
                   </div>
 
-                  <ResumeUploader onUploadSuccess={handleResumeUploadSuccess} />
+                  <ResumeUploader
+                      onUploadSuccess={handleResumeUploadSuccess}
+                      resumeName={interviews?.resume?.resumeName}
+                  />
                 </>
               )}
             </div>
