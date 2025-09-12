@@ -3,14 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import Slider from 'react-slick';
 import LeftArrowIcon from '../../assets/icons/leftIcon.svg';
 import RightArrowIcon from '../../assets/icons/rightIcon.svg';
-import Slide1 from '../../assets/images/naverLogo.png';
-import Slide2 from '../../assets/images/kakaoLogo.png';
-import Slide3 from '../../assets/images/peopleofBaedalLogo.png';
-import Slide4 from '../../assets/images/nexonLogo.png';
-import Slide5 from '../../assets/images/samsungLogo.png';
-import Slide6 from '../../assets/images/coupangLogo.png';
-import Slide7 from '../../assets/images/tossLogo.png';
-import Slide8 from '../../assets/images/danggeunMarketLogo.png';
+import Slide1 from '../../assets/images/enterprise/naver1.png';
+import Slide2 from '../../assets/images/enterprise/kakao1.png';
+import Slide3 from '../../assets/images/enterprise/baemin1.png';
+import Slide4 from '../../assets/images/enterprise/nexon1.png';
+import Slide5 from '../../assets/images/enterprise/samsung1.png';
+import Slide6 from '../../assets/images/enterprise/coupang1.png';
+import Slide7 from '../../assets/images/enterprise/toss1.png';
+import Slide8 from '../../assets/images/enterprise/danggeunMarket1.png';
 import './CurveSlideSlick.css';
 
 const CurveSlideSlick = () => {

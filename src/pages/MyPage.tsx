@@ -9,10 +9,11 @@ import interestedEnterpriseIcon from '../assets/icons/interestedEnterpriseIcon.s
 import interviewTotalIcon from '../assets/icons/interviewTotalIcon.svg';
 import interviewPassIcon from '../assets/icons/interviewPassIcon.svg';
 import ProfileCard from '../components/MyPages/ProfileCard';
+import { companyMap } from '../constants/companyMap';
 
 interface Company {
   companyName: string;
-  companyPercent: number;
+  avgScore: number;
 }
 
 // API 함수
@@ -110,8 +111,8 @@ const MyPage = () => {
             {!userInfoLoading && userInfo && (
               <ProfileCard
                 name={userInfo.name}
-                userGroup={userInfo.seniority}
-                seniority={userInfo.userGroup}
+                role={userInfo.role}
+                seniority={userInfo.seniority}
                 stacks={userInfo.stacks}
               />
             )}
@@ -136,11 +137,18 @@ const MyPage = () => {
                       }`}
                     >
                       <div className="flex gap-[15px] items-center">
-                        <div className="w-6 h-6 bg-gray-300 rounded-md" />
-                        <p className="text-[15px]">{item.companyName}</p>
+                        {/*<div*/}
+                        {/*    className={`w-7 h-7 flex items-center justify-center`}>*/}
+                          <img
+                              src={companyMap[item.companyName]?.subLogo}
+                              alt={companyMap[item.companyName]?.name ?? item.companyName}
+                              className="w-6 h-6 rounded-md"
+                          />
+                        {/*</div>*/}
+                        <p className="text-[15px]">{companyMap[item.companyName]?.name ?? item.companyName}</p>
                       </div>
                       <div className="px-2 py-1 bg-[#EFF0FF] text-[13px] text-[#7778EF] rounded-md">
-                        {item.companyPercent}%
+                        {item.avgScore}%
                       </div>
                     </div>
                   ))
