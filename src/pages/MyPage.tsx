@@ -9,10 +9,11 @@ import interestedEnterpriseIcon from '../assets/icons/interestedEnterpriseIcon.s
 import interviewTotalIcon from '../assets/icons/interviewTotalIcon.svg';
 import interviewPassIcon from '../assets/icons/interviewPassIcon.svg';
 import ProfileCard from '../components/MyPages/ProfileCard';
+import { companyMap } from '../constants/companyMap';
 
 interface Company {
   companyName: string;
-  companyPercent: number;
+  avgScore: number;
 }
 
 // API 함수
@@ -78,15 +79,17 @@ const MyPage = () => {
       ? [
           {
             title: '내가 가장 높게 점수를 받았던 면접',
-            resultScore: interviews.highestScore.resultScore,
+            pass:interviews.highestScore.pass,
+            score: interviews.highestScore.score,
             enterpriseName: interviews.highestScore.enterpriseName,
-            analysisGroup: interviews.highestScore.analysisGroup,
+            analysisRole: interviews.highestScore.analysisRole,
           },
           {
             title: '내가 가장 최근에 본 면접',
-            resultScore: interviews.recentInterview.resultScore,
+            pass:interviews.recentInterview.pass,
+            score: interviews.recentInterview.score,
             enterpriseName: interviews.recentInterview.enterpriseName,
-            analysisGroup: interviews.recentInterview.analysisGroup,
+            analysisRole: interviews.recentInterview.analysisRole,
           },
         ]
       : [];
@@ -110,8 +113,8 @@ const MyPage = () => {
             {!userInfoLoading && userInfo && (
               <ProfileCard
                 name={userInfo.name}
-                userGroup={userInfo.seniority}
-                seniority={userInfo.userGroup}
+                role={userInfo.role}
+                seniority={userInfo.seniority}
                 stacks={userInfo.stacks}
               />
             )}
@@ -136,11 +139,18 @@ const MyPage = () => {
                       }`}
                     >
                       <div className="flex gap-[15px] items-center">
-                        <div className="w-6 h-6 bg-gray-300 rounded-md" />
-                        <p className="text-[15px]">{item.companyName}</p>
+                        {/*<div*/}
+                        {/*    className={`w-7 h-7 flex items-center justify-center`}>*/}
+                          <img
+                              src={companyMap[item.companyName]?.subLogo}
+                              alt={companyMap[item.companyName]?.name ?? item.companyName}
+                              className="w-6 h-6 rounded-md"
+                          />
+                        {/*</div>*/}
+                        <p className="text-[15px]">{companyMap[item.companyName]?.name ?? item.companyName}</p>
                       </div>
                       <div className="px-2 py-1 bg-[#EFF0FF] text-[13px] text-[#7778EF] rounded-md">
-                        {item.companyPercent}%
+                        {item.avgScore}%
                       </div>
                     </div>
                   ))
@@ -202,14 +212,15 @@ const MyPage = () => {
                   ) : (
                     <>
                       <ProgressBar
-                        percentage={userScore?.averageResultScore ?? 0}
+                        percentage={userScore?.totalAvgScore ?? 0}
                       />
                       <p className="text-contentsize2 text-customgray text-left">
                         저번달 대비{' '}
-                        <span className="text-[#119200]">
-                          {userScore?.enhancedPercent ?? 0}%
+                        <span
+                            className={userScore?.enhancedPercent && userScore.enhancedPercent < 0 ? 'text-[#880000]' : 'text-[#119200]'}>
+                          {Math.abs(userScore?.enhancedPercent ?? 0)}%
                         </span>{' '}
-                        증가
+                        {userScore?.enhancedPercent && userScore.enhancedPercent < 0 ? '감소' : '증가'}
                       </p>
                     </>
                   )}
@@ -220,22 +231,25 @@ const MyPage = () => {
             {/* 면접 카드 */}
             <div className="w-full h-[379px] flex gap-3">
               {interviewsLoading ? (
-                <p>로딩 중...</p>
+                  <p>로딩 중...</p>
               ) : interviewCardsData.length > 0 ? (
-                <>
+                  <>
                   {interviewCardsData.map((card, idx) => (
                     <div key={idx} className="flex-1 max-w-[33.333%]">
                       <InterviewCard
                         title={card.title}
-                        resultScore={card.resultScore}
+                        pass={card.pass}
+                        score={card.score}
                         enterpriseName={card.enterpriseName}
-                        analysisGroup={card.analysisGroup}
+                        analysisRole={card.analysisRole}
                         name={userInfo?.name ?? ''}
                       />
                     </div>
                   ))}
 
-                  <ResumeUploader onUploadSuccess={handleResumeUploadSuccess} />
+                  <ResumeUploader
+                      onUploadSuccess={handleResumeUploadSuccess}
+                      resumeName={interviews?.resume?.resumeName}/>
                 </>
               ) : (
                 <>
@@ -254,7 +268,10 @@ const MyPage = () => {
                     </div>
                   </div>
 
-                  <ResumeUploader onUploadSuccess={handleResumeUploadSuccess} />
+                  <ResumeUploader
+                      onUploadSuccess={handleResumeUploadSuccess}
+                      resumeName={interviews?.resume?.resumeName}
+                  />
                 </>
               )}
             </div>

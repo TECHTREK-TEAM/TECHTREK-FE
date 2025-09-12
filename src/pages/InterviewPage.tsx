@@ -9,14 +9,14 @@ import ChatBubble from '../components/ChatBubble';
 import AnswerInput from '../components/Interviews/AnswerInput';
 
 const ENTERPRISE_MAP: Record<string, string> = {
-  naver: '네이버',
-  kakao: '카카오',
-  samsung: '삼성전자',
-  coupang: '쿠팡',
-  toss: '토스',
-  dangguen: '당근마켓',
-  pob: '배달의민족',
-  nexon: '넥슨',
+  NAVER: '네이버',
+  KAKAO: '카카오',
+  SAMSUNG: '삼성전자',
+  COUPANG: '쿠팡',
+  TOSS: '토스',
+  DANGGEUN_MARKET: '당근마켓',
+  BAEMIN: '배달의민족',
+  NEXON: '넥슨'
 };
 
 const InterviewPage = () => {
