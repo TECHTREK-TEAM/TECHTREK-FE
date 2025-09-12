@@ -14,7 +14,7 @@ const ResumeUploader = ({
                           resumeName
                         }: {
   onUploadSuccess?: (data: UploadResponseData | null) => void,
-  resumeName?: any
+  resumeName?: string;
 }) => {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [, setUploadedResumeUrl] = useState<string | null>(
