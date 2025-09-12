@@ -216,10 +216,11 @@ const MyPage = () => {
                       />
                       <p className="text-contentsize2 text-customgray text-left">
                         저번달 대비{' '}
-                        <span className="text-[#119200]">
-                          {userScore?.enhancedPercent ?? 0}%
+                        <span
+                            className={userScore?.enhancedPercent && userScore.enhancedPercent < 0 ? 'text-[#880000]' : 'text-[#119200]'}>
+                          {Math.abs(userScore?.enhancedPercent ?? 0)}%
                         </span>{' '}
-                        증가
+                        {userScore?.enhancedPercent && userScore.enhancedPercent < 0 ? '감소' : '증가'}
                       </p>
                     </>
                   )}
@@ -230,9 +231,9 @@ const MyPage = () => {
             {/* 면접 카드 */}
             <div className="w-full h-[379px] flex gap-3">
               {interviewsLoading ? (
-                <p>로딩 중...</p>
+                  <p>로딩 중...</p>
               ) : interviewCardsData.length > 0 ? (
-                <>
+                  <>
                   {interviewCardsData.map((card, idx) => (
                     <div key={idx} className="flex-1 max-w-[33.333%]">
                       <InterviewCard
