@@ -79,15 +79,17 @@ const MyPage = () => {
       ? [
           {
             title: '내가 가장 높게 점수를 받았던 면접',
-            resultScore: interviews.highestScore.resultScore,
+            pass:interviews.highestScore.pass,
+            score: interviews.highestScore.score,
             enterpriseName: interviews.highestScore.enterpriseName,
-            analysisGroup: interviews.highestScore.analysisGroup,
+            analysisRole: interviews.highestScore.analysisRole,
           },
           {
             title: '내가 가장 최근에 본 면접',
-            resultScore: interviews.recentInterview.resultScore,
+            pass:interviews.recentInterview.pass,
+            score: interviews.recentInterview.score,
             enterpriseName: interviews.recentInterview.enterpriseName,
-            analysisGroup: interviews.recentInterview.analysisGroup,
+            analysisRole: interviews.recentInterview.analysisRole,
           },
         ]
       : [];
@@ -210,7 +212,7 @@ const MyPage = () => {
                   ) : (
                     <>
                       <ProgressBar
-                        percentage={userScore?.averageResultScore ?? 0}
+                        percentage={userScore?.totalAvgScore ?? 0}
                       />
                       <p className="text-contentsize2 text-customgray text-left">
                         저번달 대비{' '}
@@ -235,9 +237,10 @@ const MyPage = () => {
                     <div key={idx} className="flex-1 max-w-[33.333%]">
                       <InterviewCard
                         title={card.title}
-                        resultScore={card.resultScore}
+                        pass={card.pass}
+                        score={card.score}
                         enterpriseName={card.enterpriseName}
-                        analysisGroup={card.analysisGroup}
+                        analysisRole={card.analysisRole}
                         name={userInfo?.name ?? ''}
                       />
                     </div>

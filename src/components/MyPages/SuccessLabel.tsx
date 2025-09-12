@@ -1,13 +1,11 @@
 interface SuccessProps {
-  resultScore: number;
+  pass: boolean;
 }
 
-const SuccessLabel = ({ resultScore }: SuccessProps) => {
-  const isPassed = resultScore >= 70;
-
-  const bgColor = isPassed ? '#EBEAFC' : '#FBEDE6';
-  const textColor = isPassed ? 'text-brandcolor' : 'text-[#FE8700]';
-  const labelText = isPassed ? '합격' : '불합격';
+const SuccessLabel = ({ pass }: SuccessProps) => {
+  const bgColor = pass ? '#EBEAFC' : '#FBEDE6';
+  const textColor = pass ? 'text-brandcolor' : 'text-[#FE8700]';
+  const labelText = pass ? '합격' : '불합격';
 
   return (
     <p
