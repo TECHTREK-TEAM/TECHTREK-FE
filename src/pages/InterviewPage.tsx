@@ -350,6 +350,22 @@ const InterviewPage = () => {
     }
   };
 
+  // 나가기 버튼 핸들러
+  const handleExit = async () => {
+    if (!sessionId) return;
+
+    const confirmExit = window.confirm('지금 나가면 면접한 내용이 모두 사라집니다. 계속 나가시겠습니까?');
+    if (!confirmExit) return; // 취소 시 종료
+
+    try {
+      await axios.delete(`http://localhost:8080/api/interview/close/${sessionId}`);
+      navigate('/'); // 홈으로 이동
+    } catch (error) {
+      alert('면접 종료 요청에 실패했습니다.');
+      console.error(error);
+    }
+  };
+
   // 면접 시작 시, 로딩
   if (isStarting) {
     return (
@@ -375,7 +391,7 @@ const InterviewPage = () => {
         <p className="px-8 pt-8 font-medium text-contentsize1">
           분석하려면 {MAX_QUESTIONS - questionCount} 개의 질문이 남았어요
         </p>
-        <button className="px-8 pt-8 h-fit">
+        <button className="px-8 pt-8 h-fit" onClick={handleExit}>
           <img src={leftArrowIcon} alt="나가기 버튼" />
         </button>
       </div>
