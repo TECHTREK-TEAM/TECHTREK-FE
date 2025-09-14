@@ -10,12 +10,8 @@ import AnswerInput from '../components/Interviews/AnswerInput';
 import { companyMap } from '../constants/companyMap';
 
 const InterviewPage = () => {
-  const [answer, setAnswer] = useState('');
 
   //const [isTailQuestion, setIsTailQuestion] = useState(false);
-  const [interviewData, setInterviewData] = useState<
-    { questionNumber: string; question: string; answer?: string }[]
-  >([]);
   const [startTime, setStartTime] = useState<number | null>(null); // 분석용 시작 시간
   const { enterprise } = useParams<{ enterprise?: string }>();
   const navigate = useNavigate();
@@ -29,14 +25,17 @@ const InterviewPage = () => {
   // 질문 종류
   const [currentQuestionType, setCurrentQuestionType] = useState<'basic' | 'resume' | 'tail'>('basic');
 
-  // 세션, 필드 Id
+  // 요청, 응답
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [fieldId, setFieldId] = useState<string | null>(null);
   const [previousId, setPreviousId] = useState<string | null>(null);
   const [parentId, setParentId] = useState<string | null>(null);
+  const [answer, setAnswer] = useState('');
+  const [interviewData, setInterviewData] = useState<{ questionNumber: string; question: string; answer?: string }[]>([]);
 
   // 로딩
   const [isStarting, setIsStarting] = useState(true);
+  //const [isLoadingQuestion, setIsLoadingQuestion] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   //const [isLoading, setIsLoading] = useState(true);
 
@@ -100,6 +99,12 @@ const InterviewPage = () => {
 
     try {
       // 기본 질문 API
+      // 새 질문 자리 임시 말풍선 추가
+      setInterviewData((prev) => [
+        ...prev,
+        { questionNumber: '', question: '질문 생성 중...' },
+      ]);
+
       const res = await axios.post(
         'http://localhost:8080/api/interview/questions/basic',
         {
@@ -110,19 +115,20 @@ const InterviewPage = () => {
       setFieldId(data.fieldId);
       setParentId(data.fieldId);
       setPreviousId(null);
-      // 이전 질문 유지
-      setInterviewData((prev) => [
-        ...prev,
-        {
-          questionNumber: data.questionNumber,
-          question: data.question,
-        },
-      ]);
-      // setIsTailQuestion(false);
       setCurrentQuestionType('basic');
+      // 마지막 항목을 실제 질문으로 교체
+      setInterviewData((prev) =>
+          prev.map((item, idx) =>
+              idx === prev.length - 1
+                  ? { questionNumber: data.questionNumber, question: data.question }
+                  : item
+          )
+      );
+      // setIsTailQuestion(false);
     } catch {
       alert('새로운 질문 요청에 실패했습니다.');
     }
+
   };
 
   // 꼬리 질문 API
@@ -151,6 +157,12 @@ const InterviewPage = () => {
         };
       }
 
+      // 새 질문 자리 임시 말풍선 추가
+      setInterviewData((prev) => [
+        ...prev,
+        { questionNumber: '', question: '질문 생성 중...' },
+      ]);
+
       const res = await axios.post(
           'http://localhost:8080/api/interview/questions/tail',
           requestBody
@@ -164,13 +176,17 @@ const InterviewPage = () => {
       if (!parentId) setParentId(data.fieldId); // 첫 꼬리 질문이면 parentId도 설정
       setCurrentQuestionType('tail');
 
-      setInterviewData((prev) => [
-        ...prev,
-        {
-          questionNumber: `${data.parentQuestionNumber}-${data.tailQuestionNumber}`,
-          question: data.question,
-        },
-      ]);
+      // 마지막 항목을 실제 질문으로 교체
+      setInterviewData((prev) =>
+          prev.map((item, idx) =>
+              idx === prev.length - 1
+                  ? {
+                    questionNumber: `${data.parentQuestionNumber}-${data.tailQuestionNumber}`,
+                    question: data.question,
+                  }
+                  : item
+          )
+      );
     } catch {
       alert('연계 질문 요청에 실패했습니다.');
     }
@@ -294,7 +310,7 @@ const InterviewPage = () => {
             <div key={questionNumber}>
               <ChatBubble
                 type="question"
-                content={`${questionNumber}. ${question}`}
+                content={questionNumber ? `${questionNumber}. ${question}` : question}
               />
               {answer && <ChatBubble type="answer" content={answer} />}
 
