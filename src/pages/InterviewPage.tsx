@@ -110,15 +110,14 @@ const InterviewPage = () => {
       setFieldId(data.fieldId);
       setParentId(data.fieldId);
       setPreviousId(null);
-      setInterviewData([
+      // 이전 질문 유지
+      setInterviewData((prev) => [
+        ...prev,
         {
           questionNumber: data.questionNumber,
           question: data.question,
         },
       ]);
-
-      setPreviousId(data.fieldId);
-      setParentId(null);
       // setIsTailQuestion(false);
       setCurrentQuestionType('basic');
     } catch {
@@ -128,26 +127,29 @@ const InterviewPage = () => {
 
   // 꼬리 질문 API
   const fetchTailQuestion = async () => {
-    if (!sessionId || !parentId) {
+    if (!sessionId || (!previousId && !parentId)) {
       alert('세션 정보가 올바르지 않습니다.');
       return;
     }
 
-    //setIsStarting(true); // 로딩 상태
+    //setIsStarting(true);
     try {
-      // previousId가 있으면 previousId, 없으면 parentId 사용
-      const fieldIdToUse = previousId ? previousId : parentId;
+      let requestBody: { sessionId: string; parentId?: string; previousId?: string };
+      //console.log(previousId)
 
-      // parentId 기준으로 꼬리 질문 요청
-      const requestBody: {
-        sessionId: string;
-        parentId: string;
-        previousId?: string;
-      } = {
-        sessionId,
-        parentId,
-        previousId: fieldIdToUse,
-      };
+      if (!previousId) {
+        // 첫 번째 꼬리 질문
+        requestBody = {
+          sessionId,
+          parentId: parentId!, // 존재가 보장되므로 느낌표 사용
+        };
+      } else {
+        // 두 번째 이후 꼬리 질문
+        requestBody = {
+          sessionId,
+          previousId,
+        };
+      }
 
       const res = await axios.post(
           'http://localhost:8080/api/interview/questions/tail',
@@ -155,9 +157,15 @@ const InterviewPage = () => {
       );
 
       const data = res.data.data;
+
+      // 이전 질문 업데이트
       setPreviousId(data.fieldId);
+      setFieldId(data.fieldId);
+      if (!parentId) setParentId(data.fieldId); // 첫 꼬리 질문이면 parentId도 설정
       setCurrentQuestionType('tail');
-      setInterviewData([
+
+      setInterviewData((prev) => [
+        ...prev,
         {
           questionNumber: `${data.parentQuestionNumber}-${data.tailQuestionNumber}`,
           question: data.question,
@@ -165,8 +173,6 @@ const InterviewPage = () => {
       ]);
     } catch {
       alert('연계 질문 요청에 실패했습니다.');
-    } finally {
-      setIsStarting(false);
     }
   };
 
