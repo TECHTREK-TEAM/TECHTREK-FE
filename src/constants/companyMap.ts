@@ -15,54 +15,97 @@ import Coupang2 from '../assets/images/enterprise/coupang2.png';
 import Toss2 from '../assets/images/enterprise/toss2.png';
 import DanggeunMarket2 from '../assets/images/enterprise/danggeunMarket2.png';
 
-// 실제 이름, 로고 이미지 매핑
-export const companyMap: Record<string, { name: string; mainLogo: string; mainBgColor: string; subLogo: string}> = {
-    SAMSUNG: {
+export interface Company {
+    enterprise: string;
+    name: string;
+    mainLogo: string;
+    mainBgColor: string;
+    mainWidth: string;
+    mainHeight: string;
+    subLogo: string;
+}
+
+// 배열
+export const companyList: Company[] = [
+    {
+        enterprise: "SAMSUNG",
         name: "삼성전자",
         mainLogo: Samsung1,
-        mainBgColor: 'bg-[#0E4194]',
-        subLogo: Samsung2
+        mainBgColor: "bg-[#0E4194]",
+        mainWidth: "w-[80%]",
+        mainHeight: "h-[80%]",
+        subLogo: Samsung2,
     },
-    NAVER: {
+    {
+        enterprise: "NAVER",
         name: "네이버",
         mainLogo: Naver1,
-        mainBgColor: 'bg-[#1EC960]',
-        subLogo: Naver2
+        mainBgColor: "bg-[#1EC960]",
+        mainWidth: "w-[100%]",
+        mainHeight: "h-[100%]",
+        subLogo: Naver2,
     },
-    KAKAO: {
+    {
+        enterprise: "KAKAO",
         name: "카카오",
         mainLogo: Kakao1,
-        mainBgColor: 'bg-[#FFDC00]',
-        subLogo: Kakao2
+        mainBgColor: "bg-[#FFDC00]",
+        mainWidth: "w-[80%]",
+        mainHeight: "h-[80%]",
+        subLogo: Kakao2,
     },
-    NEXON: {
+    {
+        enterprise: "NEXON",
         name: "넥슨",
         mainLogo: Nexon1,
-        mainBgColor: 'bg-[#F6F6F6]',
-        subLogo: Nexon2
+        mainBgColor: "bg-[#F6F6F6]",
+        mainWidth: "w-[100%]",
+        mainHeight: "h-[100%]",
+        subLogo: Nexon2,
     },
-    COUPANG: {
+    {
+        enterprise: "COUPANG",
         name: "쿠팡",
         mainLogo: Coupang1,
-        mainBgColor: 'bg-[#F6F6F6]',
-        subLogo: Coupang2
+        mainBgColor: "bg-[#F6F6F6]",
+        mainWidth: "w-[80%]",
+        mainHeight: "h-[80%]",
+        subLogo: Coupang2,
     },
-    TOSS: {
+    {
+        enterprise: "TOSS",
         name: "토스",
         mainLogo: Toss1,
-        mainBgColor: 'bg-[#0050FF]',
-        subLogo: Toss2
+        mainBgColor: "bg-[#0050FF]",
+        mainWidth: "w-[100%]",
+        mainHeight: "h-[100%]",
+        subLogo: Toss2,
     },
-    DANGGEUN_MARKET: {
+    {
+        enterprise: "DANGGEUN_MARKET",
         name: "당근마켓",
         mainLogo: DanggeunMarket1,
-        mainBgColor: 'bg-[#FB6614]',
-        subLogo: DanggeunMarket2
+        mainBgColor: "bg-[#FB6614]",
+        mainWidth: "w-[80%]",
+        mainHeight: "h-[80%]",
+        subLogo: DanggeunMarket2,
     },
-    BAEMIN: {
+    {
+        enterprise: "BAEMIN",
         name: "배달의민족",
         mainLogo: Baemin1,
-        mainBgColor: 'bg-[#00C4BD]',
-        subLogo: Baemin2
-    }
-};
+        mainBgColor: "bg-[#00C4BD]",
+        mainWidth: "w-[80%]",
+        mainHeight: "h-[80%]",
+        subLogo: Baemin2,
+    },
+];
+
+// 객체
+export const companyMap = companyList.reduce(
+    (acc, company) => {
+        acc[company.enterprise] = company; // enterprise 값이 key가 됨
+        return acc;
+    },
+    {} as Record<string, Company> // 초기값은 빈 객체 {}
+);

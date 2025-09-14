@@ -30,11 +30,12 @@ const InterviewPage = () => {
     { questionNumber: string; question: string; answer?: string }[]
   >([]);
   const [startTime, setStartTime] = useState<number | null>(null); // 분석용 시작 시간
-
   const { enterprise } = useParams<{ enterprise?: string }>();
   const navigate = useNavigate();
   const slug = enterprise?.toLowerCase() ?? '';
+  console.log(ENTERPRISE_MAP[slug]);
   const displayName = ENTERPRISE_MAP[slug] || '알 수 없음 기업';
+  console.log(displayName);
 
   useEffect(() => {
     const startInterview = async () => {
