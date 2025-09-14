@@ -10,16 +10,13 @@ import AnswerInput from '../components/Interviews/AnswerInput';
 import { companyMap } from '../constants/companyMap';
 
 const InterviewPage = () => {
-
-  //const [isTailQuestion, setIsTailQuestion] = useState(false);
-  const [startTime, setStartTime] = useState<number | null>(null); // 분석용 시작 시간
-  const { enterprise } = useParams<{ enterprise?: string }>();
   const navigate = useNavigate();
 
   // 상수
   const REMAINING_QUESTIONS = 9;
 
   // 기업이름
+  const { enterprise } = useParams<{ enterprise?: string }>();
   const company = enterprise ? companyMap[enterprise.toUpperCase()] : undefined;
 
   // 질문 종류
@@ -35,9 +32,10 @@ const InterviewPage = () => {
 
   // 로딩
   const [isStarting, setIsStarting] = useState(true);
-  //const [isLoadingQuestion, setIsLoadingQuestion] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  //const [isLoading, setIsLoading] = useState(true);
+
+  // 분석용 시간
+  const [startTime, setStartTime] = useState<number | null>(null);
 
   // alert중복 실행 방지
   const hasStarted = useRef(false);
@@ -98,7 +96,6 @@ const InterviewPage = () => {
     }
 
     try {
-      // 기본 질문 API
       // 새 질문 자리 임시 말풍선 추가
       setInterviewData((prev) => [
         ...prev,
@@ -111,11 +108,13 @@ const InterviewPage = () => {
           sessionId
         }
       );
+      // 응답
       const data = res.data.data;
       setFieldId(data.fieldId);
       setParentId(data.fieldId);
       setPreviousId(null);
       setCurrentQuestionType('basic');
+
       // 마지막 항목을 실제 질문으로 교체
       setInterviewData((prev) =>
           prev.map((item, idx) =>
@@ -124,7 +123,6 @@ const InterviewPage = () => {
                   : item
           )
       );
-      // setIsTailQuestion(false);
     } catch {
       alert('새로운 질문 요청에 실패했습니다.');
     }
@@ -138,16 +136,14 @@ const InterviewPage = () => {
       return;
     }
 
-    //setIsStarting(true);
     try {
       let requestBody: { sessionId: string; parentId?: string; previousId?: string };
-      //console.log(previousId)
 
       if (!previousId) {
         // 첫 번째 꼬리 질문
         requestBody = {
           sessionId,
-          parentId: parentId!, // 존재가 보장되므로 느낌표 사용
+          parentId: parentId!,
         };
       } else {
         // 두 번째 이후 꼬리 질문
@@ -168,11 +164,10 @@ const InterviewPage = () => {
           requestBody
       );
 
+      // 응답
       const data = res.data.data;
-
-      // 이전 질문 업데이트
-      setPreviousId(data.fieldId);
       setFieldId(data.fieldId);
+      setPreviousId(data.fieldId); // 이전 질문 업데이트
       if (!parentId) setParentId(data.fieldId); // 첫 꼬리 질문이면 parentId도 설정
       setCurrentQuestionType('tail');
 
@@ -210,8 +205,6 @@ const InterviewPage = () => {
     }
 
     try {
-      // 답변 제출 API
-      // 현재 질문의 fieldId와 세션 정보를 바탕으로 답변을 제출
       setIsSubmitting(true);
 
       const res = await axios.post(
@@ -257,8 +250,6 @@ const InterviewPage = () => {
       alert('분석을 위해서는 최소 1분 이상 면접을 진행해야 합니다.');
       return;
     }
-
-    // setIsLoading(true);
 
     try {
       const res = await axios.post('http://localhost:8080/api/analyses', {
