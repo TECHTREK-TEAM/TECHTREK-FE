@@ -12,9 +12,6 @@ import { companyMap } from '../constants/companyMap';
 const InterviewPage = () => {
   const [answer, setAnswer] = useState('');
 
-  const [sessionId, setSessionId] = useState<string | null>(null);
-  const [previousId, setPreviousId] = useState<string | null>(null);
-  const [parentId, setParentId] = useState<string | null>(null);
   //const [isTailQuestion, setIsTailQuestion] = useState(false);
   const [interviewData, setInterviewData] = useState<
     { questionNumber: string; question: string; answer?: string }[]
@@ -23,21 +20,30 @@ const InterviewPage = () => {
   const { enterprise } = useParams<{ enterprise?: string }>();
   const navigate = useNavigate();
 
+  // 상수
+  const REMAINING_QUESTIONS = 9;
+
   // 기업이름
   const company = enterprise ? companyMap[enterprise.toUpperCase()] : undefined;
 
   // 질문 종류
   const [currentQuestionType, setCurrentQuestionType] = useState<'basic' | 'resume' | 'tail'>('basic');
 
+  // 세션, 필드 Id
+  const [sessionId, setSessionId] = useState<string | null>(null);
+  const [fieldId, setFieldId] = useState<string | null>(null);
+  const [previousId, setPreviousId] = useState<string | null>(null);
+  const [parentId, setParentId] = useState<string | null>(null);
+
   // 로딩
   const [isStarting, setIsStarting] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   //const [isLoading, setIsLoading] = useState(true);
 
-
   // alert중복 실행 방지
   const hasStarted = useRef(false);
 
+  // 면접 시작 API
   useEffect(() => {
     // 이미 실행되었으면 종료
     if (hasStarted.current) return;
@@ -48,23 +54,20 @@ const InterviewPage = () => {
       //setIsLoading(true);
       try {
         // 면접 시작 API
-        // 기업명을 전달하여 면접 세션을 생성하고 첫 질문을 받아옴
         const res = await axios.post(
           'http://localhost:8080/api/interview/start',
           {
             enterpriseName: company?.enterprise,
           }
         );
+        // 응답
         const data = res.data.data;
-
-        // 응답: sessionId, fieldId(첫 질문), question, questionNumber
         setSessionId(data.sessionId);
-        setPreviousId(data.fieldId);
-        setParentId(null);
-        // setIsTailQuestion(false);
+        setFieldId(data.fieldId);
+        setParentId(data.fieldId);
+        setPreviousId(null);
         setCurrentQuestionType('basic');
-        setStartTime(Date.now()); // 시작 시간 기록
-
+        setStartTime(Date.now());
         setInterviewData([
           {
             questionNumber: data.questionNumber,
@@ -88,34 +91,26 @@ const InterviewPage = () => {
     }
   }, [company?.enterprise]);
 
+  // 기본 질문 API
   const fetchNewQuestion = async () => {
-    if (!sessionId || !previousId) {
+    if (!sessionId || !fieldId) {
       alert('세션 정보가 올바르지 않습니다.');
       return;
     }
 
     try {
-      // 새로운 질문 요청 API
-      // 직전 질문의 fieldId를 바탕으로 새로운 질문을 요청
-      let correctedPreviousId = previousId;
-
-      if (currentQuestionType === 'tail') {
-        // 첫 번째 꼬리 질문이면 parentId 사용, 그 이후는 previousId
-        correctedPreviousId = parentId ?? previousId;
-      }
-
+      // 기본 질문 API
       const res = await axios.post(
-        'http://localhost:8080/api/interview/questions/new',
+        'http://localhost:8080/api/interview/questions/basic',
         {
-          sessionId,
-          previousId: correctedPreviousId,
+          sessionId
         }
       );
       const data = res.data.data;
-
-      // 응답: 새 질문 내용, fieldId, questionNumber
-      setInterviewData((prev) => [
-        ...prev,
+      setFieldId(data.fieldId);
+      setParentId(data.fieldId);
+      setPreviousId(null);
+      setInterviewData([
         {
           questionNumber: data.questionNumber,
           question: data.question,
@@ -131,52 +126,53 @@ const InterviewPage = () => {
     }
   };
 
+  // 꼬리 질문 API
   const fetchTailQuestion = async () => {
-    if (!sessionId || !previousId) {
+    if (!sessionId || !parentId) {
       alert('세션 정보가 올바르지 않습니다.');
       return;
     }
 
-    // 꼬리 질문 요청 API
-    // parentId 기준으로 꼬리 질문을 요청 (이전 질문과의 연관성 유지)
-    const requestBody: {
-      sessionId: string;
-      parentId: string;
-      previousId?: string;
-    } = {
-      sessionId,
-      parentId: parentId ?? previousId,
-    };
-
-    if (parentId) requestBody.previousId = previousId!;
-
+    //setIsStarting(true); // 로딩 상태
     try {
-      const res = await axios.post(
-        'http://localhost:8080/api/interview/questions/tail',
-        requestBody
-      );
-      const data = res.data.data;
+      // previousId가 있으면 previousId, 없으면 parentId 사용
+      const fieldIdToUse = previousId ? previousId : parentId;
 
-      // 응답: 꼬리 질문, fieldId, parentQuestionNumber, tailQuestionNumber
-      setInterviewData((prev) => [
-        ...prev,
+      // parentId 기준으로 꼬리 질문 요청
+      const requestBody: {
+        sessionId: string;
+        parentId: string;
+        previousId?: string;
+      } = {
+        sessionId,
+        parentId,
+        previousId: fieldIdToUse,
+      };
+
+      const res = await axios.post(
+          'http://localhost:8080/api/interview/questions/tail',
+          requestBody
+      );
+
+      const data = res.data.data;
+      setPreviousId(data.fieldId);
+      setCurrentQuestionType('tail');
+      setInterviewData([
         {
           questionNumber: `${data.parentQuestionNumber}-${data.tailQuestionNumber}`,
           question: data.question,
         },
       ]);
-
-      setPreviousId(data.fieldId);
-      setParentId(requestBody.parentId);
-      // setIsTailQuestion(true);
-      setCurrentQuestionType('tail');
     } catch {
       alert('연계 질문 요청에 실패했습니다.');
+    } finally {
+      setIsStarting(false);
     }
   };
 
+  // 답변 API
   const handleSubmitAnswer = async () => {
-    if (!sessionId || !previousId) {
+    if (!sessionId || !fieldId) {
       alert('세션 정보가 올바르지 않습니다.');
       return;
     }
@@ -200,7 +196,7 @@ const InterviewPage = () => {
         'http://localhost:8080/api/interview/answers',
         {
           sessionId,
-          fieldId: previousId,
+          fieldId: fieldId,
           type: currentQuestionType,
           answer: answer.trim(),
         }
@@ -264,6 +260,7 @@ const InterviewPage = () => {
     }
   };
 
+  // 면접 시작 시, 로딩
   if (isStarting) {
     return (
       <div className="h-screen flex items-center justify-center text-xl">
@@ -271,8 +268,6 @@ const InterviewPage = () => {
       </div>
     );
   }
-
-  const REMAINING_QUESTIONS = 9;
 
   return (
     <div className="h-[900px] 2xl:h-[1080px] w-full flex flex-col bg-[#F1F4F6] pt-[80px]">
