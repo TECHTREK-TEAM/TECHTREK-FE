@@ -13,13 +13,13 @@ const InterviewPage = () => {
   const navigate = useNavigate();
 
   // 상수
-  const REMAINING_QUESTIONS = 9;
+  const MAX_QUESTIONS = 20;
 
   // 기업이름
   const { enterprise } = useParams<{ enterprise?: string }>();
   const company = enterprise ? companyMap[enterprise.toUpperCase()] : undefined;
 
-  // 질문 데이터
+  // 세션, 필드 데이터
   const [currentQuestionType, setCurrentQuestionType] = useState<'basic' | 'resume' | 'tail'>('basic');
   const [isResume, setIsResume] = useState(false);
   const [sessionId, setSessionId] = useState<string | null>(null);
@@ -32,9 +32,12 @@ const InterviewPage = () => {
   // 로딩
   const [isStarting, setIsStarting] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
 
-  // 분석용 시간
+  // 면접 진행 상태 관리 (시간, 질문 수, 다음 질문 대기 여부)
   const [startTime, setStartTime] = useState<number | null>(null);
+  const [questionCount, setQuestionCount] = useState(0);
+  const [isWaitingNextQuestion, setIsWaitingNextQuestion] = useState(false);
 
   // alert중복 실행 방지
   const hasStarted = useRef(false);
@@ -114,6 +117,7 @@ const InterviewPage = () => {
       setParentId(data.fieldId);
       setPreviousId(null);
       setCurrentQuestionType('basic');
+      setIsWaitingNextQuestion(false);
 
       // 마지막 항목을 실제 질문으로 교체
       setInterviewData((prev) =>
@@ -161,6 +165,7 @@ const InterviewPage = () => {
       setParentId(data.fieldId);
       setPreviousId(null);
       setCurrentQuestionType('resume');
+      setIsWaitingNextQuestion(false);
 
       // 마지막 항목을 실제 질문으로 교체
       setInterviewData((prev) =>
@@ -217,6 +222,7 @@ const InterviewPage = () => {
       setPreviousId(data.fieldId); // 이전 질문 업데이트
       if (!parentId) setParentId(data.fieldId); // 첫 꼬리 질문이면 parentId도 설정
       setCurrentQuestionType('tail');
+      setIsWaitingNextQuestion(false);
 
       // 마지막 항목을 실제 질문으로 교체
       setInterviewData((prev) =>
@@ -251,6 +257,11 @@ const InterviewPage = () => {
       return;
     }
 
+    if (isWaitingNextQuestion) {
+      alert('새로운 질문을 눌러주세요!');
+      return;
+    }
+
     try {
       setIsSubmitting(true);
 
@@ -266,12 +277,23 @@ const InterviewPage = () => {
 
       // 응답 성공 시, 마지막 질문에 답변 저장
       if (res.data.success) {
+        setAnswer('');
         setInterviewData((prev) =>
           prev.map((item, idx) =>
             idx === prev.length - 1 ? { ...item, answer: answer.trim() } : item
           )
         );
-        setAnswer('');
+        // 답변 완료 시 질문 카운트 증가
+        setQuestionCount(prev => prev + 1);
+
+        // 자동 분석 조건 확인
+        if (questionCount + 1 >= MAX_QUESTIONS) {
+          handleAnalyze();
+        } else {
+          // 다음 질문을 기다리는 상태로 전환
+          setIsWaitingNextQuestion(true);
+        }
+
       } else {
         alert('답변 등록에 실패했습니다.');
       }
@@ -293,12 +315,20 @@ const InterviewPage = () => {
     const duration = Math.floor(elapsedMs / 1000 / 60); // 분 단위
 
     // 최소 1분 이상 진행해야 분석 가능
-    if (elapsedMs < 60 * 1000) {
-      alert('분석을 위해서는 최소 1분 이상 면접을 진행해야 합니다.');
+    // if (elapsedMs < 60 * 1000) {
+    //   alert('분석을 위해서는 최소 1분 이상 면접을 진행해야 합니다.');
+    //   return;
+    // }
+
+    // 최소 답변 개수 확인
+    if (questionCount < 3) {
+      alert('분석을 위해서는 최소 3개 이상 답변해주세요!');
       return;
     }
 
     try {
+      setIsAnalyzing(true);
+
       const res = await axios.post('http://localhost:8080/api/analyses', {
         sessionId,
         duration,
@@ -316,7 +346,7 @@ const InterviewPage = () => {
     } catch {
       alert('분석 요청에 실패했습니다.');
     } finally {
-     //  setIsLoading(false);
+      setIsAnalyzing(false);
     }
   };
 
@@ -329,12 +359,21 @@ const InterviewPage = () => {
     );
   }
 
+  // 분석 중 로딩
+  if (isAnalyzing) {
+    return (
+        <div className="h-screen flex items-center justify-center text-xl">
+          분석하는 중입니다...
+        </div>
+    );
+  }
+
   return (
     <div className="h-[900px] 2xl:h-[1080px] w-full flex flex-col bg-[#F1F4F6] pt-[80px]">
       <Topbar />
       <div className="w-full h-[100px] flex justify-between 2xl:h-[150px]">
         <p className="px-8 pt-8 font-medium text-contentsize1">
-          분석하려면 {REMAINING_QUESTIONS} 개의 질문이 남았어요
+          분석하려면 {MAX_QUESTIONS - questionCount} 개의 질문이 남았어요
         </p>
         <button className="px-8 pt-8 h-fit">
           <img src={leftArrowIcon} alt="나가기 버튼" />
