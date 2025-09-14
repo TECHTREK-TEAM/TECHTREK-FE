@@ -19,10 +19,9 @@ const InterviewPage = () => {
   const { enterprise } = useParams<{ enterprise?: string }>();
   const company = enterprise ? companyMap[enterprise.toUpperCase()] : undefined;
 
-  // 질문 종류
+  // 질문 데이터
   const [currentQuestionType, setCurrentQuestionType] = useState<'basic' | 'resume' | 'tail'>('basic');
-
-  // 요청, 응답
+  const [isResume, setIsResume] = useState(false);
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [fieldId, setFieldId] = useState<string | null>(null);
   const [previousId, setPreviousId] = useState<string | null>(null);
@@ -31,7 +30,7 @@ const InterviewPage = () => {
   const [interviewData, setInterviewData] = useState<{ questionNumber: string; question: string; answer?: string }[]>([]);
 
   // 로딩
-  const [isStarting, setIsStarting] = useState(true);
+  const [isStarting, setIsStarting] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // 분석용 시간
@@ -64,6 +63,7 @@ const InterviewPage = () => {
         setParentId(data.fieldId);
         setPreviousId(null);
         setCurrentQuestionType('basic');
+        setIsResume(data.resumeStatus);
         setStartTime(Date.now());
         setInterviewData([
           {
@@ -89,7 +89,7 @@ const InterviewPage = () => {
   }, [company?.enterprise]);
 
   // 기본 질문 API
-  const fetchNewQuestion = async () => {
+  const fetchBasicQuestion = async () => {
     if (!sessionId || !fieldId) {
       alert('세션 정보가 올바르지 않습니다.');
       return;
@@ -114,6 +114,53 @@ const InterviewPage = () => {
       setParentId(data.fieldId);
       setPreviousId(null);
       setCurrentQuestionType('basic');
+
+      // 마지막 항목을 실제 질문으로 교체
+      setInterviewData((prev) =>
+          prev.map((item, idx) =>
+              idx === prev.length - 1
+                  ? { questionNumber: data.questionNumber, question: data.question }
+                  : item
+          )
+      );
+    } catch {
+      alert('새로운 질문 요청에 실패했습니다.');
+    }
+
+  };
+
+  // 이력서 질문 API
+  const fetchResumeQuestion = async () => {
+    if (!sessionId || !fieldId) {
+      alert('세션 정보가 올바르지 않습니다.');
+      return;
+    }
+
+    // 이력서 존재 여부 체크
+    if (!isResume) {
+      alert('이력서가 존재하지 않습니다. 내 정보에서 이력서를 업로드 해주세요!');
+      return;
+    }
+
+    try {
+      // 새 질문 자리 임시 말풍선 추가
+      setInterviewData((prev) => [
+        ...prev,
+        { questionNumber: '', question: '질문 생성 중...' },
+      ]);
+
+      const res = await axios.post(
+          'http://localhost:8080/api/interview/questions/resume',
+          {
+            sessionId
+          }
+      );
+      // 응답
+      const data = res.data.data;
+      setFieldId(data.fieldId);
+      setParentId(data.fieldId);
+      setPreviousId(null);
+      setCurrentQuestionType('resume');
 
       // 마지막 항목을 실제 질문으로 교체
       setInterviewData((prev) =>
@@ -310,13 +357,13 @@ const InterviewPage = () => {
                   <div className="flex justify-end gap-2 mt-4">
                     <button
                         className="text-contentsize1 h-8 px-4 bg-white border border-gray-300 text-brandcolor rounded-md font-medium"
-                        onClick={fetchNewQuestion}
+                        onClick={fetchBasicQuestion}
                     >
                       기본 질문
                     </button>
                     <button
                         className="text-contentsize1 h-8 px-4 bg-white border border-gray-300 text-brandcolor rounded-md font-medium"
-                        // onClick={fetchNewQuestion}
+                        onClick={fetchResumeQuestion}
                     >
                       이력서 질문
                     </button>
