@@ -11,7 +11,7 @@ import { companyMap } from '../constants/companyMap';
 
 const InterviewPage = () => {
   const [answer, setAnswer] = useState('');
-  const [isLoading, setIsLoading] = useState(true);
+
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [previousId, setPreviousId] = useState<string | null>(null);
   const [parentId, setParentId] = useState<string | null>(null);
@@ -29,6 +29,11 @@ const InterviewPage = () => {
   // 질문 종류
   const [currentQuestionType, setCurrentQuestionType] = useState<'basic' | 'resume' | 'tail'>('basic');
 
+  // 로딩
+  const [isStarting, setIsStarting] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  //const [isLoading, setIsLoading] = useState(true);
+
 
   // alert중복 실행 방지
   const hasStarted = useRef(false);
@@ -39,7 +44,8 @@ const InterviewPage = () => {
     hasStarted.current = true;
 
     const startInterview = async () => {
-      setIsLoading(true);
+      setIsStarting(true);
+      //setIsLoading(true);
       try {
         // 면접 시작 API
         // 기업명을 전달하여 면접 세션을 생성하고 첫 질문을 받아옴
@@ -69,7 +75,8 @@ const InterviewPage = () => {
         alert('면접 시작에 실패했습니다.');
         navigate('/');
       } finally {
-        setIsLoading(false);
+        setIsStarting(false);
+        //setIsLoading(false);
       }
     };
 
@@ -77,7 +84,7 @@ const InterviewPage = () => {
       startInterview();
     } else {
       alert('기업명이 올바르지 않습니다.');
-      setIsLoading(false);
+      //setIsLoading(false);
     }
   }, [company?.enterprise]);
 
@@ -184,11 +191,11 @@ const InterviewPage = () => {
       return;
     }
 
-    setIsLoading(true);
-
     try {
       // 답변 제출 API
       // 현재 질문의 fieldId와 세션 정보를 바탕으로 답변을 제출
+      setIsSubmitting(true);
+
       const res = await axios.post(
         'http://localhost:8080/api/interview/answers',
         {
@@ -213,7 +220,7 @@ const InterviewPage = () => {
     } catch {
       alert('답변 등록에 실패했습니다.');
     } finally {
-      setIsLoading(false);
+      setIsSubmitting(false);
     }
   };
 
@@ -233,7 +240,7 @@ const InterviewPage = () => {
       return;
     }
 
-    setIsLoading(true);
+    // setIsLoading(true);
 
     try {
       const res = await axios.post('http://localhost:8080/api/analyses', {
@@ -253,11 +260,11 @@ const InterviewPage = () => {
     } catch {
       alert('분석 요청에 실패했습니다.');
     } finally {
-      setIsLoading(false);
+     //  setIsLoading(false);
     }
   };
 
-  if (isLoading) {
+  if (isStarting) {
     return (
       <div className="h-screen flex items-center justify-center text-xl">
         면접을 시작하는 중입니다...
@@ -323,6 +330,7 @@ const InterviewPage = () => {
               onChange={setAnswer}
               onSubmit={handleSubmitAnswer}
               onAnalyze={handleAnalyze} // 분석 버튼 핸들러 추가
+              isSubmitting={isSubmitting}
           />
         </div>
       </div>
