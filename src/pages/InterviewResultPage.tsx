@@ -6,11 +6,10 @@ import ProgressBar from '../components/ProgressBar';
 import leftArrowIcon from '../assets/icons/leftArrowIcon.svg';
 
 interface ResultData {
-  status: boolean; // 합격 여부
-  resultScore: number; // 답변 일치율 점수
-  followScore: number; // 연계 질문 대응력 점수
-  duration: number; // 면접 소요시간 (분)
+  isPass: boolean; // 합격 여부
+  score: number; // 답변 일치율 점수
   keyword: string; // 놓친 키워드
+  duration: number; // 면접 소요시간 (분)
 }
 
 const InterviewResultPage = () => {
@@ -37,7 +36,7 @@ const InterviewResultPage = () => {
       <Topbar />
 
       <div className="w-full h-[100px] flex justify-end 2xl:h-[150px]">
-        <button className="px-8 pt-8 h-fit">
+        <button className="px-8 pt-8 h-fit" onClick={() => navigate('/')}>
           <img src={leftArrowIcon} alt="나가기 버튼" />
         </button>
       </div>
@@ -54,15 +53,7 @@ const InterviewResultPage = () => {
                 합격예측 결과
               </p>
               <p className="font-semibold text-[28px] text-left text-brandcolor">
-                {resultData.status ? '합격' : '불합격'}
-              </p>
-            </div>
-            <div className="flex flex-col flex-1 bg-white rounded-2xl p-6 gap-6 border border-customgray">
-              <p className="font-medium text-contentsize1 text-customgray text-left">
-                연계질문 대응력
-              </p>
-              <p className="font-semibold text-[28px] text-left text-primary">
-                {resultData.followScore}점
+                {resultData.isPass ? '합격' : '불합격'}
               </p>
             </div>
             <div className="flex flex-col flex-1 bg-white rounded-2xl p-6 gap-6 border border-customgray">
@@ -81,7 +72,7 @@ const InterviewResultPage = () => {
           <p className="font-medium text-contentsize2 text-primary text-left">
             답변 일치율
           </p>
-          <ProgressBar percentage={resultData.resultScore} />
+          <ProgressBar percentage={resultData.score} />
         </div>
 
         {/* 놓친 키워드 */}
