@@ -21,6 +21,7 @@ function AnswerInput({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder || '답변을 입력하세요'}
+        data-gramm="false"
         className="w-full h-full resize-none outline-none text-contentsize1 leading-[1.5] text-left pb-10"
       />
 

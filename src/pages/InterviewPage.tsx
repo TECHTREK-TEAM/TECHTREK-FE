@@ -15,7 +15,7 @@ const InterviewPage = () => {
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [previousId, setPreviousId] = useState<string | null>(null);
   const [parentId, setParentId] = useState<string | null>(null);
-  const [isTailQuestion, setIsTailQuestion] = useState(false);
+  //const [isTailQuestion, setIsTailQuestion] = useState(false);
   const [interviewData, setInterviewData] = useState<
     { questionNumber: string; question: string; answer?: string }[]
   >([]);
@@ -25,6 +25,10 @@ const InterviewPage = () => {
 
   // 기업이름
   const company = enterprise ? companyMap[enterprise.toUpperCase()] : undefined;
+
+  // 질문 종류
+  const [currentQuestionType, setCurrentQuestionType] = useState<'basic' | 'resume' | 'tail'>('basic');
+
 
   // alert중복 실행 방지
   const hasStarted = useRef(false);
@@ -51,7 +55,8 @@ const InterviewPage = () => {
         setSessionId(data.sessionId);
         setPreviousId(data.fieldId);
         setParentId(null);
-        setIsTailQuestion(false);
+        // setIsTailQuestion(false);
+        setCurrentQuestionType('basic');
         setStartTime(Date.now()); // 시작 시간 기록
 
         setInterviewData([
@@ -85,8 +90,12 @@ const InterviewPage = () => {
     try {
       // 새로운 질문 요청 API
       // 직전 질문의 fieldId를 바탕으로 새로운 질문을 요청
-      const correctedPreviousId =
-        isTailQuestion && parentId ? parentId : previousId;
+      let correctedPreviousId = previousId;
+
+      if (currentQuestionType === 'tail') {
+        // 첫 번째 꼬리 질문이면 parentId 사용, 그 이후는 previousId
+        correctedPreviousId = parentId ?? previousId;
+      }
 
       const res = await axios.post(
         'http://localhost:8080/api/interview/questions/new',
@@ -108,7 +117,8 @@ const InterviewPage = () => {
 
       setPreviousId(data.fieldId);
       setParentId(null);
-      setIsTailQuestion(false);
+      // setIsTailQuestion(false);
+      setCurrentQuestionType('basic');
     } catch {
       alert('새로운 질문 요청에 실패했습니다.');
     }
@@ -151,7 +161,8 @@ const InterviewPage = () => {
 
       setPreviousId(data.fieldId);
       setParentId(requestBody.parentId);
-      setIsTailQuestion(true);
+      // setIsTailQuestion(true);
+      setCurrentQuestionType('tail');
     } catch {
       alert('연계 질문 요청에 실패했습니다.');
     }
@@ -183,7 +194,7 @@ const InterviewPage = () => {
         {
           sessionId,
           fieldId: previousId,
-          type: isTailQuestion ? 'tail' : 'new',
+          type: currentQuestionType,
           answer: answer.trim(),
         }
       );
@@ -281,20 +292,26 @@ const InterviewPage = () => {
 
               {/* 마지막 질문이며 답변이 있을 때만 버튼 노출 */}
               {index === interviewData.length - 1 && answer && (
-                <div className="flex justify-end gap-2 mt-4">
-                  <button
-                    className="text-contentsize1 h-8 px-4 bg-white border border-gray-300 text-brandcolor rounded-md font-medium"
-                    onClick={fetchNewQuestion}
-                  >
-                    새로운 질문
-                  </button>
-                  <button
-                    className="text-contentsize1 h-8 px-4 bg-white border border-gray-300 text-brandcolor rounded-md font-medium"
-                    onClick={fetchTailQuestion}
-                  >
-                    연계 질문
-                  </button>
-                </div>
+                  <div className="flex justify-end gap-2 mt-4">
+                    <button
+                        className="text-contentsize1 h-8 px-4 bg-white border border-gray-300 text-brandcolor rounded-md font-medium"
+                        onClick={fetchNewQuestion}
+                    >
+                      기본 질문
+                    </button>
+                    <button
+                        className="text-contentsize1 h-8 px-4 bg-white border border-gray-300 text-brandcolor rounded-md font-medium"
+                        // onClick={fetchNewQuestion}
+                    >
+                      이력서 질문
+                    </button>
+                    <button
+                        className="text-contentsize1 h-8 px-4 bg-white border border-gray-300 text-brandcolor rounded-md font-medium"
+                        onClick={fetchTailQuestion}
+                    >
+                      연계 질문
+                    </button>
+                  </div>
               )}
             </div>
           ))}
@@ -302,10 +319,10 @@ const InterviewPage = () => {
 
         <div className="mt-4 mb-9">
           <AnswerInput
-            value={answer}
-            onChange={setAnswer}
-            onSubmit={handleSubmitAnswer}
-            onAnalyze={handleAnalyze} // 분석 버튼 핸들러 추가
+              value={answer}
+              onChange={setAnswer}
+              onSubmit={handleSubmitAnswer}
+              onAnalyze={handleAnalyze} // 분석 버튼 핸들러 추가
           />
         </div>
       </div>
