@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
@@ -7,17 +7,7 @@ import leftArrowIcon from '../assets/icons/leftArrowIcon.svg';
 import InterviewTitle from '../components/InterviewTitle';
 import ChatBubble from '../components/ChatBubble';
 import AnswerInput from '../components/Interviews/AnswerInput';
-
-const ENTERPRISE_MAP: Record<string, string> = {
-  NAVER: '네이버',
-  KAKAO: '카카오',
-  SAMSUNG: '삼성전자',
-  COUPANG: '쿠팡',
-  TOSS: '토스',
-  DANGGEUN_MARKET: '당근마켓',
-  BAEMIN: '배달의민족',
-  NEXON: '넥슨'
-};
+import { companyMap } from '../constants/companyMap';
 
 const InterviewPage = () => {
   const [answer, setAnswer] = useState('');
@@ -32,12 +22,18 @@ const InterviewPage = () => {
   const [startTime, setStartTime] = useState<number | null>(null); // 분석용 시작 시간
   const { enterprise } = useParams<{ enterprise?: string }>();
   const navigate = useNavigate();
-  const slug = enterprise?.toLowerCase() ?? '';
-  console.log(ENTERPRISE_MAP[slug]);
-  const displayName = ENTERPRISE_MAP[slug] || '알 수 없음 기업';
-  console.log(displayName);
+
+  // 기업이름
+  const company = enterprise ? companyMap[enterprise.toUpperCase()] : undefined;
+
+  // alert중복 실행 방지
+  const hasStarted = useRef(false);
 
   useEffect(() => {
+    // 이미 실행되었으면 종료
+    if (hasStarted.current) return;
+    hasStarted.current = true;
+
     const startInterview = async () => {
       setIsLoading(true);
       try {
@@ -46,7 +42,7 @@ const InterviewPage = () => {
         const res = await axios.post(
           'http://localhost:8080/api/interview/start',
           {
-            enterpriseName: displayName,
+            enterpriseName: company?.enterprise,
           }
         );
         const data = res.data.data;
@@ -66,18 +62,19 @@ const InterviewPage = () => {
         ]);
       } catch {
         alert('면접 시작에 실패했습니다.');
+        navigate('/');
       } finally {
         setIsLoading(false);
       }
     };
 
-    if (displayName !== '알 수 없음 기업') {
+    if (company?.enterprise !== '알 수 없음 기업') {
       startInterview();
     } else {
       alert('기업명이 올바르지 않습니다.');
       setIsLoading(false);
     }
-  }, [displayName]);
+  }, [company?.enterprise]);
 
   const fetchNewQuestion = async () => {
     if (!sessionId || !previousId) {
@@ -236,7 +233,7 @@ const InterviewPage = () => {
       console.log('분석 응답 데이터:', res.data);
 
       if (res.data.success) {
-        navigate(`/interview/${slug}/result`, {
+        navigate(`/interview/${company?.enterprise}/result`, {
           state: { result: res.data.data },
         });
       } else {
@@ -272,7 +269,7 @@ const InterviewPage = () => {
       </div>
 
       <div className="h-[550px] 2xl:h-[700px] mx-[270px] px-[50px] bg-white rounded-[10px] 2xl:mb-[150px] 2xl:mx-[300px] flex flex-col justify-between">
-        <InterviewTitle>{displayName} 기술면접</InterviewTitle>
+        <InterviewTitle>{company?.name} 기술면접</InterviewTitle>
         <div className="flex-1 overflow-y-auto px-[20px] pt-[30px] space-y-10 scrollbar-hide">
           {interviewData.map(({ questionNumber, question, answer }, index) => (
             <div key={questionNumber}>
