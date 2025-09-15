@@ -61,13 +61,9 @@ const AnalysisPage = () => {
   const { enterprise } = useParams<{ enterprise: string }>();
 
   // 응답 데이터
-  const [analysisData, setAnalysisData] = useState<AnalysisResponse | null>(
-    null
-  );
+  const [analysisData, setAnalysisData] = useState<AnalysisResponse | null>(null);
   const [sessionList, setSessionList] = useState<Session[]>([]); // 세션 목록만 저장
-  const [selectedSessionId, setSelectedSessionId] = useState<number | null>(
-    null
-  ); // 현재 선택한 세션
+  const [selectedSessionId, setSelectedSessionId] = useState<number | null>(null); // 현재 선택한 세션
 
   // 현재 선택된 세션 ID
   // const [selectedSessionId, setSelectedSessionId] = useState<string | null>(null);
@@ -80,7 +76,7 @@ const AnalysisPage = () => {
   // }>();
   // const navigate = useNavigate();
 
-  // 최근 세션, 리스트 조회
+  // 최근 세션 조회
   useEffect(() => {
     if (!enterprise) return;
 
@@ -104,7 +100,7 @@ const AnalysisPage = () => {
     fetchData();
   }, [enterprise]);
 
-  // 세션 리스트 불러오기
+  // 세션 리스트 조회
   useEffect(() => {
     if (!enterprise) return;
 
@@ -128,6 +124,19 @@ const AnalysisPage = () => {
 
     fetchSessions();
   }, [enterprise]);
+
+  // 선택한 세션 조회
+  const handleSelectSession = async (id: number) => {
+    setSelectedSessionId(id);
+
+    try {
+      const res = await axios.get(`http://localhost:8080/api/analyses/${id}`);
+      setAnalysisData(res.data.data); // 클릭한 세션 데이터로 화면 갱신
+    } catch (err) {
+      console.error('세션 분석 데이터 불러오기 실패:', err);
+      setAnalysisData(null);
+    }
+  };
 
   // URL의 sessionId 변경 시 상태 동기화
   // useEffect(() => {
@@ -309,7 +318,8 @@ const AnalysisPage = () => {
         <RightNavbar
           sessionList={sessionList}
           selectedSessionId={selectedSessionId}
-          onSelectSession={(id) => setSelectedSessionId(id)}
+          // onSelectSession={(id) => setSelectedSessionId(id)}
+          onSelectSession={handleSelectSession}
           //onSelectSession={handleSelectSession} // 세션을 클릭했을 때 호출되는 콜백.
           // onDeleteSession={handleDeleteSession} // 사용자가 세션 삭제 버튼(X)을 클릭했을 때 호출
         />
