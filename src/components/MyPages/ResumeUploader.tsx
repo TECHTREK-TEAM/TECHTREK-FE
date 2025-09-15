@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import axios, {type AxiosError} from 'axios';
+import axios, { type AxiosError } from 'axios';
 import resumeUploadIcon from '../../assets/icons/resumeUploadIcon.svg';
 
 interface UploadResponseData {
@@ -10,17 +10,17 @@ interface UploadResponseData {
 }
 
 const ResumeUploader = ({
-                          onUploadSuccess,
-                          resumeName
-                        }: {
-  onUploadSuccess?: (data: UploadResponseData | null) => void,
+  onUploadSuccess,
+  resumeName,
+}: {
+  onUploadSuccess?: (data: UploadResponseData | null) => void;
   resumeName?: string;
 }) => {
   const inputRef = useRef<HTMLInputElement | null>(null);
-  const [, setUploadedResumeUrl] = useState<string | null>(
-    null
+  const [, setUploadedResumeUrl] = useState<string | null>(null);
+  const [displayFileName, setDisplayFileName] = useState<string | null>(
+    resumeName ?? null
   );
-  const [displayFileName, setDisplayFileName] = useState<string | null>(resumeName ?? null);
   const [error, setError] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState<boolean>(false);
 
@@ -30,11 +30,11 @@ const ResumeUploader = ({
 
     try {
       const response = await axios.post(
-          'http://localhost:8080/api/users/resume',
-          formData,
-          {
-            headers: {'Content-Type': 'multipart/form-data'},
-          }
+        'http://localhost:8080/api/users/resume',
+        formData,
+        {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        }
       );
       return response.data.data;
     } catch (error) {
@@ -46,7 +46,7 @@ const ResumeUploader = ({
       }
       throw new Error('업로드 실패');
     }
-  }
+  };
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];

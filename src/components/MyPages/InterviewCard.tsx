@@ -1,10 +1,10 @@
 import SuccessLabel from '../../components/MyPages/SuccessLabel';
 import TinyBar from '../../components/MyPages/TinyBar';
-import {companyMap} from "../../constants/companyMap.ts";
+import { companyMap } from '../../constants/companyMap.ts';
 
 interface InterviewCardProps {
   title: string;
-  pass: boolean
+  pass: boolean;
   score: number;
   enterpriseName: string;
   analysisRole: string;
@@ -12,23 +12,28 @@ interface InterviewCardProps {
 }
 
 const InterviewCard = ({
-  title, pass, score, enterpriseName, analysisRole, name
+  title,
+  pass,
+  score,
+  enterpriseName,
+  analysisRole,
+  name,
 }: InterviewCardProps) => {
   return (
     <div className="w-full h-full flex-1 max-w-full flex flex-col gap-5 p-6 rounded-xl bg-white">
       <div
-          className={`w-full h-[155px] rounded-xl overflow-hidden ${companyMap[enterpriseName]?.mainBgColor}`}
+        className={`w-full h-[155px] rounded-xl overflow-hidden ${companyMap[enterpriseName]?.mainBgColor}`}
       >
         <img
-            src={companyMap[enterpriseName]?.mainLogo}
-            alt={companyMap[enterpriseName]?.name}
-            className="w-full h-full object-cover"
+          src={companyMap[enterpriseName]?.mainLogo}
+          alt={companyMap[enterpriseName]?.name}
+          className="w-full h-full object-cover"
         />
       </div>
       <div className="w-full h-fit flex flex-col gap-5">
         <div className="w-full h-fit flex flex-col gap-4">
           <div className="w-full h-fit flex flex-col gap-3">
-            <SuccessLabel pass={pass}/>
+            <SuccessLabel pass={pass} />
             <p className="text-customgray font-medium text-contentsize1 text-left">
               {title}
               <br />

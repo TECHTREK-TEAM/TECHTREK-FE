@@ -1,13 +1,13 @@
+import axios from 'axios';
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 // import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
 
 import Topbar from '../components/Topbar';
 import LeftNavbar from '../components/Analyses/LeftNavbar';
-// import RightNavbar from '../components/Analyses/RightNavbar';
-import SessionData from '../components/Analyses/SessionData';
-import NoSessionFound from '../components/Analyses/NoSessionFound';
+import RightNavbar from '../components/Analyses/RightNavbar';
+import AnalysisData from '../components/Analyses/SessionData';
+import NoAnalysisFound from '../components/Analyses/NoSessionFound';
 import { companyList } from '../constants/companyMap';
 
 // API 응답
@@ -39,6 +39,13 @@ interface AnalysisResponse {
   feedback: Feedback | null;
 }
 
+// 세션 리스트 응답
+interface Session {
+  analysisId: number;
+  enterpriseName: string;
+  createdAt: string;
+}
+
 // RightNavbar에서 요구하는 세션 타입 (createdAt은 string 필수)
 // interface SessionForRightNavbar {
 //   sessionInfoId: string;
@@ -48,21 +55,24 @@ interface AnalysisResponse {
 // }
 
 const AnalysisPage = () => {
-  // 응답 분석 데이터
-  const [analysisData, setAnalysisData] = useState<AnalysisResponse | null>(null);
+  const navigate = useNavigate();
 
   // 기업 이름
   const { enterprise } = useParams<{ enterprise: string }>();
 
-  const navigate = useNavigate();
+  // 응답 데이터
+  const [analysisData, setAnalysisData] = useState<AnalysisResponse | null>(
+    null
+  );
+  const [sessionList, setSessionList] = useState<Session[]>([]); // 세션 목록만 저장
+  const [selectedSessionId, setSelectedSessionId] = useState<number | null>(
+    null
+  ); // 현재 선택한 세션
 
   // 현재 선택된 세션 ID
-  // const [selectedSessionId, setSelectedSessionId] = useState<string | null>(
-  //     null
-  // );
+  // const [selectedSessionId, setSelectedSessionId] = useState<string | null>(null);
   // 선택된 세션의 분석 데이터
-  // const [selectedSessionData, setSelectedSessionData] =
-  //     useState<AnalysisResponse | null>(null);
+  // const [selectedSessionData, setSelectedSessionData] = useState<AnalysisResponse | null>(null);
 
   // const { enterprise, sessionId } = useParams<{
   //   enterprise: string;
@@ -77,19 +87,47 @@ const AnalysisPage = () => {
     const fetchData = async () => {
       try {
         const res = await axios.get(
-            `http://localhost:8080/api/analyses/recent/${enterprise}`
+          `http://localhost:8080/api/analyses/recent/${enterprise}`
         );
         setAnalysisData(res.data.data);
-
+        // 최근 세션이 있으면 selectedSessionId로 설정
+        if (res.data.data?.analysisId) {
+          setSelectedSessionId(res.data.data.analysisId);
+        }
       } catch (error) {
-        console.error("분석 데이터 불러오기 실패:", error);
+        console.error('분석 데이터 불러오기 실패:', error);
         setAnalysisData(null);
+        setSelectedSessionId(null);
       }
     };
 
     fetchData();
   }, [enterprise]);
 
+  // 세션 리스트 불러오기
+  useEffect(() => {
+    if (!enterprise) return;
+
+    const fetchSessions = async () => {
+      try {
+        const res = await axios.get(
+          `http://localhost:8080/api/analyses/sessions/${enterprise}`
+        );
+        const sessions = res.data?.data?.sessions ?? [];
+
+        const validSessions = sessions.filter(
+          (s: Session) => s.analysisId && s.analysisId !== 0
+        );
+
+        setSessionList(validSessions);
+      } catch (err) {
+        console.error('세션 목록 불러오기 실패:', err);
+        setSessionList([]);
+      }
+    };
+
+    fetchSessions();
+  }, [enterprise]);
 
   // URL의 sessionId 변경 시 상태 동기화
   // useEffect(() => {
@@ -100,70 +138,70 @@ const AnalysisPage = () => {
   //   }
   // }, [sessionId]);
 
-    // if (!enterprise) return;
+  // if (!enterprise) return;
 
-    // const fetchAllSessions = async () => {
-    //   try {
-    //     const res = await axios.get(
-    //       `http://localhost:8080/api/analyses/sessions/${enterprise}`
-    //     );
-    //
-    //     const sessionList = res.data?.data?.session ?? [];
-    //
-    //     // sessionInfoId가 '0'이거나 없는 경우 제거
-    //     const validSessions = sessionList.filter(
-    //       (s: Session) =>
-    //         s.sessionInfoId && s.sessionInfoId !== '0' && s.sessionInfoId !== 0
-    //     );
-    //
-    //     if (validSessions.length > 0) {
-    //       // 각 세션의 인터뷰 데이터를 병렬로 조회
-    //       const detailedSessions = await Promise.all(
-    //         validSessions.map(async (s: Session) => {
-    //           try {
-    //             const detailRes = await axios.get(
-    //               `http://localhost:8080/api/analyses/recent/${enterprise}`
-    //             );
-    //             const detailData = detailRes.data?.data;
-    //             return {
-    //               ...s,
-    //               interview: detailData?.interview ?? [],
-    //               // createdAt: s.createdAt ?? '',
-    //             };
-    //           } catch {
-    //             return {
-    //               ...s,
-    //               interview: [],
-    //               // createdAt: s.createdAt ?? '',
-    //             };
-    //           }
-    //         })
-    //       );
-    //
-    //       setSessions(detailedSessions);
-    //       //setSelectedSessionId(detailedSessions[0].sessionInfoId);
-    //       navigate(
-    //         `/analysis/${enterprise}`,
-    //         {
-    //           replace: true,
-    //         }
-    //       );
-    //     } else {
-    //       setSessions([]);
-    //       setSelectedSessionId(null);
-    //       setSelectedSessionData(null);
-    //       navigate(`/analysis/${enterprise}`, { replace: true });
-    //     }
-    //   } catch (err) {
-    //     console.error('세션 목록 불러오기 실패:', err);
-    //     setSessions([]);
-    //     setSelectedSessionId(null);
-    //     setSelectedSessionData(null);
-    //     navigate(`/analysis/${enterprise}`, { replace: true });
-    //   }
-    // };
-    //
-    // fetchAllSessions();
+  // const fetchAllSessions = async () => {
+  //   try {
+  //     const res = await axios.get(
+  //       `http://localhost:8080/api/analyses/sessions/${enterprise}`
+  //     );
+  //
+  //     const sessionList = res.data?.data?.session ?? [];
+  //
+  //     // sessionInfoId가 '0'이거나 없는 경우 제거
+  //     const validSessions = sessionList.filter(
+  //       (s: Session) =>
+  //         s.sessionInfoId && s.sessionInfoId !== '0' && s.sessionInfoId !== 0
+  //     );
+  //
+  //     if (validSessions.length > 0) {
+  //       // 각 세션의 인터뷰 데이터를 병렬로 조회
+  //       const detailedSessions = await Promise.all(
+  //         validSessions.map(async (s: Session) => {
+  //           try {
+  //             const detailRes = await axios.get(
+  //               `http://localhost:8080/api/analyses/recent/${enterprise}`
+  //             );
+  //             const detailData = detailRes.data?.data;
+  //             return {
+  //               ...s,
+  //               interview: detailData?.interview ?? [],
+  //               // createdAt: s.createdAt ?? '',
+  //             };
+  //           } catch {
+  //             return {
+  //               ...s,
+  //               interview: [],
+  //               // createdAt: s.createdAt ?? '',
+  //             };
+  //           }
+  //         })
+  //       );
+  //
+  //       setSessions(detailedSessions);
+  //       //setSelectedSessionId(detailedSessions[0].sessionInfoId);
+  //       navigate(
+  //         `/analysis/${enterprise}`,
+  //         {
+  //           replace: true,
+  //         }
+  //       );
+  //     } else {
+  //       setSessions([]);
+  //       setSelectedSessionId(null);
+  //       setSelectedSessionData(null);
+  //       navigate(`/analysis/${enterprise}`, { replace: true });
+  //     }
+  //   } catch (err) {
+  //     console.error('세션 목록 불러오기 실패:', err);
+  //     setSessions([]);
+  //     setSelectedSessionId(null);
+  //     setSelectedSessionData(null);
+  //     navigate(`/analysis/${enterprise}`, { replace: true });
+  //   }
+  // };
+  //
+  // fetchAllSessions();
   // }, [enterprise, navigate]);
 
   // 선택된 세션 ID가 변경되면 해당 분석 데이터 불러오기
@@ -245,32 +283,36 @@ const AnalysisPage = () => {
       <Topbar />
 
       <div className="flex flex-1 pt-[80px] overflow-hidden">
+        {/*왼쪽 사이드 바 */}
         <LeftNavbar
-            selectedTab={enterprise || ''} // 선택된 기업 이름
-            onSelectTab={(name) => {
-              const target = companyList.find(c => c.name === name);
-              if (target) {
-                navigate(`/analysis/${target.enterprise}`);
-              }
-            }}
+          selectedTab={enterprise || ''} // 선택된 기업 이름
+          onSelectTab={(name) => {
+            const target = companyList.find((c) => c.name === name);
+            if (target) {
+              navigate(`/analysis/${target.enterprise}`);
+            }
+          }}
         />
 
         {analysisData?.analysis && enterprise ? (
-            <SessionData
-                analysis={analysisData.analysis}
-                interview={analysisData.interview}
-                feedback={analysisData.feedback}
-                enterprise={enterprise}
-            />
+          <AnalysisData
+            analysis={analysisData.analysis}
+            interview={analysisData.interview}
+            feedback={analysisData.feedback}
+            enterprise={enterprise}
+          />
         ) : (
-            <NoSessionFound />
+          <NoAnalysisFound />
         )}
 
-        {/*<RightNavbar*/}
-        {/*  selectedSessionId={selectedSessionId}*/}
-        {/*  onSelectSession={handleSelectSession}*/}
-        {/*  onDeleteSession={handleDeleteSession} // 삭제 후 상태 갱신 콜백*/}
-        {/*/>*/}
+        {/*오른쪽 사이드 바 */}
+        <RightNavbar
+          sessionList={sessionList}
+          selectedSessionId={selectedSessionId}
+          onSelectSession={(id) => setSelectedSessionId(id)}
+          //onSelectSession={handleSelectSession} // 세션을 클릭했을 때 호출되는 콜백.
+          // onDeleteSession={handleDeleteSession} // 사용자가 세션 삭제 버튼(X)을 클릭했을 때 호출
+        />
       </div>
     </div>
   );

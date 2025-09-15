@@ -20,14 +20,18 @@ const InterviewPage = () => {
   const company = enterprise ? companyMap[enterprise.toUpperCase()] : undefined;
 
   // 세션, 필드 데이터
-  const [currentQuestionType, setCurrentQuestionType] = useState<'basic' | 'resume' | 'tail'>('basic');
+  const [currentQuestionType, setCurrentQuestionType] = useState<
+    'basic' | 'resume' | 'tail'
+  >('basic');
   const [isResume, setIsResume] = useState(false);
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [fieldId, setFieldId] = useState<string | null>(null);
   const [previousId, setPreviousId] = useState<string | null>(null);
   const [parentId, setParentId] = useState<string | null>(null);
   const [answer, setAnswer] = useState('');
-  const [interviewData, setInterviewData] = useState<{ questionNumber: string; question: string; answer?: string }[]>([]);
+  const [interviewData, setInterviewData] = useState<
+    { questionNumber: string; question: string; answer?: string }[]
+  >([]);
 
   // 로딩
   const [isStarting, setIsStarting] = useState(false);
@@ -108,7 +112,7 @@ const InterviewPage = () => {
       const res = await axios.post(
         'http://localhost:8080/api/interview/questions/basic',
         {
-          sessionId
+          sessionId,
         }
       );
       // 응답
@@ -121,16 +125,15 @@ const InterviewPage = () => {
 
       // 마지막 항목을 실제 질문으로 교체
       setInterviewData((prev) =>
-          prev.map((item, idx) =>
-              idx === prev.length - 1
-                  ? { questionNumber: data.questionNumber, question: data.question }
-                  : item
-          )
+        prev.map((item, idx) =>
+          idx === prev.length - 1
+            ? { questionNumber: data.questionNumber, question: data.question }
+            : item
+        )
       );
     } catch {
       alert('새로운 질문 요청에 실패했습니다.');
     }
-
   };
 
   // 이력서 질문 API
@@ -142,7 +145,9 @@ const InterviewPage = () => {
 
     // 이력서 존재 여부 체크
     if (!isResume) {
-      alert('이력서가 존재하지 않습니다. 내 정보에서 이력서를 업로드 해주세요!');
+      alert(
+        '이력서가 존재하지 않습니다. 내 정보에서 이력서를 업로드 해주세요!'
+      );
       return;
     }
 
@@ -154,10 +159,10 @@ const InterviewPage = () => {
       ]);
 
       const res = await axios.post(
-          'http://localhost:8080/api/interview/questions/resume',
-          {
-            sessionId
-          }
+        'http://localhost:8080/api/interview/questions/resume',
+        {
+          sessionId,
+        }
       );
       // 응답
       const data = res.data.data;
@@ -169,16 +174,15 @@ const InterviewPage = () => {
 
       // 마지막 항목을 실제 질문으로 교체
       setInterviewData((prev) =>
-          prev.map((item, idx) =>
-              idx === prev.length - 1
-                  ? { questionNumber: data.questionNumber, question: data.question }
-                  : item
-          )
+        prev.map((item, idx) =>
+          idx === prev.length - 1
+            ? { questionNumber: data.questionNumber, question: data.question }
+            : item
+        )
       );
     } catch {
       alert('새로운 질문 요청에 실패했습니다.');
     }
-
   };
 
   // 꼬리 질문 API
@@ -189,7 +193,11 @@ const InterviewPage = () => {
     }
 
     try {
-      let requestBody: { sessionId: string; parentId?: string; previousId?: string };
+      let requestBody: {
+        sessionId: string;
+        parentId?: string;
+        previousId?: string;
+      };
 
       if (!previousId) {
         // 첫 번째 꼬리 질문
@@ -212,8 +220,8 @@ const InterviewPage = () => {
       ]);
 
       const res = await axios.post(
-          'http://localhost:8080/api/interview/questions/tail',
-          requestBody
+        'http://localhost:8080/api/interview/questions/tail',
+        requestBody
       );
 
       // 응답
@@ -226,14 +234,14 @@ const InterviewPage = () => {
 
       // 마지막 항목을 실제 질문으로 교체
       setInterviewData((prev) =>
-          prev.map((item, idx) =>
-              idx === prev.length - 1
-                  ? {
-                    questionNumber: `${data.parentQuestionNumber}-${data.tailQuestionNumber}`,
-                    question: data.question,
-                  }
-                  : item
-          )
+        prev.map((item, idx) =>
+          idx === prev.length - 1
+            ? {
+                questionNumber: `${data.parentQuestionNumber}-${data.tailQuestionNumber}`,
+                question: data.question,
+              }
+            : item
+        )
       );
     } catch {
       alert('연계 질문 요청에 실패했습니다.');
@@ -284,7 +292,7 @@ const InterviewPage = () => {
           )
         );
         // 답변 완료 시 질문 카운트 증가
-        setQuestionCount(prev => prev + 1);
+        setQuestionCount((prev) => prev + 1);
 
         // 자동 분석 조건 확인
         if (questionCount + 1 >= MAX_QUESTIONS) {
@@ -293,7 +301,6 @@ const InterviewPage = () => {
           // 다음 질문을 기다리는 상태로 전환
           setIsWaitingNextQuestion(true);
         }
-
       } else {
         alert('답변 등록에 실패했습니다.');
       }
@@ -354,11 +361,15 @@ const InterviewPage = () => {
   const handleExit = async () => {
     if (!sessionId) return;
 
-    const confirmExit = window.confirm('지금 나가면 면접한 내용이 모두 사라집니다. 계속 나가시겠습니까?');
+    const confirmExit = window.confirm(
+      '지금 나가면 면접한 내용이 모두 사라집니다. 계속 나가시겠습니까?'
+    );
     if (!confirmExit) return; // 취소 시 종료
 
     try {
-      await axios.delete(`http://localhost:8080/api/interview/close/${sessionId}`);
+      await axios.delete(
+        `http://localhost:8080/api/interview/close/${sessionId}`
+      );
       navigate('/'); // 홈으로 이동
     } catch (error) {
       alert('면접 종료 요청에 실패했습니다.');
@@ -378,9 +389,9 @@ const InterviewPage = () => {
   // 분석 중 로딩
   if (isAnalyzing) {
     return (
-        <div className="h-screen flex items-center justify-center text-xl">
-          분석하는 중입니다...
-        </div>
+      <div className="h-screen flex items-center justify-center text-xl">
+        분석하는 중입니다...
+      </div>
     );
   }
 
@@ -403,32 +414,34 @@ const InterviewPage = () => {
             <div key={questionNumber}>
               <ChatBubble
                 type="question"
-                content={questionNumber ? `${questionNumber}. ${question}` : question}
+                content={
+                  questionNumber ? `${questionNumber}. ${question}` : question
+                }
               />
               {answer && <ChatBubble type="answer" content={answer} />}
 
               {/* 마지막 질문이며 답변이 있을 때만 버튼 노출 */}
               {index === interviewData.length - 1 && answer && (
-                  <div className="flex justify-end gap-2 mt-4">
-                    <button
-                        className="text-contentsize1 h-8 px-4 bg-white border border-gray-300 text-brandcolor rounded-md font-medium"
-                        onClick={fetchBasicQuestion}
-                    >
-                      기본 질문
-                    </button>
-                    <button
-                        className="text-contentsize1 h-8 px-4 bg-white border border-gray-300 text-brandcolor rounded-md font-medium"
-                        onClick={fetchResumeQuestion}
-                    >
-                      이력서 질문
-                    </button>
-                    <button
-                        className="text-contentsize1 h-8 px-4 bg-white border border-gray-300 text-brandcolor rounded-md font-medium"
-                        onClick={fetchTailQuestion}
-                    >
-                      연계 질문
-                    </button>
-                  </div>
+                <div className="flex justify-end gap-2 mt-4">
+                  <button
+                    className="text-contentsize1 h-8 px-4 bg-white border border-gray-300 text-brandcolor rounded-md font-medium"
+                    onClick={fetchBasicQuestion}
+                  >
+                    기본 질문
+                  </button>
+                  <button
+                    className="text-contentsize1 h-8 px-4 bg-white border border-gray-300 text-brandcolor rounded-md font-medium"
+                    onClick={fetchResumeQuestion}
+                  >
+                    이력서 질문
+                  </button>
+                  <button
+                    className="text-contentsize1 h-8 px-4 bg-white border border-gray-300 text-brandcolor rounded-md font-medium"
+                    onClick={fetchTailQuestion}
+                  >
+                    연계 질문
+                  </button>
+                </div>
               )}
             </div>
           ))}
@@ -436,11 +449,11 @@ const InterviewPage = () => {
 
         <div className="mt-4 mb-9">
           <AnswerInput
-              value={answer}
-              onChange={setAnswer}
-              onSubmit={handleSubmitAnswer}
-              onAnalyze={handleAnalyze} // 분석 버튼 핸들러 추가
-              isSubmitting={isSubmitting}
+            value={answer}
+            onChange={setAnswer}
+            onSubmit={handleSubmitAnswer}
+            onAnalyze={handleAnalyze} // 분석 버튼 핸들러 추가
+            isSubmitting={isSubmitting}
           />
         </div>
       </div>
