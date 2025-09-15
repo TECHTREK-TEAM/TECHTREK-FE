@@ -2,70 +2,71 @@ import enhanceIcon from '../../assets/icons/enhanceIcon.svg';
 import decreaseIcon from '../../assets/icons/decreaseIcon.svg';
 import ProgressBar from '../ProgressBar';
 import InterviewRecord from './InterviewRecord';
+import { companyMap } from '../../constants/companyMap';
 
 interface Analysis {
-  sessionId: string;
+  pass: boolean;
+  score: number;
   duration: number;
-  followScore?: number;
-  followAveragePercent?: number;
-  resultScore: number;
-  durationAveragePercent?: number;
-  TopScore?: number;
+  averageDurationPercent: number;
+  topScore?: number;
 }
 
 interface InterviewQA {
   question: string;
   answer: string;
   questionNumber: string;
-  tailQuestionNumber?: string;
+  similarity: number;
 }
 
 interface Feedback {
   keyword: string;
   keywordNumber: string;
-  result: string;
+  feedback: string;
 }
 
 interface SessionDataProps {
   analysis: Analysis;
   interview: InterviewQA[];
   feedback?: Feedback | null;
-  enterpriseName: string;
+  enterprise: string;
 }
 
 const SessionData = ({
   analysis,
   interview,
   feedback,
-  enterpriseName,
+  enterprise,
 }: SessionDataProps) => {
   // analysis 옵셔널 필드에 기본값 할당 (타입 안정성 위해)
   const {
+    pass,
+    score,
     duration,
-    resultScore,
-    followScore = 0,
-    followAveragePercent = 0,
-    durationAveragePercent = 0,
-    TopScore = 0,
+    averageDurationPercent = 0,
+    topScore = 0,
   } = analysis;
 
   // 피드백이 없을 때 빈 값 객체 기본 설정
   const safeFeedback: Feedback = feedback ?? {
     keyword: '',
     keywordNumber: '',
-    result: '',
+    feedback: '',
   };
 
+  // 기업이름
+  const company = enterprise ? companyMap[enterprise.toUpperCase()] : undefined;
+
   // 질문번호에 연계질문 번호 포함해 문자열 생성
-  const interviewData = interview.map(
-    ({ question, answer, questionNumber, tailQuestionNumber }) => ({
-      questionNumber: tailQuestionNumber
-        ? `${questionNumber}-${tailQuestionNumber}`
-        : questionNumber,
-      question,
-      answer,
-    })
-  );
+  // const interviewData = interview.map(
+  //   ({ question, answer, questionNumber }) => ({
+  //     questionNumber: tailQuestionNumber
+  //       ? `${questionNumber}-${tailQuestionNumber}`
+  //       : questionNumber,
+  //     question,
+  //     answer,
+  //   })
+  // );
 
   return (
     <div className="flex-1 overflow-y-auto p-8 scrollbar-hide">
@@ -83,42 +84,42 @@ const SessionData = ({
               </p>
               <p
                 className="font-semibold text-[28px] text-left"
-                style={{ color: resultScore >= 70 ? '#5f43ff' : '#FE8700' }}
+                style={{ color: pass ? '#5f43ff' : '#FE8700' }}
               >
-                {resultScore >= 70 ? '합격' : '불합격'}
+                {pass ? '합격' : '불합격'}
               </p>
             </div>
 
             {/* 연계질문 대응력 */}
-            <div className="flex flex-col flex-1 bg-white rounded-2xl p-6 gap-6">
-              <p className="font-medium text-contentsize1 text-customgray text-left">
-                연계질문 대응력
-              </p>
-              <div className="flex flex-col gap-[2px]">
-                <p className="font-semibold text-[28px] text-primary text-left">
-                  {followScore}점
-                </p>
-                <p className="flex items-center gap-[6px] font-medium text-sm text-customgray">
-                  <img
-                    src={followAveragePercent >= 0 ? enhanceIcon : decreaseIcon}
-                    className="select-none"
-                    alt={followAveragePercent >= 0 ? '상승' : '하락'}
-                  />
-                  <span
-                    className={
-                      followAveragePercent >= 0
-                        ? 'text-[#0c8800]'
-                        : 'text-[#880000]'
-                    }
-                  >
-                    {Math.round(Math.abs(followAveragePercent) * 100)}%
-                  </span>{' '}
-                  {followAveragePercent >= 0
-                    ? '평균보다 높음'
-                    : '평균보다 낮음'}
-                </p>
-              </div>
-            </div>
+            {/*<div className="flex flex-col flex-1 bg-white rounded-2xl p-6 gap-6">*/}
+            {/*  <p className="font-medium text-contentsize1 text-customgray text-left">*/}
+            {/*    연계질문 대응력*/}
+            {/*  </p>*/}
+            {/*  <div className="flex flex-col gap-[2px]">*/}
+            {/*    <p className="font-semibold text-[28px] text-primary text-left">*/}
+            {/*      {followScore}점*/}
+            {/*    </p>*/}
+            {/*    <p className="flex items-center gap-[6px] font-medium text-sm text-customgray">*/}
+            {/*      <img*/}
+            {/*        src={followAveragePercent >= 0 ? enhanceIcon : decreaseIcon}*/}
+            {/*        className="select-none"*/}
+            {/*        alt={followAveragePercent >= 0 ? '상승' : '하락'}*/}
+            {/*      />*/}
+            {/*      <span*/}
+            {/*        className={*/}
+            {/*          followAveragePercent >= 0*/}
+            {/*            ? 'text-[#0c8800]'*/}
+            {/*            : 'text-[#880000]'*/}
+            {/*        }*/}
+            {/*      >*/}
+            {/*        {Math.round(Math.abs(followAveragePercent) * 100)}%*/}
+            {/*      </span>{' '}*/}
+            {/*      {followAveragePercent >= 0*/}
+            {/*        ? '평균보다 높음'*/}
+            {/*        : '평균보다 낮음'}*/}
+            {/*    </p>*/}
+            {/*  </div>*/}
+            {/*</div>*/}
 
             {/* 답변 일치율 */}
             <div className="flex flex-col flex-1 bg-white rounded-2xl p-6 gap-6">
@@ -128,20 +129,20 @@ const SessionData = ({
               <div className="flex gap-6">
                 <div className="flex flex-col gap-[2px] min-w-fit">
                   <p className="font-semibold text-[28px] text-primary text-left">
-                    {Math.round(resultScore)}%
+                    {Math.round(score)}%
                   </p>
                   <p className="flex items-center gap-[6px] font-medium text-sm text-customgray whitespace-nowrap">
                     {(() => {
-                      if (resultScore >= 76) return '월등히 합격';
-                      if (resultScore >= 70) return '간신히 합격';
-                      if (resultScore >= 65) return '아쉽게 불합격';
+                      if (score >= 76) return '월등히 합격';
+                      if (score >= 70) return '간신히 합격';
+                      if (score >= 65) return '아쉽게 불합격';
                       return '불합격';
                     })()}
                   </p>
                 </div>
                 <div className="flex-1">
                   <ProgressBar
-                    percentage={Math.round(resultScore)}
+                    percentage={Math.round(score)}
                     showShadowBar={false}
                     showPercentageText={false}
                   />
@@ -161,21 +162,21 @@ const SessionData = ({
                 <p className="flex items-center gap-[6px] font-medium text-sm text-customgray">
                   <img
                     src={
-                      durationAveragePercent >= 0 ? enhanceIcon : decreaseIcon
+                      averageDurationPercent >= 0 ? enhanceIcon : decreaseIcon
                     }
                     className="select-none"
-                    alt={durationAveragePercent >= 0 ? '빠름' : '느림'}
+                    alt={averageDurationPercent >= 0 ? '빠름' : '느림'}
                   />
                   <span
                     className={
-                      durationAveragePercent >= 0
+                      averageDurationPercent >= 0
                         ? 'text-[#0c8800]'
                         : 'text-[#880000]'
                     }
                   >
-                    {Math.round(Math.abs(durationAveragePercent))}%
+                    {Math.round(Math.abs(averageDurationPercent))}%
                   </span>{' '}
-                  {durationAveragePercent >= 0
+                  {averageDurationPercent >= 0
                     ? '평균보다 빠름'
                     : '평균보다 느림'}
                 </p>
@@ -187,11 +188,11 @@ const SessionData = ({
           <div className="w-full h-[237px] p-6 bg-white flex flex-col gap-6 rounded-2xl">
             <div className="flex flex-col gap-4">
               <p className="text-contentsize1 text-customgray font-medium text-left">
-                {enterpriseName} 기업에서 나는 상위 몇 %?
+                {company?.name} 기업에서 나는 상위 몇 %?
               </p>
               <div className="flex gap-2 items-center">
                 <p className="text-[28px] text-primary font-semibold">
-                  상위 {TopScore}%
+                  상위 {topScore}%
                 </p>
                 <p className="text-sm font-medium text-customgray">
                   유일한 님의 면접 결과
@@ -207,7 +208,7 @@ const SessionData = ({
                 ))}
               </div>
               <ProgressBar
-                percentage={100 - TopScore}
+                percentage={100 - topScore}
                 showPercentageText={false}
               />
             </div>
@@ -219,8 +220,8 @@ const SessionData = ({
           면접 내용
         </p>
         <InterviewRecord
-          interviewData={interviewData}
-          enterpriseName={enterpriseName}
+          interviewData={interview}
+          enterprise={company?.name ?? ''}
         />
 
         {/* 면접 피드백 */}
@@ -242,7 +243,7 @@ const SessionData = ({
             </div>
           </div>
           <p className="font-regular text-contentsize1 text-primary text-left">
-            {safeFeedback.result}
+            {safeFeedback.feedback}
           </p>
         </div>
       </div>

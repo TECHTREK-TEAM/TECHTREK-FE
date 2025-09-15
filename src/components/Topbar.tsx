@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useLocation, NavLink, useNavigate } from 'react-router-dom';
 import LoginModal from '../components/Homes/LoginModal';
-import { mockSessions } from '../constants/mockSessions';
+import { companyList } from '../constants/companyMap';
 
 const menuItems = [
   { label: '홈', path: '/' },
@@ -36,12 +36,15 @@ const Topbar = () => {
     };
   }, [isHome]);
 
+  // 면접 분석 클릭
   const handleAnalysisClick = () => {
-    if (mockSessions.length === 0) {
+    // const first = companyList[0];
+    // navigate(`/analysis/${first.enterprise}`);
+    if (companyList.length === 0) {
       navigate('/analysis'); // 안내 페이지로 이동
     } else {
-      const first = mockSessions[0];
-      navigate(`/analysis/${first.enterpriseName}/${first.sessionInfoId}`);
+      const first = companyList[0];
+      navigate(`/analysis/${first.enterprise}`);
     }
   };
 
