@@ -15,6 +15,23 @@ import Coupang2 from '../assets/images/enterprise/coupang2.png';
 import Toss2 from '../assets/images/enterprise/toss2.png';
 import DanggeunMarket2 from '../assets/images/enterprise/danggeunMarket2.png';
 
+import TossTabIcon from '../assets/icons/tossTabIcon.svg';
+import TossTabIconSelected from '../assets/icons/tossTabIconSelected.svg';
+import NaverTabIcon from '../assets/icons/naverTabIcon.svg';
+import NaverTabIconSelected from '../assets/icons/naverTabIconSelected.svg';
+import DanggeunMarketTabIcon from '../assets/icons/DMTabIcon.svg';
+import DanggeunMarketTabIconSelected from '../assets/icons/DMTabIconSelected.svg';
+import SamsungTabIcon from '../assets/icons/samsungTabIcon.svg';
+import SamsungTabIconSelected from '../assets/icons/samsungTabIconSelected.svg';
+import BaeminTabIcon from '../assets/icons/PoBTabIcon.svg';
+import BaeminTabIconSelected from '../assets/icons/PoBTabIconSelected.svg';
+import NexonTabIcon from '../assets/icons/nexonTabIcon.svg';
+import NexonTabIconSelected from '../assets/icons/nexonTabIconSelected.svg';
+import KakaoTabIcon from '../assets/icons/kakaoTabIcon.svg';
+import KakaoTabIconSelected from '../assets/icons/kakaoTabIconSelected.svg';
+import CoupangTabIcon from '../assets/icons/coupangTabIcon.svg';
+import CoupangTabIconSelected from '../assets/icons/coupangTabIconSelected.svg';
+
 export interface Company {
     enterprise: string;
     name: string;
@@ -23,6 +40,8 @@ export interface Company {
     mainWidth: string;
     mainHeight: string;
     subLogo: string;
+    tapIcon: string;
+    tapIconSelected: string;
 }
 
 // 배열
@@ -35,6 +54,8 @@ export const companyList: Company[] = [
         mainWidth: "w-[100%]",
         mainHeight: "h-[100%]",
         subLogo: Toss2,
+        tapIcon: TossTabIcon,
+        tapIconSelected: TossTabIconSelected
     },
     {
         enterprise: "NAVER",
@@ -44,6 +65,8 @@ export const companyList: Company[] = [
         mainWidth: "w-[100%]",
         mainHeight: "h-[100%]",
         subLogo: Naver2,
+        tapIcon: NaverTabIcon,
+        tapIconSelected: NaverTabIconSelected
     },
     {
         enterprise: "DANGGEUN_MARKET",
@@ -53,6 +76,8 @@ export const companyList: Company[] = [
         mainWidth: "w-[80%]",
         mainHeight: "h-[80%]",
         subLogo: DanggeunMarket2,
+        tapIcon: DanggeunMarketTabIcon,
+        tapIconSelected: DanggeunMarketTabIconSelected
     },
     {
         enterprise: "SAMSUNG",
@@ -62,6 +87,8 @@ export const companyList: Company[] = [
         mainWidth: "w-[80%]",
         mainHeight: "h-[80%]",
         subLogo: Samsung2,
+        tapIcon: SamsungTabIcon,
+        tapIconSelected: SamsungTabIconSelected
     },
     {
         enterprise: "BAEMIN",
@@ -71,6 +98,8 @@ export const companyList: Company[] = [
         mainWidth: "w-[80%]",
         mainHeight: "h-[80%]",
         subLogo: Baemin2,
+        tapIcon: BaeminTabIcon,
+        tapIconSelected: BaeminTabIconSelected
     },
     {
         enterprise: "NEXON",
@@ -80,6 +109,8 @@ export const companyList: Company[] = [
         mainWidth: "w-[100%]",
         mainHeight: "h-[100%]",
         subLogo: Nexon2,
+        tapIcon: NexonTabIcon,
+        tapIconSelected: NexonTabIconSelected
     },
     {
         enterprise: "KAKAO",
@@ -89,6 +120,8 @@ export const companyList: Company[] = [
         mainWidth: "w-[80%]",
         mainHeight: "h-[80%]",
         subLogo: Kakao2,
+        tapIcon: KakaoTabIcon,
+        tapIconSelected: KakaoTabIconSelected
     },
     {
         enterprise: "COUPANG",
@@ -98,6 +131,8 @@ export const companyList: Company[] = [
         mainWidth: "w-[80%]",
         mainHeight: "h-[80%]",
         subLogo: Coupang2,
+        tapIcon: CoupangTabIcon,
+        tapIconSelected: CoupangTabIconSelected
     },
 ];
 

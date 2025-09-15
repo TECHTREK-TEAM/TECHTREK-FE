@@ -1,13 +1,14 @@
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 // import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 import Topbar from '../components/Topbar';
-// import LeftNavbar from '../components/Analyses/LeftNavbar';
+import LeftNavbar from '../components/Analyses/LeftNavbar';
 // import RightNavbar from '../components/Analyses/RightNavbar';
 import SessionData from '../components/Analyses/SessionData';
 import NoSessionFound from '../components/Analyses/NoSessionFound';
+import { companyList } from '../constants/companyMap';
 
 // API 응답
 interface Analysis {
@@ -52,6 +53,8 @@ const AnalysisPage = () => {
 
   // 기업 이름
   const { enterprise } = useParams<{ enterprise: string }>();
+
+  const navigate = useNavigate();
 
   // 현재 선택된 세션 ID
   // const [selectedSessionId, setSelectedSessionId] = useState<string | null>(
@@ -242,20 +245,15 @@ const AnalysisPage = () => {
       <Topbar />
 
       <div className="flex flex-1 pt-[80px] overflow-hidden">
-        {/*<LeftNavbar*/}
-        {/*  // selectedTab={enterprise || ''}*/}
-        {/*  // onSelectTab={(label) => {*/}
-        {/*  //   const targetSessions = sessions.filter(*/}
-        {/*  //     (s) => s.enterpriseName === label*/}
-        {/*  //   );*/}
-        {/*  //   if (targetSessions.length > 0) {*/}
-        {/*  //     handleSelectSession(targetSessions[0].sessionInfoId);*/}
-        {/*  //   } else {*/}
-        {/*  //     navigate(`/analysis/${label}/null`);*/}
-        {/*  //   }*/}
-        {/*  //   console*/}
-        {/*  // }}*/}
-        {/*/>*/}
+        <LeftNavbar
+            selectedTab={enterprise || ''} // 선택된 기업 이름
+            onSelectTab={(name) => {
+              const target = companyList.find(c => c.name === name);
+              if (target) {
+                navigate(`/analysis/${target.enterprise}`);
+              }
+            }}
+        />
 
         {analysisData?.analysis && enterprise ? (
             <SessionData
