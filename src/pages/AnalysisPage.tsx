@@ -138,6 +138,42 @@ const AnalysisPage = () => {
     }
   };
 
+  // 선택한 세션 삭제
+  const handleDeleteSession = async (id: number) => {
+    // 사용자 확인
+    if (!window.confirm('정말 이 세션을 삭제하시겠습니까?')) return;
+
+    try {
+      const res = await axios.delete(`http://localhost:8080/api/analyses/${id}`);
+
+      if (res.data?.success) {
+        // 삭제 후 상태 업데이트
+        setSessionList((prevSessions) => {
+          const filtered = prevSessions.filter((s) => s.analysisId !== id);
+
+          // 삭제한 세션이 현재 선택된 세션이면
+          if (selectedSessionId === id) {
+            if (filtered.length > 0) {
+              // 남은 세션 중 첫 번째 선택
+              handleSelectSession(filtered[0].analysisId);
+            } else {
+              setSelectedSessionId(null);
+              setAnalysisData(null);
+            }
+          }
+
+          return filtered;
+        });
+      } else {
+        alert('세션 삭제에 실패했습니다.');
+      }
+    } catch (error) {
+      console.error('세션 삭제 실패:', error);
+      alert('세션 삭제 중 오류가 발생했습니다.');
+    }
+  };
+
+
   // URL의 sessionId 변경 시 상태 동기화
   // useEffect(() => {
   //   if (sessionId && sessionId !== 'null') {
@@ -320,7 +356,8 @@ const AnalysisPage = () => {
           selectedSessionId={selectedSessionId}
           // onSelectSession={(id) => setSelectedSessionId(id)}
           onSelectSession={handleSelectSession}
-          //onSelectSession={handleSelectSession} // 세션을 클릭했을 때 호출되는 콜백.
+          onDeleteSession={handleDeleteSession}
+            //onSelectSession={handleSelectSession} // 세션을 클릭했을 때 호출되는 콜백.
           // onDeleteSession={handleDeleteSession} // 사용자가 세션 삭제 버튼(X)을 클릭했을 때 호출
         />
       </div>

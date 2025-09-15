@@ -1,6 +1,6 @@
 import React from 'react';
 // import axios from 'axios';
-// import closeIcon from '../../assets/icons/closeIcon.svg';
+import closeIcon from '../../assets/icons/closeIcon.svg';
 
 // interface QA {
 //   questionNumber: string;
@@ -19,7 +19,7 @@ interface RightNavbarProps {
   sessionList: Session[];
   selectedSessionId: number | null;
   onSelectSession?: (id: number) => void; // 선택 콜백
-  // onDeleteSession: (id: string) => void;
+  onDeleteSession: (id: number) => void;
 }
 
 // const RightNavbar: React.FC<RightNavbarProps> = ({
@@ -78,6 +78,7 @@ const RightNavbar: React.FC<RightNavbarProps> = ({
   sessionList,
   selectedSessionId,
   onSelectSession,
+  onDeleteSession,
 }) => {
   return (
     <div className="w-[360px] h-full border-l border-[#E5E5EC]">
@@ -101,6 +102,19 @@ const RightNavbar: React.FC<RightNavbarProps> = ({
                       {session.createdAt ? session.createdAt.split('T')[0] : ''}
                     </span>
                   </div>
+
+                    {/* 삭제 버튼 */}
+                    <button
+                        onClick={(e) => {
+                            e.stopPropagation(); // 클릭이 세션 선택으로 전파되지 않도록
+                            onDeleteSession(session.analysisId); // 부모에서 정의한 handleDeleteSession 호출
+                        }}
+                        className="w-4 h-4"
+                        aria-label="Delete session"
+                        type="button"
+                    >
+                        <img src={closeIcon} alt="close" className="w-full h-full"/>
+                    </button>
                 </div>
               </li>
             );
@@ -112,13 +126,13 @@ const RightNavbar: React.FC<RightNavbarProps> = ({
 };
 
 {
-  /*<ul className="flex flex-col items-center mx-3">*/
+    /*<ul className="flex flex-col items-center mx-3">*/
 }
 {
-  /*  {sessions.map((session) => {*/
+    /*  {sessions.map((session) => {*/
 }
 {
-  /*    const isSelected = selectedSessionId === session.sessionInfoId;*/
+    /*    const isSelected = selectedSessionId === session.sessionInfoId;*/
 }
 
 {
