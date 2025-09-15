@@ -1,5 +1,5 @@
-import enhanceIcon from '../../assets/icons/enhanceIcon.svg';
-import decreaseIcon from '../../assets/icons/decreaseIcon.svg';
+//import enhanceIcon from '../../assets/icons/enhanceIcon.svg';
+//import decreaseIcon from '../../assets/icons/decreaseIcon.svg';
 import ProgressBar from '../ProgressBar';
 import InterviewRecord from './InterviewRecord';
 import { companyMap } from '../../constants/companyMap';
@@ -43,7 +43,7 @@ const SessionData = ({
     pass,
     score,
     duration,
-    averageDurationPercent = 0,
+    //averageDurationPercent = 0,
     topScore = 0,
   } = analysis;
 
@@ -117,27 +117,27 @@ const SessionData = ({
                 <p className="font-semibold text-[28px] text-primary text-left">
                   {duration}분
                 </p>
-                <p className="flex items-center gap-[6px] font-medium text-sm text-customgray">
-                  <img
-                    src={
-                      averageDurationPercent >= 0 ? enhanceIcon : decreaseIcon
-                    }
-                    className="select-none"
-                    alt={averageDurationPercent >= 0 ? '빠름' : '느림'}
-                  />
-                  <span
-                    className={
-                      averageDurationPercent >= 0
-                        ? 'text-[#0c8800]'
-                        : 'text-[#880000]'
-                    }
-                  >
-                    {Math.round(Math.abs(averageDurationPercent))}%
-                  </span>{' '}
-                  {averageDurationPercent >= 0
-                    ? '평균보다 빠름'
-                    : '평균보다 느림'}
-                </p>
+                {/*<p className="flex items-center gap-[6px] font-medium text-sm text-customgray">*/}
+                {/*  <img*/}
+                {/*    src={*/}
+                {/*      averageDurationPercent >= 0 ? enhanceIcon : decreaseIcon*/}
+                {/*    }*/}
+                {/*    className="select-none"*/}
+                {/*    alt={averageDurationPercent >= 0 ? '빠름' : '느림'}*/}
+                {/*  />*/}
+                {/*  <span*/}
+                {/*    className={*/}
+                {/*      averageDurationPercent >= 0*/}
+                {/*        ? 'text-[#0c8800]'*/}
+                {/*        : 'text-[#880000]'*/}
+                {/*    }*/}
+                {/*  >*/}
+                {/*    {Math.round(Math.abs(averageDurationPercent))}%*/}
+                {/*  </span>{' '}*/}
+                {/*  {averageDurationPercent >= 0*/}
+                {/*    ? '평균보다 빠름'*/}
+                {/*    : '평균보다 느림'}*/}
+                {/*</p>*/}
               </div>
             </div>
           </div>

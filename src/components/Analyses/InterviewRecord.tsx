@@ -17,7 +17,7 @@ const InterviewRecord = ({
   enterprise,
 }: InterviewRecordProps) => {
   return (
-    <div className="w-full h-[655px] mt-5 px-[50px] bg-white rounded-2xl flex flex-col justify-between">
+    <div className="w-full h-[655px] mt-5 py-[50px] px-[50px] bg-white rounded-2xl flex flex-col justify-between">
       <InterviewTitle>{enterprise} 기술면접</InterviewTitle>
 
       <div className="flex-1 overflow-y-auto px-[20px] pt-[30px] space-y-10 scrollbar-hide">
