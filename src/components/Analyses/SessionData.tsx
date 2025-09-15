@@ -57,17 +57,6 @@ const SessionData = ({
   // 기업이름
   const company = enterprise ? companyMap[enterprise.toUpperCase()] : undefined;
 
-  // 질문번호에 연계질문 번호 포함해 문자열 생성
-  // const interviewData = interview.map(
-  //   ({ question, answer, questionNumber }) => ({
-  //     questionNumber: tailQuestionNumber
-  //       ? `${questionNumber}-${tailQuestionNumber}`
-  //       : questionNumber,
-  //     question,
-  //     answer,
-  //   })
-  // );
-
   return (
     <div className="flex-1 overflow-y-auto p-8 scrollbar-hide">
       <div className="h-fit">
@@ -89,37 +78,6 @@ const SessionData = ({
                 {pass ? '합격' : '불합격'}
               </p>
             </div>
-
-            {/* 연계질문 대응력 */}
-            {/*<div className="flex flex-col flex-1 bg-white rounded-2xl p-6 gap-6">*/}
-            {/*  <p className="font-medium text-contentsize1 text-customgray text-left">*/}
-            {/*    연계질문 대응력*/}
-            {/*  </p>*/}
-            {/*  <div className="flex flex-col gap-[2px]">*/}
-            {/*    <p className="font-semibold text-[28px] text-primary text-left">*/}
-            {/*      {followScore}점*/}
-            {/*    </p>*/}
-            {/*    <p className="flex items-center gap-[6px] font-medium text-sm text-customgray">*/}
-            {/*      <img*/}
-            {/*        src={followAveragePercent >= 0 ? enhanceIcon : decreaseIcon}*/}
-            {/*        className="select-none"*/}
-            {/*        alt={followAveragePercent >= 0 ? '상승' : '하락'}*/}
-            {/*      />*/}
-            {/*      <span*/}
-            {/*        className={*/}
-            {/*          followAveragePercent >= 0*/}
-            {/*            ? 'text-[#0c8800]'*/}
-            {/*            : 'text-[#880000]'*/}
-            {/*        }*/}
-            {/*      >*/}
-            {/*        {Math.round(Math.abs(followAveragePercent) * 100)}%*/}
-            {/*      </span>{' '}*/}
-            {/*      {followAveragePercent >= 0*/}
-            {/*        ? '평균보다 높음'*/}
-            {/*        : '평균보다 낮음'}*/}
-            {/*    </p>*/}
-            {/*  </div>*/}
-            {/*</div>*/}
 
             {/* 답변 일치율 */}
             <div className="flex flex-col flex-1 bg-white rounded-2xl p-6 gap-6">
