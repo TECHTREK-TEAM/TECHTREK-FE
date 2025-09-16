@@ -13,7 +13,7 @@ interface Stack {
 
 interface ProfileCardProps {
   name: string;
-  role: string;
+  position: string;
   seniority: string;
   stacks?: Stack[];
 }
@@ -36,13 +36,13 @@ const stackIconMap: Record<string, string> = {
 
 const ProfileCard = ({
   name: initialName,
-  role: initialRole,
+  position: initialPostion,
   seniority: initialSeniority,
   stacks = [],
 }: ProfileCardProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const [name, setName] = useState(initialName);
-  const [role, setRole] = useState(initialRole);
+  const [position, setPosition] = useState(initialPostion);
   const [seniority, setSeniority] = useState(initialSeniority);
   const [stackItems, setStackItems] = useState<string[]>(
     stacks.map((s) => s.stackName)
@@ -61,8 +61,8 @@ const ProfileCard = ({
   }, [initialName]);
 
   useEffect(() => {
-    setRole(initialRole);
-  }, [initialRole]);
+    setPosition(initialPostion);
+  }, [initialPostion]);
 
   useEffect(() => {
     setSeniority(initialSeniority);
@@ -108,7 +108,7 @@ const ProfileCard = ({
     try {
       await axios.patch('http://localhost:8080/api/users/info', {
         name,
-        role,
+        position,
         seniority,
         stacks: stackItems.map((s) => ({ stackName: s })),
       });
@@ -153,7 +153,7 @@ const ProfileCard = ({
                 className="text-[15px] text-left border border-gray-300 px-2 py-1 rounded-md w-full"
                 onClick={() => setShowGroupModal(true)}
               >
-                {role}
+                {position}
               </button>
               {showGroupModal && (
                 <div
@@ -164,7 +164,7 @@ const ProfileCard = ({
                     <div
                       key={group}
                       onClick={() => {
-                        setRole(group);
+                        setPosition(group);
                         setShowGroupModal(false);
                       }}
                       className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm"
@@ -176,7 +176,7 @@ const ProfileCard = ({
               )}
             </>
           ) : (
-            <p className="text-[15px]">{role}</p>
+            <p className="text-[15px]">{position}</p>
           )}
         </div>
 

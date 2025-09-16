@@ -20,7 +20,7 @@ function App() {
 
         <Route path="/mypage" element={<MyPage />} />
         <Route path="/analysis" element={<NoSessionPage />} />
-        <Route path="/analysis/:enterprise/:sessionId" element={<Analysis />} />
+        <Route path="/analysis/:enterprise" element={<Analysis />} />
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </BrowserRouter>

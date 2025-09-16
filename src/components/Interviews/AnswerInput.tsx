@@ -7,7 +7,6 @@ interface AnswerInputProps {
   onSubmit: () => void;
   onAnalyze?: () => void; // 분석 버튼 클릭 시 실행할 콜백
   isSubmitting?: boolean;
-
 }
 
 function AnswerInput({
@@ -31,17 +30,25 @@ function AnswerInput({
       {/* 버튼 그룹 */}
       <div className="absolute bottom-2 right-2 flex gap-2">
         <button
-            className="text-contentsize1 h-8 px-3 bg-white border-[1px] text-brandcolor font-medium border-gray-300 rounded-md"
-            onClick={onAnalyze} // 분석 버튼 누르면 실행됨
+          className="text-contentsize1 h-8 px-3 bg-white border-[1px] text-brandcolor font-medium border-gray-300 rounded-md"
+          onClick={onAnalyze} // 분석 버튼 누르면 실행됨
         >
           분석하기
         </button>
         <button
-            className="text-contentsize1 h-8 px-3 bg-brandcolor text-white rounded-md flex items-center justify-center"
-            onClick={onSubmit}
-            disabled={isSubmitting} // 제출 중엔 버튼 비활성화
+          className="text-contentsize1 h-8 px-3 bg-brandcolor text-white rounded-md flex items-center justify-center"
+          onClick={onSubmit}
+          disabled={isSubmitting} // 제출 중엔 버튼 비활성화
         >
-          {isSubmitting ? '제출중...' : <img src={upArrowIcon} alt="입력 아이콘" className="h-[14px] w-[11px]"/>}
+          {isSubmitting ? (
+            '제출중...'
+          ) : (
+            <img
+              src={upArrowIcon}
+              alt="입력 아이콘"
+              className="h-[14px] w-[11px]"
+            />
+          )}
         </button>
       </div>
     </div>
