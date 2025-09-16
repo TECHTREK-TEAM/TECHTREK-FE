@@ -82,14 +82,14 @@ const MyPage = () => {
             pass: interviews.highestScore.pass,
             score: interviews.highestScore.score,
             enterpriseName: interviews.highestScore.enterpriseName,
-            analysisRole: interviews.highestScore.analysisRole,
+            analysisPosition: interviews.highestScore.analysisPosition,
           },
           {
             title: '내가 가장 최근에 본 면접',
             pass: interviews.recentInterview.pass,
             score: interviews.recentInterview.score,
             enterpriseName: interviews.recentInterview.enterpriseName,
-            analysisRole: interviews.recentInterview.analysisRole,
+            analysisPosition: interviews.recentInterview.analysisPosition,
           },
         ]
       : [];
@@ -113,7 +113,7 @@ const MyPage = () => {
             {!userInfoLoading && userInfo && (
               <ProfileCard
                 name={userInfo.name}
-                role={userInfo.role}
+                position={userInfo.position}
                 seniority={userInfo.seniority}
                 stacks={userInfo.stacks}
               />
@@ -254,7 +254,7 @@ const MyPage = () => {
                         pass={card.pass}
                         score={card.score}
                         enterpriseName={card.enterpriseName}
-                        analysisRole={card.analysisRole}
+                        analysisPosition={card.analysisPosition}
                         name={userInfo?.name ?? ''}
                       />
                     </div>

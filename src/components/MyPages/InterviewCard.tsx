@@ -7,7 +7,7 @@ interface InterviewCardProps {
   pass: boolean;
   score: number;
   enterpriseName: string;
-  analysisRole: string;
+  analysisPosition: string;
   name: string;
 }
 
@@ -16,7 +16,7 @@ const InterviewCard = ({
   pass,
   score,
   enterpriseName,
-  analysisRole,
+  analysisPosition,
   name,
 }: InterviewCardProps) => {
   return (
@@ -45,7 +45,7 @@ const InterviewCard = ({
         <div className="flex flex-col text-left">
           <p className="text-[12px] font-semibold text-[#505050]">{name}</p>
           <p className="text-[12px] font-semibold text-customgray">
-            {analysisRole}
+            {analysisPosition}
           </p>
         </div>
       </div>
