@@ -9,8 +9,13 @@ import './CurveSlideSlick.css';
 const CurveSlideSlick = () => {
   const navigate = useNavigate();
   const [currentSlide, setCurrentSlide] = useState(0);
+  const token = localStorage.getItem('token');
 
   const handleInterviewClick = (enterprise: string) => {
+    if (!token) {
+      alert('로그인 후 이용 가능합니다.');
+      return;
+    }
     navigate(`/interview/${enterprise}`);
   };
 

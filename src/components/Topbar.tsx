@@ -1,62 +1,65 @@
 import { useEffect, useState } from 'react';
-import { useLocation, NavLink, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import LoginModal from '../components/Homes/LoginModal';
 import { companyList } from '../constants/companyMap';
-import dropdownIcon from '../assets/icons/dropdownIcon.svg'; // 화살표 아이콘 추가
-
-const menuItems = [
-  { label: '홈', path: '/' },
-  { label: '내 정보', path: '/mypage' },
-];
+import dropdownIcon from '../assets/icons/dropdownIcon.svg';
 
 const Topbar = () => {
-  const location = useLocation();
   const navigate = useNavigate();
-  const isHome = location.pathname === '/';
+  const isHome = location.pathname === '/'; // 현재 경로가 홈인지 확인
 
-  const [isLoginOpen, setIsLoginOpen] = useState(false);
-  const [isScrolledPast, setIsScrolledPast] = useState(false);
-  const [username, setUsername] = useState<string | null>(null);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  // 상태 관리
+  const [isLoginOpen, setIsLoginOpen] = useState(false); // 로그인 모달 열림 상태
+  const [isScrolledPast, setIsScrolledPast] = useState(false); // 스크롤 위치 상태
+  const [username, setUsername] = useState<string | null>(null); // 로그인한 사용자 이름
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false); // 드롭다운 메뉴 상태
 
-  function openLogin() {
-    setIsLoginOpen(true);
-  }
+  // 로컬스토리지에서 토큰/이름 가져오기
+  const token = localStorage.getItem('token');
+  const name = localStorage.getItem('username');
 
-  function closeLogin() {
-    setIsLoginOpen(false);
-  }
+  // 로그인 모달 열기/닫기
+  const openLogin = () => setIsLoginOpen(true);
+  const closeLogin = () => setIsLoginOpen(false);
 
-  // 토큰/이름 확인
+  // 컴포넌트 마운트 시 토큰/이름 확인 후 상태 설정
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    const name = localStorage.getItem('username');
     if (token && name) {
       setUsername(name);
     } else {
       setUsername(null);
     }
+  }, [token, name]);
+
+  // 스크롤 이벤트에 따른 배경 색상 변경
+  useEffect(() => {
+    const handleScroll = () => setIsScrolledPast(window.scrollY >= 100);
+    window.addEventListener('scroll', handleScroll);
+    handleScroll(); // 초기 실행
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  useEffect(() => {
-    if (!isHome) return;
-    const handleScroll = () => {
-      setIsScrolledPast(window.scrollY >= 100);
-    };
-    window.addEventListener('scroll', handleScroll);
-    handleScroll();
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, [isHome]);
+  // 메뉴 클릭 시 로그인 확인 + 이동
+  const handleNavigation = (path: string) => {
+    if (!token) {
+      alert('로그인 후 이용 가능합니다.');
+      return;
+    }
+    navigate(path);
+  };
 
-  // 면접 분석 클릭
+  // 면접 분석 버튼 클릭
   const handleAnalysisClick = () => {
+    if (!token) {
+      alert('로그인 후 이용 가능합니다.');
+      return;
+    }
+
     if (companyList.length === 0) {
-      navigate('/analysis'); // 안내 페이지
+      navigate('/analysis'); // 면접 분석 안내 페이지로 이동
     } else {
       const first = companyList[0];
-      navigate(`/analysis/${first.enterprise}`);
+      navigate(`/analysis/${first.enterprise}`); // 첫 번째 기업 분석 페이지로 이동
     }
   };
 
@@ -66,33 +69,39 @@ const Topbar = () => {
     localStorage.removeItem('username');
     setUsername(null);
     setIsDropdownOpen(false);
-    navigate('/'); // 홈으로 이동
+    window.location.href = '/'; // 홈으로 이동 (새로고침)
   };
 
-  const bgClass = !isHome || isScrolledPast ? 'bg-primary' : 'bg-transparent';
+  // 스크롤 상태에 따른 배경 클래스
+  const bgClass =  !isHome ||isScrolledPast ? 'bg-primary' : 'bg-transparent';
 
   return (
       <header
           className={`fixed top-0 left-0 right-0 z-50 min-h-[80px] ${bgClass} transition-colors duration-300 flex items-center justify-between px-8`}
           style={{ width: '100%' }}
       >
+        {/* 좌측: 로고 + 메뉴 */}
         <div className="flex items-center justify-between w-1/3 min-w-[450px]">
           <div className="text-logosize font-semibold text-white">TECHTREK</div>
 
           <nav className="flex items-center gap-12">
-            {menuItems.map(({ label, path }) => (
-                <NavLink
-                    key={label}
-                    to={path}
-                    className={({ isActive }) =>
-                        `text-white transition-font ${
-                            isActive ? 'font-semibold' : 'font-medium'
-                        }`
-                    }
-                >
-                  {label}
-                </NavLink>
-            ))}
+            {/* 홈 버튼 */}
+            <button
+                onClick={() => navigate('/')}
+                className="text-white font-medium text-contentsize1"
+            >
+              홈
+            </button>
+
+            {/* 내 정보 버튼 */}
+            <button
+                onClick={() => handleNavigation('/mypage')}
+                className="text-white font-medium text-contentsize1"
+            >
+              내 정보
+            </button>
+
+            {/* 면접 분석 버튼 */}
             <button
                 onClick={handleAnalysisClick}
                 className="text-white font-medium text-contentsize1"
@@ -102,9 +111,10 @@ const Topbar = () => {
           </nav>
         </div>
 
-        {/* 로그인 / 사용자 이름 + 드롭다운 */}
+        {/* 우측: 로그인 상태 / 사용자 이름 + 드롭다운 */}
         {username ? (
             <div className="relative">
+              {/* 사용자 이름 + 드롭다운 버튼 */}
               <button
                   onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                   className="flex items-center text-white font-medium px-4 py-2 gap-1"
@@ -126,6 +136,7 @@ const Topbar = () => {
               )}
             </div>
         ) : (
+            // 로그인 버튼
             <button
                 onClick={openLogin}
                 className="text-contentsize1 font-medium text-white px-4 py-2"
@@ -134,6 +145,7 @@ const Topbar = () => {
             </button>
         )}
 
+        {/* 로그인 모달 */}
         <LoginModal isOpen={isLoginOpen} onClose={closeLogin} />
       </header>
   );
