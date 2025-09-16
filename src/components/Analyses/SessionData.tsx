@@ -1,5 +1,3 @@
-//import enhanceIcon from '../../assets/icons/enhanceIcon.svg';
-//import decreaseIcon from '../../assets/icons/decreaseIcon.svg';
 import ProgressBar from '../ProgressBar';
 import InterviewRecord from './InterviewRecord';
 import { companyMap } from '../../constants/companyMap';

@@ -1,4 +1,3 @@
-import axios from 'axios';
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 
@@ -8,6 +7,7 @@ import RightNavbar from '../components/Analyses/RightNavbar';
 import AnalysisData from '../components/Analyses/SessionData';
 import NoAnalysisFound from '../components/Analyses/NoSessionFound';
 import { companyList } from '../constants/companyMap';
+import axiosInstance from '../api';
 
 // API 응답
 interface Analysis {
@@ -63,8 +63,8 @@ const AnalysisPage = () => {
 
     const fetchData = async () => {
       try {
-        const res = await axios.get(
-          `http://localhost:8080/api/analyses/recent/${enterprise}`
+        const res = await axiosInstance.get(
+          `/api/analyses/recent/${enterprise}`
         );
         setAnalysisData(res.data.data);
         // 최근 세션이 있으면 selectedSessionId로 설정
@@ -87,8 +87,8 @@ const AnalysisPage = () => {
 
     const fetchSessions = async () => {
       try {
-        const res = await axios.get(
-          `http://localhost:8080/api/analyses/sessions/${enterprise}`
+        const res = await axiosInstance.get(
+          `/api/analyses/sessions/${enterprise}`
         );
         const sessions = res.data?.data?.sessions ?? [];
 
@@ -111,7 +111,7 @@ const AnalysisPage = () => {
     setSelectedSessionId(id);
 
     try {
-      const res = await axios.get(`http://localhost:8080/api/analyses/${id}`);
+      const res = await axiosInstance.get(`/api/analyses/${id}`);
       setAnalysisData(res.data.data); // 클릭한 세션 데이터로 화면 갱신
     } catch (err) {
       console.error('세션 분석 데이터 불러오기 실패:', err);
@@ -125,7 +125,7 @@ const AnalysisPage = () => {
     if (!window.confirm('정말 이 세션을 삭제하시겠습니까?')) return;
 
     try {
-      const res = await axios.delete(`http://localhost:8080/api/analyses/${id}`);
+      const res = await axiosInstance.delete(`/api/analyses/${id}`);
 
       if (res.data?.success) {
         // 삭제 후 상태 업데이트

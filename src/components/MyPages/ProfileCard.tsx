@@ -1,11 +1,11 @@
 import { useState, useRef, useEffect } from 'react';
-import axios from 'axios';
 
 import editIcon from '../../assets/icons/editIcon.svg';
 import groupIcon from '../../assets/icons/groupIcon.svg';
 import seniorityIcon from '../../assets/icons/seniorityIcon.svg';
 import closeIcon from '../../assets/icons/closeIcon.svg';
 import reactIcon from '../../assets/stacks/reactIcon.svg';
+import axiosInstance from '../../api';
 
 interface Stack {
   stackName: string;
@@ -106,7 +106,7 @@ const ProfileCard = ({
 
   const handleSave = async () => {
     try {
-      await axios.patch('http://localhost:8080/api/users/info', {
+      await axiosInstance.patch('/api/users/info', {
         name,
         position,
         seniority,

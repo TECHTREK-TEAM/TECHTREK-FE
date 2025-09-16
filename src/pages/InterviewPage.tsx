@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
 
 import Topbar from '../components/Topbar';
 import leftArrowIcon from '../assets/icons/leftArrowIcon.svg';
@@ -8,6 +7,7 @@ import InterviewTitle from '../components/InterviewTitle';
 import ChatBubble from '../components/ChatBubble';
 import AnswerInput from '../components/Interviews/AnswerInput';
 import { companyMap } from '../constants/companyMap';
+import axiosInstance from '../api';
 
 const InterviewPage = () => {
   const navigate = useNavigate();
@@ -57,8 +57,8 @@ const InterviewPage = () => {
       //setIsLoading(true);
       try {
         // 면접 시작 API
-        const res = await axios.post(
-          'http://localhost:8080/api/interview/start',
+        const res = await axiosInstance.post(
+          '/api/interview/start',
           {
             enterpriseName: company?.enterprise,
           }
@@ -109,8 +109,8 @@ const InterviewPage = () => {
         { questionNumber: '', question: '질문 생성 중...' },
       ]);
 
-      const res = await axios.post(
-        'http://localhost:8080/api/interview/questions/basic',
+      const res = await axiosInstance.post(
+        '/api/interview/questions/basic',
         {
           sessionId,
         }
@@ -158,8 +158,8 @@ const InterviewPage = () => {
         { questionNumber: '', question: '질문 생성 중...' },
       ]);
 
-      const res = await axios.post(
-        'http://localhost:8080/api/interview/questions/resume',
+      const res = await axiosInstance.post(
+        '/api/interview/questions/resume',
         {
           sessionId,
         }
@@ -219,8 +219,8 @@ const InterviewPage = () => {
         { questionNumber: '', question: '질문 생성 중...' },
       ]);
 
-      const res = await axios.post(
-        'http://localhost:8080/api/interview/questions/tail',
+      const res = await axiosInstance.post(
+        '/api/interview/questions/tail',
         requestBody
       );
 
@@ -273,8 +273,8 @@ const InterviewPage = () => {
     try {
       setIsSubmitting(true);
 
-      const res = await axios.post(
-        'http://localhost:8080/api/interview/answers',
+      const res = await axiosInstance.post(
+        '/api/interview/answers',
         {
           sessionId,
           fieldId: fieldId,
@@ -336,7 +336,7 @@ const InterviewPage = () => {
     try {
       setIsAnalyzing(true);
 
-      const res = await axios.post('http://localhost:8080/api/analyses', {
+      const res = await axiosInstance.post('/api/analyses', {
         sessionId,
         duration,
       });
@@ -367,8 +367,8 @@ const InterviewPage = () => {
     if (!confirmExit) return; // 취소 시 종료
 
     try {
-      await axios.delete(
-        `http://localhost:8080/api/interview/close/${sessionId}`
+      await axiosInstance.delete(
+        `/api/interview/close/${sessionId}`
       );
       navigate('/'); // 홈으로 이동
     } catch (error) {
@@ -407,7 +407,7 @@ const InterviewPage = () => {
         </button>
       </div>
 
-      <div className="h-[550px] 2xl:h-[700px] mx-[270px] px-[50px] bg-white rounded-[10px] 2xl:mb-[150px] 2xl:mx-[300px] flex flex-col justify-between">
+      <div className="h-[550px] 2xl:h-[700px] mx-[270px] px-[50px] py-[30px] bg-white rounded-[10px] 2xl:mb-[150px] 2xl:mx-[300px] flex flex-col justify-between">
         <InterviewTitle>{company?.name} 기술면접</InterviewTitle>
         <div className="flex-1 overflow-y-auto px-[20px] pt-[30px] space-y-10 scrollbar-hide">
           {interviewData.map(({ questionNumber, question, answer }, index) => (
@@ -447,7 +447,7 @@ const InterviewPage = () => {
           ))}
         </div>
 
-        <div className="mt-4 mb-9">
+        <div className="mt-4">
           <AnswerInput
             value={answer}
             onChange={setAnswer}

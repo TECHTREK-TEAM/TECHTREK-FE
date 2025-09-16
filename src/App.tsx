@@ -6,6 +6,7 @@ import Interview from './pages/InterviewPage.tsx';
 import MyPage from './pages/MyPage.tsx';
 import NoSessionPage from './pages/NoSessionPage.tsx';
 import InterviewResultPage from './pages/InterviewResultPage.tsx';
+import SocialLoginCallback from "./pages/SocialLoginCallback.tsx";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
         <Route path="/mypage" element={<MyPage />} />
         <Route path="/analysis" element={<NoSessionPage />} />
         <Route path="/analysis/:enterprise" element={<Analysis />} />
+        <Route path="/social-login/callback" element={<SocialLoginCallback />} />
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </BrowserRouter>
