@@ -1,11 +1,11 @@
 import { useState, useRef, useEffect } from 'react';
-import axios from 'axios';
 
 import editIcon from '../../assets/icons/editIcon.svg';
 import groupIcon from '../../assets/icons/groupIcon.svg';
 import seniorityIcon from '../../assets/icons/seniorityIcon.svg';
 import closeIcon from '../../assets/icons/closeIcon.svg';
 import reactIcon from '../../assets/stacks/reactIcon.svg';
+import axiosInstance from '../../api';
 
 interface Stack {
   stackName: string;
@@ -106,7 +106,7 @@ const ProfileCard = ({
 
   const handleSave = async () => {
     try {
-      await axios.patch('http://localhost:8080/api/users/info', {
+      await axiosInstance.patch('/api/users/info', {
         name,
         position,
         seniority,
@@ -148,35 +148,35 @@ const ProfileCard = ({
         <div className="px-3 py-3 flex gap-[15px] items-center border-b border-[#e9e9e9] relative">
           <img src={groupIcon} className="w-6 h-6 select-none" />
           {isEditing ? (
-            <>
-              <button
-                className="text-[15px] text-left border border-gray-300 px-2 py-1 rounded-md w-full"
-                onClick={() => setShowGroupModal(true)}
-              >
-                {position}
-              </button>
-              {showGroupModal && (
-                <div
-                  ref={modalRef}
-                  className="absolute top-full mt-2 left-0 w-[140px] bg-white shadow-md border rounded-md z-10"
+              <>
+                <button
+                    className="text-[15px] text-left border border-gray-300 px-2 py-1 rounded-md w-full"
+                    onClick={() => setShowGroupModal(true)}
                 >
-                  {jobGroups.map((group) => (
+                  {position || '정보가 없습니다'}
+                </button>
+                {showGroupModal && (
                     <div
-                      key={group}
-                      onClick={() => {
-                        setPosition(group);
-                        setShowGroupModal(false);
-                      }}
-                      className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm"
+                        ref={modalRef}
+                        className="absolute top-full mt-2 left-0 w-[140px] bg-white shadow-md border rounded-md z-10"
                     >
-                      {group}
+                      {jobGroups.map((group) => (
+                          <div
+                              key={group}
+                              onClick={() => {
+                                setPosition(group);
+                                setShowGroupModal(false);
+                              }}
+                              className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm"
+                          >
+                            {group}
+                          </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
-              )}
-            </>
+                )}
+              </>
           ) : (
-            <p className="text-[15px]">{position}</p>
+              <p className="text-[15px]">{position || '정보가 없습니다'}</p>
           )}
         </div>
 
@@ -184,35 +184,35 @@ const ProfileCard = ({
         <div className="px-3 py-3 flex gap-[15px] items-center border-b border-[#e9e9e9] relative">
           <img src={seniorityIcon} className="w-[22px] h-[23px] select-none" />
           {isEditing ? (
-            <>
-              <button
-                className="text-[15px] text-left border border-gray-300 px-2 py-1 rounded-md w-full"
-                onClick={() => setShowSeniorityModal(true)}
-              >
-                {seniority}
-              </button>
-              {showSeniorityModal && (
-                <div
-                  ref={modalRef}
-                  className="absolute top-full mt-2 left-0 w-[180px] bg-white shadow-md border rounded-md z-10"
+              <>
+                <button
+                    className="text-[15px] text-left border border-gray-300 px-2 py-1 rounded-md w-full"
+                    onClick={() => setShowSeniorityModal(true)}
                 >
-                  {seniorityLevels.map((level) => (
+                  {seniority || '정보가 없습니다'}
+                </button>
+                {showSeniorityModal && (
                     <div
-                      key={level}
-                      onClick={() => {
-                        setSeniority(level);
-                        setShowSeniorityModal(false);
-                      }}
-                      className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm"
+                        ref={modalRef}
+                        className="absolute top-full mt-2 left-0 w-[180px] bg-white shadow-md border rounded-md z-10"
                     >
-                      {level}
+                      {seniorityLevels.map((level) => (
+                          <div
+                              key={level}
+                              onClick={() => {
+                                setSeniority(level);
+                                setShowSeniorityModal(false);
+                              }}
+                              className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm"
+                          >
+                            {level}
+                          </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
-              )}
-            </>
+                )}
+              </>
           ) : (
-            <p className="text-[15px]">{seniority}</p>
+              <p className="text-[15px]">{seniority || '정보가 없습니다'}</p>
           )}
         </div>
 

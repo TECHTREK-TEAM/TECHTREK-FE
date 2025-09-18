@@ -12,6 +12,11 @@ type LoginModalProps = {
 const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
   if (!isOpen) return null;
 
+  // 소셜 로그인 처리 함수
+  const handleLogin = (provider: "kakao" | "google" | "naver") => {
+    window.location.href = `http://localhost:8080/oauth2/authorization/${provider}`;
+  };
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
       <div className="bg-white rounded-xl w-[616px] h-[488px] p-6 shadow-xl relative">
@@ -33,7 +38,11 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
 
             {/* 버튼 div */}
             <div className="w-full h-fit mt-12 flex flex-col gap-2">
-              <button className="w-full h-[56px] bg-[#02C95A] text-contentsize1 text-white font-medium rounded-[10px] relative">
+              {/* 네이버 */}
+              <button
+                  onClick={() => handleLogin("naver")}
+                  className="w-full h-[56px] bg-[#02C95A] text-contentsize1 text-white font-medium rounded-[10px] relative"
+              >
                 <div className="absolute left-4 top-1/2 -translate-y-1/2">
                   <img src={deviconNaver} alt="네이버 아이콘" />
                 </div>
@@ -42,7 +51,11 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
                 </span>
               </button>
 
-              <button className="w-full h-[56px] bg-[#FDE501] text-contentsize1 text-primary font-medium rounded-[10px] relative">
+              {/* 카카오 */}
+              <button
+                  onClick={() => handleLogin("kakao")}
+                  className="w-full h-[56px] bg-[#FDE501] text-contentsize1 text-primary font-medium rounded-[10px] relative"
+              >
                 <div className="absolute left-4 top-1/2 -translate-y-1/2">
                   <img src={deviconKakao} alt="카카오 아이콘" />
                 </div>
@@ -51,7 +64,11 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
                 </span>
               </button>
 
-              <button className="w-full h-[56px] border border-gray-300 text-contentsize1 text-customgray font-medium rounded-[10px] relative">
+              {/* 구글 */}
+              <button
+                  onClick={() => handleLogin("google")}
+                  className="w-full h-[56px] border border-gray-300 text-contentsize1 text-customgray font-medium rounded-[10px] relative"
+              >
                 <div className="absolute left-4 top-1/2 -translate-y-1/2">
                   <img src={deviconGoogle} alt="구글 아이콘" />
                 </div>

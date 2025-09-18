@@ -1,5 +1,4 @@
 import { useQuery } from '@tanstack/react-query';
-import axios from 'axios';
 
 import Topbar from '../components/Topbar';
 import InterviewCard from '../components/MyPages/InterviewCard';
@@ -10,6 +9,7 @@ import interviewTotalIcon from '../assets/icons/interviewTotalIcon.svg';
 import interviewPassIcon from '../assets/icons/interviewPassIcon.svg';
 import ProfileCard from '../components/MyPages/ProfileCard';
 import { companyMap } from '../constants/companyMap';
+import axiosInstance from '../api';
 
 interface Company {
   companyName: string;
@@ -18,29 +18,29 @@ interface Company {
 
 // API 함수
 const fetchUserInfo = async () => {
-  const response = await axios.get('http://localhost:8080/api/users/info');
+  const response = await axiosInstance.get('/api/users/info');
   return response.data.data;
 };
 
 const fetchUserScore = async () => {
-  const response = await axios.get('http://localhost:8080/api/users/score');
+  const response = await axiosInstance.get('/api/users/score');
   return response.data.data;
 };
 
 const fetchUserPassInfo = async () => {
-  const response = await axios.get('http://localhost:8080/api/users/pass');
+  const response = await axiosInstance.get('/api/users/pass');
   return response.data.data;
 };
 
 const fetchUserInterviews = async () => {
-  const response = await axios.get(
-    'http://localhost:8080/api/users/interviews'
+  const response = await axiosInstance.get(
+    '/api/users/interviews'
   );
   return response.data.data;
 };
 
 const fetchUserCompanies = async (): Promise<Company[]> => {
-  const response = await axios.get('http://localhost:8080/api/users/companies');
+  const response = await axiosInstance.get('/api/users/companies');
   return response.data.data.companies;
 };
 

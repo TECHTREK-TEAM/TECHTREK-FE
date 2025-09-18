@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react';
-import axios, { type AxiosError } from 'axios';
+import { type AxiosError } from 'axios';
 import resumeUploadIcon from '../../assets/icons/resumeUploadIcon.svg';
+import axiosInstance from '../../api';
 
 interface UploadResponseData {
   group: string;
@@ -29,8 +30,8 @@ const ResumeUploader = ({
     formData.append('file', file);
 
     try {
-      const response = await axios.post(
-        'http://localhost:8080/api/users/resume',
+      const response = await axiosInstance.post(
+        '/api/users/resume',
         formData,
         {
           headers: { 'Content-Type': 'multipart/form-data' },
