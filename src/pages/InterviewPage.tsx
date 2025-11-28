@@ -20,14 +20,14 @@ const InterviewPage = () => {
   const company = enterprise ? companyMap[enterprise.toUpperCase()] : undefined;
 
   // 세션, 필드 데이터
-  const [currentQuestionType, setCurrentQuestionType] = useState<
-    'basic' | 'resume' | 'tail'
-  >('basic');
+  // const [currentQuestionType, setCurrentQuestionType] = useState<
+  //   'basic' | 'resume' | 'tail'
+  // >('basic');
   const [isResume, setIsResume] = useState(false);
   const [sessionId, setSessionId] = useState<string | null>(null);
-  const [fieldId, setFieldId] = useState<string | null>(null);
-  const [previousId, setPreviousId] = useState<string | null>(null);
-  const [parentId, setParentId] = useState<string | null>(null);
+  // const [fieldId, setFieldId] = useState<string | null>(null);
+  // const [previousId, setPreviousId] = useState<string | null>(null);
+  // const [parentId, setParentId] = useState<string | null>(null);
   const [answer, setAnswer] = useState('');
   const [interviewData, setInterviewData] = useState<
     { questionNumber: string; question: string; answer?: string }[]
@@ -66,10 +66,6 @@ const InterviewPage = () => {
         // 응답
         const data = res.data.data;
         setSessionId(data.sessionId);
-        setFieldId(data.fieldId);
-        setParentId(data.fieldId);
-        setPreviousId(null);
-        setCurrentQuestionType('basic');
         setIsResume(data.resumeStatus);
         setStartTime(Date.now());
         setInterviewData([
@@ -97,7 +93,7 @@ const InterviewPage = () => {
 
   // 기본 질문 API
   const fetchBasicQuestion = async () => {
-    if (!sessionId || !fieldId) {
+    if (!sessionId) {
       alert('세션 정보가 올바르지 않습니다.');
       return;
     }
@@ -117,10 +113,10 @@ const InterviewPage = () => {
       );
       // 응답
       const data = res.data.data;
-      setFieldId(data.fieldId);
-      setParentId(data.fieldId);
-      setPreviousId(null);
-      setCurrentQuestionType('basic');
+      // setFieldId(data.fieldId);
+      // setParentId(data.fieldId);
+      // setPreviousId(null);
+      // //setCurrentQuestionType('basic');
       setIsWaitingNextQuestion(false);
 
       // 마지막 항목을 실제 질문으로 교체
@@ -138,7 +134,7 @@ const InterviewPage = () => {
 
   // 이력서 질문 API
   const fetchResumeQuestion = async () => {
-    if (!sessionId || !fieldId) {
+    if (!sessionId) {
       alert('세션 정보가 올바르지 않습니다.');
       return;
     }
@@ -166,10 +162,10 @@ const InterviewPage = () => {
       );
       // 응답
       const data = res.data.data;
-      setFieldId(data.fieldId);
-      setParentId(data.fieldId);
-      setPreviousId(null);
-      setCurrentQuestionType('resume');
+      // setFieldId(data.fieldId);
+      // setParentId(data.fieldId);
+      // setPreviousId(null);
+      // //setCurrentQuestionType('resume');
       setIsWaitingNextQuestion(false);
 
       // 마지막 항목을 실제 질문으로 교체
@@ -187,31 +183,31 @@ const InterviewPage = () => {
 
   // 꼬리 질문 API
   const fetchTailQuestion = async () => {
-    if (!sessionId || (!previousId && !parentId)) {
+    if (!sessionId) {
       alert('세션 정보가 올바르지 않습니다.');
       return;
     }
 
     try {
-      let requestBody: {
-        sessionId: string;
-        parentId?: string;
-        previousId?: string;
-      };
-
-      if (!previousId) {
-        // 첫 번째 꼬리 질문
-        requestBody = {
-          sessionId,
-          parentId: parentId!,
-        };
-      } else {
-        // 두 번째 이후 꼬리 질문
-        requestBody = {
-          sessionId,
-          previousId,
-        };
-      }
+      // let requestBody: {
+      //   sessionId: string;
+      //   // parentId?: string;
+      //   // previousId?: string;
+      // };
+      //
+      // if (!previousId) {
+      //   // 첫 번째 꼬리 질문
+      //   requestBody = {
+      //     sessionId,
+      //     parentId: parentId!,
+      //   };
+      // } else {
+      //   // 두 번째 이후 꼬리 질문
+      //   requestBody = {
+      //     sessionId,
+      //     previousId,
+      //   };
+      // }
 
       // 새 질문 자리 임시 말풍선 추가
       setInterviewData((prev) => [
@@ -221,15 +217,17 @@ const InterviewPage = () => {
 
       const res = await axiosInstance.post(
         '/api/interview/questions/tail',
-        requestBody
+          {
+            sessionId,
+          }
       );
 
       // 응답
       const data = res.data.data;
-      setFieldId(data.fieldId);
-      setPreviousId(data.fieldId); // 이전 질문 업데이트
-      if (!parentId) setParentId(data.fieldId); // 첫 꼬리 질문이면 parentId도 설정
-      setCurrentQuestionType('tail');
+      // setFieldId(data.fieldId);
+      // setPreviousId(data.fieldId); // 이전 질문 업데이트
+      // if (!parentId) setParentId(data.fieldId); // 첫 꼬리 질문이면 parentId도 설정
+      // //setCurrentQuestionType('tail');
       setIsWaitingNextQuestion(false);
 
       // 마지막 항목을 실제 질문으로 교체
@@ -250,7 +248,7 @@ const InterviewPage = () => {
 
   // 답변 API
   const handleSubmitAnswer = async () => {
-    if (!sessionId || !fieldId) {
+    if (!sessionId) {
       alert('세션 정보가 올바르지 않습니다.');
       return;
     }
@@ -277,8 +275,6 @@ const InterviewPage = () => {
         '/api/interview/answers',
         {
           sessionId,
-          fieldId: fieldId,
-          type: currentQuestionType,
           answer: answer.trim(),
         }
       );
