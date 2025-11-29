@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import LoginModal from '../components/Homes/LoginModal';
 import { companyList } from '../constants/companyMap';
 import dropdownIcon from '../assets/icons/dropdownIcon.svg';
+import axiosInstance from "../api.tsx";
 
 const Topbar = () => {
   const navigate = useNavigate();
@@ -64,12 +65,20 @@ const Topbar = () => {
   };
 
   // 로그아웃 처리
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('username');
-    setUsername(null);
-    setIsDropdownOpen(false);
-    window.location.href = '/'; // 홈으로 이동 (새로고침)
+  const handleLogout = async () => {
+    try {
+      console.log("dkdkdk")
+      await axiosInstance.post('/api/logout', {}, { withCredentials: true });
+    } catch (error) {
+      console.error('로그아웃 실패', error);
+    } finally {
+      // 로컬 토큰 제거
+      localStorage.removeItem('token');
+      localStorage.removeItem('username');
+      setUsername(null);
+      setIsDropdownOpen(false);
+      //window.location.href = '/'; // 홈으로 이동
+    }
   };
 
   // 스크롤 상태에 따른 배경 클래스
