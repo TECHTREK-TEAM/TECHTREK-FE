@@ -1,84 +1,127 @@
 import { useState, useRef, useEffect } from 'react';
+
 import editIcon from '../../assets/icons/editIcon.svg';
 import groupIcon from '../../assets/icons/groupIcon.svg';
 import seniorityIcon from '../../assets/icons/seniorityIcon.svg';
 import closeIcon from '../../assets/icons/closeIcon.svg';
+import reactIcon from '../../assets/stacks/reactIcon.svg';
+import axiosInstance from '../../api';
 
-// 외부에서 받아올 사용자 기본 프로필 정보 타입 정의
-interface ProfileCardProps {
-  name: string;
-  group: string;
-  seniority: number;
+interface Stack {
+  stackName: string;
 }
 
-// 테스트용 이미지 옵션 목록 (이름과 고유 id 부여)
-const imageOptions = Array.from({ length: 8 }, (_, i) => ({
-  id: i + 1,
-  name: `이미지${i + 1}`,
-}));
+interface ProfileCardProps {
+  name: string;
+  position: string;
+  seniority: string;
+  stacks?: Stack[];
+}
+
+const jobGroups = ['프론트엔드', '백엔드', '데이터베이스', 'AI', 'DevOps'];
+const seniorityLevels = [
+  '지망생',
+  '주니어 (1~3년차)',
+  '미들 (3~5년차)',
+  '시니어 (5~8년차)',
+  '전문가 (8년 이상)',
+];
+
+const stackList = ['React', 'Vue', 'Angular', 'Spring', 'Django', 'Node.js'];
+
+const stackIconMap: Record<string, string> = {
+  react: reactIcon,
+  // vue: vueIcon 등 추가 가능
+};
 
 const ProfileCard = ({
   name: initialName,
-  group: initialGroup,
+  position: initialPostion,
   seniority: initialSeniority,
+  stacks = [],
 }: ProfileCardProps) => {
-  // 수정 모드 여부 상태
   const [isEditing, setIsEditing] = useState(false);
-
-  // 사용자 입력 상태 (이름, 직군, 연차)
   const [name, setName] = useState(initialName);
-  const [group, setGroup] = useState(initialGroup);
-  const [seniority, setSeniority] = useState(initialSeniority.toString());
+  const [position, setPosition] = useState(initialPostion);
+  const [seniority, setSeniority] = useState(initialSeniority);
+  const [stackItems, setStackItems] = useState<string[]>(
+    stacks.map((s) => s.stackName)
+  );
 
-  // 현재 선택된 이미지 목록 (id 기반)
-  const [images, setImages] = useState<number[]>([1, 2]);
+  const [showGroupModal, setShowGroupModal] = useState(false);
+  const [showSeniorityModal, setShowSeniorityModal] = useState(false);
+  const [showStackModal, setShowStackModal] = useState(false);
 
-  // 이미지 선택 모달의 표시 여부
-  const [showImageModal, setShowImageModal] = useState(false);
-
-  // 모달 외부 클릭 감지를 위한 버튼과 모달 DOM 참조
   const addButtonRef = useRef<HTMLButtonElement>(null);
   const modalRef = useRef<HTMLDivElement>(null);
 
-  // 이미지 아이템 클릭 시 이미지 추가
-  const handleAddImageById = (id: number) => {
-    if (!images.includes(id) && images.length < 4) {
-      setImages((prev) => [...prev, id]);
-      setShowImageModal(false); // 이미지 추가 후 모달 닫기
-    }
+  // 최신 데이터가 바뀔 때 내부 상태도 업데이트되도록 useEffect 추가
+  useEffect(() => {
+    setName(initialName);
+  }, [initialName]);
+
+  useEffect(() => {
+    setPosition(initialPostion);
+  }, [initialPostion]);
+
+  useEffect(() => {
+    setSeniority(initialSeniority);
+  }, [initialSeniority]);
+
+  useEffect(() => {
+    setStackItems(stacks.map((s) => s.stackName));
+  }, [stacks]);
+
+  const closeAllModals = () => {
+    setShowGroupModal(false);
+    setShowSeniorityModal(false);
+    setShowStackModal(false);
   };
 
-  // 이미지 제거 핸들러
-  const handleRemoveImage = (id: number) => {
-    setImages((prev) => prev.filter((imgId) => imgId !== id));
-  };
-
-  // 모달 외부 클릭 시 닫기
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (
-        showImageModal &&
         modalRef.current &&
         !modalRef.current.contains(e.target as Node) &&
         !addButtonRef.current?.contains(e.target as Node)
       ) {
-        setShowImageModal(false);
+        closeAllModals();
       }
     };
-
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [showImageModal]);
+  }, []);
+
+  const toggleStack = (stack: string) => {
+    if (stackItems.includes(stack)) {
+      setStackItems(stackItems.filter((s) => s !== stack));
+    } else if (stackItems.length < 4) {
+      setStackItems([...stackItems, stack]);
+    }
+  };
+
+  const removeStack = (stack: string) => {
+    setStackItems(stackItems.filter((s) => s !== stack));
+  };
+
+  const handleSave = async () => {
+    try {
+      await axiosInstance.patch('/api/users/info', {
+        name,
+        position,
+        seniority,
+        stacks: stackItems.map((s) => ({ stackName: s })),
+      });
+      setIsEditing(false);
+    } catch (error) {
+      console.error('프로필 업데이트 실패:', error);
+      alert('프로필 저장에 실패했습니다.');
+    }
+  };
 
   return (
-    <div className="bg-white w-full max-w-[328px] max-h-[276px] h-full flex flex-col rounded-xl relative">
-      {/* 상단 영역 - 이름 표시 및 수정 버튼 */}
-      <div
-        className={`w-full h-fit pl-10 pr-5 flex justify-between items-center border-b border-[#e9e9e9] ${
-          isEditing ? 'py-5' : 'py-7'
-        }`}
-      >
-        {/* 이름 입력 필드 (수정 모드일 때만 활성화) */}
+    <div className="bg-white w-full max-w-[328px] flex flex-col rounded-xl relative">
+      <div className="w-full pl-10 pr-5 flex justify-between items-center border-b border-[#e9e9e9] py-5">
         {isEditing ? (
           <input
             className="font-medium text-contentsize2 border border-gray-300 rounded-md px-2 py-1 w-1/2"
@@ -88,11 +131,9 @@ const ProfileCard = ({
         ) : (
           <p className="font-medium text-contentsize2">{name}</p>
         )}
-
-        {/* 수정/저장 버튼 토글 */}
         <button
           className="w-fit h-fit text-[15px] font-medium text-primary"
-          onClick={() => setIsEditing((prev) => !prev)}
+          onClick={isEditing ? handleSave : () => setIsEditing(true)}
         >
           {isEditing ? (
             <span className="text-blue-500">save</span>
@@ -102,89 +143,151 @@ const ProfileCard = ({
         </button>
       </div>
 
-      {/* 본문 영역 */}
-      <div className="w-full h-fit px-8">
-        {/* 직군 정보 */}
-        <div className="px-3 py-3 flex gap-[15px] items-center border-b border-[#e9e9e9]">
+      <div className="w-full px-8 pb-6">
+        {/* 직군 선택 */}
+        <div className="px-3 py-3 flex gap-[15px] items-center border-b border-[#e9e9e9] relative">
           <img src={groupIcon} className="w-6 h-6 select-none" />
           {isEditing ? (
-            <input
-              className="font-regular text-[15px] border border-gray-300 rounded-md px-2 py-1 w-full"
-              value={group}
-              onChange={(e) => setGroup(e.target.value)}
-            />
+              <>
+                <button
+                    className="text-[15px] text-left border border-gray-300 px-2 py-1 rounded-md w-full"
+                    onClick={() => setShowGroupModal(true)}
+                >
+                  {position || '정보가 없습니다'}
+                </button>
+                {showGroupModal && (
+                    <div
+                        ref={modalRef}
+                        className="absolute top-full mt-2 left-0 w-[140px] bg-white shadow-md border rounded-md z-10"
+                    >
+                      {jobGroups.map((group) => (
+                          <div
+                              key={group}
+                              onClick={() => {
+                                setPosition(group);
+                                setShowGroupModal(false);
+                              }}
+                              className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm"
+                          >
+                            {group}
+                          </div>
+                      ))}
+                    </div>
+                )}
+              </>
           ) : (
-            <p className="font-regular text-[15px]">{group}</p>
+              <p className="text-[15px]">{position || '정보가 없습니다'}</p>
           )}
         </div>
 
-        {/* 연차 정보 */}
-        <div className="px-3 py-3 flex gap-[15px] items-center border-b border-[#e9e9e9]">
+        {/* 연차 선택 */}
+        <div className="px-3 py-3 flex gap-[15px] items-center border-b border-[#e9e9e9] relative">
           <img src={seniorityIcon} className="w-[22px] h-[23px] select-none" />
           {isEditing ? (
-            <input
-              type="number"
-              className="font-regular text-[15px] border border-gray-300 rounded-md px-2 py-1 w-full"
-              value={seniority}
-              onChange={(e) => setSeniority(e.target.value)}
-            />
+              <>
+                <button
+                    className="text-[15px] text-left border border-gray-300 px-2 py-1 rounded-md w-full"
+                    onClick={() => setShowSeniorityModal(true)}
+                >
+                  {seniority || '정보가 없습니다'}
+                </button>
+                {showSeniorityModal && (
+                    <div
+                        ref={modalRef}
+                        className="absolute top-full mt-2 left-0 w-[180px] bg-white shadow-md border rounded-md z-10"
+                    >
+                      {seniorityLevels.map((level) => (
+                          <div
+                              key={level}
+                              onClick={() => {
+                                setSeniority(level);
+                                setShowSeniorityModal(false);
+                              }}
+                              className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm"
+                          >
+                            {level}
+                          </div>
+                      ))}
+                    </div>
+                )}
+              </>
           ) : (
-            <p className="font-regular text-[15px]">{seniority} 년차</p>
+              <p className="text-[15px]">{seniority || '정보가 없습니다'}</p>
           )}
         </div>
 
-        {/* 이미지 리스트 + 이미지 추가 버튼 */}
-        <div className="py-7 w-full h-fit flex justify-center gap-5 flex-wrap relative">
-          {/* 선택된 이미지 리스트 */}
-          {images.map((id) => (
-            <div key={id} className="relative">
-              {/* 임시 회색 이미지 */}
-              <div className="w-[35px] h-[35px] bg-gray-300 rounded-lg flex items-center justify-center text-xs text-white">
-                {id}
-              </div>
-              {/* 삭제 버튼 (수정 모드에서만 노출) */}
-              {isEditing && (
-                <button
-                  className="absolute -top-2 -right-2 bg-white rounded-full border border-gray-400 w-5 h-5 flex items-center justify-center"
-                  onClick={() => handleRemoveImage(id)}
-                >
-                  <img src={closeIcon} className="w-3 h-3" alt="delete" />
-                </button>
-              )}
-            </div>
-          ))}
-
-          {/* 이미지 추가 버튼 + 모달 */}
-          {isEditing && images.length < 4 && (
-            <div className="relative">
-              {/* 추가 버튼 */}
-              <button
-                ref={addButtonRef}
-                onClick={() => setShowImageModal((prev) => !prev)}
-                className="w-[35px] h-[35px] rounded-lg border-2 border-dashed border-gray-400 flex items-center justify-center text-gray-500 text-xl font-bold"
-              >
-                +
-              </button>
-
-              {/* 모달: 이미지 선택 목록 */}
-              {showImageModal && (
-                <div
-                  ref={modalRef}
-                  className="absolute top-[40px] left-0 w-[100px] h-[180px] bg-white shadow-lg rounded-md border border-gray-300 z-10 p-2 overflow-y-auto flex flex-col gap-1"
-                >
-                  {imageOptions.map((option) => (
+        {/* 스택 선택 */}
+        <div className="pt-7 w-full flex justify-center gap-5 flex-wrap relative">
+          <div className="flex gap-5 justify-center">
+            {stackItems.map((stack) => {
+              const key = stack.toLowerCase();
+              const imgSrc = stackIconMap[key];
+              return (
+                <div key={stack} className="relative">
+                  {imgSrc ? (
+                    <img
+                      src={imgSrc}
+                      alt={stack}
+                      className="select-none w-[35px] h-[35px] rounded-md"
+                    />
+                  ) : (
+                    <div className="w-[35px] h-[35px] bg-gray-300 rounded-md flex items-center justify-center text-white text-xs">
+                      {stack[0]?.toUpperCase()}
+                    </div>
+                  )}
+                  {isEditing && (
                     <button
-                      key={option.id}
-                      onClick={() => handleAddImageById(option.id)}
-                      className="w-full h-[30px] flex items-center text-contentsize1 hover:bg-gray-100 rounded-md text-left px-2 py-2"
+                      onClick={() => removeStack(stack)}
+                      className="absolute -top-1 -right-1 w-4 h-4 bg-white border border-gray-400 rounded-full flex items-center justify-center"
                     >
-                      {option.name}
+                      <img
+                        src={closeIcon}
+                        className="w-[10px] h-[10px]"
+                        alt="remove"
+                      />
                     </button>
-                  ))}
+                  )}
                 </div>
-              )}
-            </div>
-          )}
+              );
+            })}
+
+            {isEditing && stackItems.length < 4 && (
+              <div className="relative">
+                <button
+                  ref={addButtonRef}
+                  onClick={() => setShowStackModal((prev) => !prev)}
+                  className="w-[35px] h-[35px] rounded-lg border-2 border-dashed border-gray-400 flex items-center justify-center text-gray-500 text-xl font-bold"
+                >
+                  +
+                </button>
+
+                {showStackModal && (
+                  <div
+                    ref={modalRef}
+                    className="absolute top-[50px] left-0 w-[120px] bg-white shadow-lg rounded-md border border-gray-300 z-10 p-2 overflow-y-auto flex flex-col gap-1"
+                  >
+                    {stackList.map((option) => {
+                      const isSelected = stackItems.includes(option);
+                      const isDisabled = isSelected || stackItems.length >= 4;
+
+                      return (
+                        <button
+                          key={option}
+                          disabled={isDisabled}
+                          onClick={() => toggleStack(option)}
+                          className={`w-full h-[30px] flex items-center text-contentsize1 rounded-md text-left px-2 py-2
+                            ${isSelected ? 'bg-blue-100 text-gray-500' : ''}
+                            ${isDisabled ? 'cursor-not-allowed opacity-50' : 'hover:bg-gray-100'}`}
+                        >
+                          {option}
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
