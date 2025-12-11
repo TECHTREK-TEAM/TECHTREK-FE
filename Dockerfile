@@ -19,7 +19,7 @@ RUN npm run build
 FROM nginx:stable
 
 # nginx SPA 라우팅 설정 추가
-COPY ./nginx.conf /etc/nginx/conf.d/default.conf
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 # 빌드 결과물을 nginx html 경로로 복사
 COPY --from=builder /app/dist /usr/share/nginx/html
