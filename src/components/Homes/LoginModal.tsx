@@ -15,7 +15,7 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
   // 소셜 로그인 처리 함수
   const handleLogin = (provider: "kakao" | "google" | "naver") => {
     // window.location.href = `http://localhost:8080/oauth2/authorization/${provider}`;
-    window.location.href = `$/oauth2/authorization/${provider}`;
+    window.location.href = `/oauth2/authorization/${provider}`;
   };
 
   return (
