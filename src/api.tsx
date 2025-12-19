@@ -2,8 +2,7 @@
 import axios from 'axios';
 
 const axiosInstance = axios.create({
-    //baseURL: 'http://localhost:8080',
-    baseURL: '',
+    baseURL: import.meta.env.VITE_API_BASE_URL || '',
     withCredentials: true, // HttpOnly 쿠키 전송 허용 (Refresh Token)
 });
 
