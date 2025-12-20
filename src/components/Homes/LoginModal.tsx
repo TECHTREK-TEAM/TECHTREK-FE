@@ -14,7 +14,8 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
 
   // 소셜 로그인 처리 함수
   const handleLogin = (provider: "kakao" | "google" | "naver") => {
-    window.location.href = `http://localhost:8080/oauth2/authorization/${provider}`;
+    const baseURL = import.meta.env.VITE_API_BASE_URL || ''
+    window.location.href = `${baseURL}/oauth2/authorization/${provider}`;
   };
 
   return (
